@@ -1,10 +1,13 @@
+import MainContent from "./components/MainContent";
+import Sidebar from "./components/Sidebar";
 import "./index.css";
 
 function App() {
   return (
-    <>
-      <p className=" p-20 text-center text-2xl font-medium " >Ai ChatBot React</p>
-    </>
+    <div className="min-w-full h-dvh lg:grid lg:grid-cols-[clamp(280px,25vw,320px)_1fr] ">
+      <Sidebar />
+      <MainContent />
+    </div>
   );
 }
 
