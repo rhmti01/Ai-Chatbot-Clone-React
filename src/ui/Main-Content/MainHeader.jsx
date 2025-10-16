@@ -2,9 +2,9 @@ import React from "react";
 
 export default function MainHeader() {
   return (
-    <div className="pt-[35vh] text-center space-y-3">
+    <div className="pt-[35vh] text-center space-y-3   ">
       <h1
-        className="font-semibold px-3 py-1.5 inline-block bg-surface rounded-3xl
+        className="font-semibold px-3 py-1.5 inline-block bg-surface  rounded-3xl
          text-md tracking-wider shadow-gray-100 shadow-sm"
       >
         CHAT A.I+

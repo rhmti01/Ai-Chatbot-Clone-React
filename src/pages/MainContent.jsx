@@ -1,15 +1,14 @@
 import React from "react";
-import SidebarToggle from "../ui/Main-Content/SidebarToggle";
-import MainHeader from "../ui/Main-Content/MainHeader";
-import UserAvatar from "../ui/Main-Content/UserAvatar";
 import PromptInput from "../ui/Main-Content/PromptInput";
+import HeaderActions from "../ui/Main-Content/HeaderActions";
+import ChatsSection from "../ui/Main-Content/ChatsSection";
 
 function MainContent() {
   return (
-    <div className="h-full w-full bg-main text-text flex justify-center">
-      <MainHeader />
-      <SidebarToggle />
-      <UserAvatar />
+    <div className="h-full w-full bg-main text-text flex justify-between flex-col 
+    items-center p-4 pb-10 lg:pb-14 lg:p-6   ">
+      <HeaderActions/>
+      <ChatsSection/>
       <PromptInput />
     </div>
   );

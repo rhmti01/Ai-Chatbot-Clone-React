@@ -10,7 +10,7 @@ export default function SidebarContainer({ sidebarOpen, children }) {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:block
       `}
     >
-      <div className="flex flex-col justify-between h-full rounded-4xl shadow-md shadow-gray-200 bg-surface overflow-y-auto overflow-x-hidden">
+      <div className="flex flex-col justify-between h-full rounded-2xl shadow-md shadow-gray-200 bg-surface overflow-y-auto overflow-x-hidden">
         {children}
       </div>
     </div>
