@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from "react";
 import runChat from "../services/gemini";
-import ChatList from "../ui/Sidebar/ChatList";
 
 const GeminiContext = createContext();
 

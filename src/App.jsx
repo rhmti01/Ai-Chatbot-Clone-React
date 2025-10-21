@@ -3,6 +3,8 @@ import Sidebar from "./pages/Sidebar";
 import { SidebarProvider } from "./context/SidebarContext";
 import "./index.css";
 import "./services/gemini"
+import { mainDeepseek } from "./services/deepseek";
+mainDeepseek()
 
 function App() {
 

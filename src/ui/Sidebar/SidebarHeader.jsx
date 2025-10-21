@@ -13,7 +13,7 @@ export default function SidebarHeader() {
       <div className="flex w-full mt-12 space-x-2">
         <Button
           size=""
-          className="w-full py-3 font-light bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex items-center gap-x-2 hover:gap-x-4"
+          className=" w-full py-3 font-light bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex justify-center items-center gap-x-2 hover:gap-x-4"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="size-6" viewBox="0 0 24 24" fill="none">
             <path d="M6 12h12M12 18V6" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
