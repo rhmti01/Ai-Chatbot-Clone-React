@@ -1,9 +1,9 @@
 import React from "react";
-import PromptInput from "../ui/Main-Content/PromptInput";
-import HeaderActions from "../ui/Main-Content/HeaderActions";
-import ChatsSection from "../ui/Main-Content/ChatsSection";
+import PromptInput from "../Components/ChatScreen/PromptInput";
+import HeaderActions from "../Components/ChatScreen/HeaderActions";
+import ChatsSection from "../Components/ChatScreen/ChatsSection";
 
-function MainContent() {
+function ChatScreen() {
   return (
     <div className="h-full w-full bg-main text-text flex justify-between flex-col 
     items-center p-4 pb-10 lg:pb-14 lg:p-6   ">
@@ -14,4 +14,4 @@ function MainContent() {
   );
 }
 
-export default MainContent;
+export default ChatScreen;

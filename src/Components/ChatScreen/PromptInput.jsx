@@ -1,8 +1,13 @@
 import React from "react";
-import { useGemini } from "../../context/GeminiContext";
+import { useGeminiStore } from "../../store/useGeminiStore";
 
 export default function PromptInput() {
-  const { input, setInput, onSendPrompt, showResults } = useGemini();
+  // const { input, setInput, onSendPrompt, showResults } = useGemini();
+  const input = useGeminiStore((state) => state.input);
+  const setInput = useGeminiStore((state) => state.setInput);
+  const onSendPrompt = useGeminiStore((state) => state.onSendPrompt);
+  const showResults = useGeminiStore((state) => state.showResults);
+
 
   return (
     <div

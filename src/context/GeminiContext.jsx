@@ -11,8 +11,8 @@ export function GeminiProvider({ children }) {
   const [showResults, setShowResults] = useState(false);
   const [chatScreenMode, setChatScreenMode] = useState("starter");
   const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState("");
-  const [chatsList, setChatsList] = useState([]);
+  // const [resultData, setResultData] = useState("");
+  // const [chatsList, setChatsList] = useState([]);
   const [inputPrompt , setInputPrompt] = useState("")
 
   const onSendPrompt = async () => {
@@ -23,8 +23,8 @@ export function GeminiProvider({ children }) {
     setLoading(true);
     setShowResults(true);
     const response = await runChat(input);
-    setResultData(response);
-    setChatsList((prev) => [...prev, { prompt: input, response }]);
+    // setResultData(response);
+    // setChatsList((prev) => [...prev, { prompt: input, response , id :new Date().getTime() }]);
     setLoading(false);
     setShowResults(false);
   };
@@ -40,12 +40,12 @@ export function GeminiProvider({ children }) {
     setShowResults,
     loading,
     setLoading,
-    resultData,
-    setResultData,
+    // resultData,
+    // setResultData,
     chatScreenMode,
     setChatScreenMode,
-    chatsList,
-    setChatsList,
+    // chatsList,
+    // setChatsList,
     inputPrompt ,
     setInputPrompt ,
     onSendPrompt,

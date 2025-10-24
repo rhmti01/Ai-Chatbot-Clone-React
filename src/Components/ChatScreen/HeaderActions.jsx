@@ -4,7 +4,7 @@ import { useSidebar } from "../../context/SidebarContext";
 function HeaderActions() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   return (
-    <div className=" p-2  shadow-gray-200 shadow-sm rounded-2xl bg-surface flex justify-between lg:justify-end items-center w-full ">
+    <div className=" p-2   rounded-2xl  flex justify-between lg:justify-end items-center w-full ">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
         className="lg:hidden cursor-pointer  bg-amber-500/"
