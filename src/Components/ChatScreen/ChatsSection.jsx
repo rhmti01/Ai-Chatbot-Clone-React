@@ -1,6 +1,6 @@
 import React from "react";
 import MainHeader from "./MainHeader";
-import Loader from "../common/Loader";
+import Loader from "../ui/Loader";
 import { useGeminiStore } from "../../store/useGeminiStore";
 
 function ChatsSection() {
@@ -15,7 +15,7 @@ function ChatsSection() {
 
   return (
     <div
-      className=" h-full flex-1 bg-green-600/ w-full overflow-auto scroll-smooth overflow-y-auto 
+      className=" h-full flex-1 bg-green-600/ relative w-full overflow-auto scroll-smooth overflow-y-auto 
        2xl:[&::-webkit-scrollbar]:w-2  2xl:[&::-webkit-scrollbar-track]:rounded-2xl 2xl:[&::-webkit-scrollbar-track]:bg-sub/40
         2xl:[&::-webkit-scrollbar-thumb]:bg-gray-400 2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl "
     >
@@ -24,9 +24,8 @@ function ChatsSection() {
       ) : chatScreenMode === "response" ? (
         chatsList.map(({ prompt, response, id }) => {
           return (
-            <div
-              key={id}
-              className="flex flex-col px-6 pt-5 pb-16 text-justify max-w-[720px] mx-auto mt-2 text-[16.5px]  bg-gray-200"
+            <div key={id}
+              className="flex flex-col px-6 pt-5 pb-16 text-justify max-w-[720px] mx-auto mt-2 text-[16.5px]  bg-gray-200/"
             >
               <div className=" flex justify-between  items-center gap-x-3 ">
                 <p className=" font-normal text-gray-100  px-3.5 py-2  bg-black/95  rounded-3xl rounded-bl-[6px] ">

@@ -5,7 +5,7 @@ import SidebarHeader from "../Components/Sidebar/SidebarHeader";
 import ChatListHeader from "../Components/Sidebar/ChatListHeader";
 import ChatList from "../Components/Sidebar/ChatList";
 import SidebarContainer from "../Components/Sidebar/SidebarContainer";
-import Divider from "../Components/common/Divider";
+import Divider from "../Components/ui/Divider";
 import SidebarFooter from "../Components/Sidebar/SidebarFooter";
 
 export default function Sidebar() {

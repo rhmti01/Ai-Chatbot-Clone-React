@@ -4,14 +4,14 @@ import { useSidebar } from "../../context/SidebarContext";
 function HeaderActions() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   return (
-    <div className=" p-2   rounded-2xl  flex justify-between lg:justify-end items-center w-full ">
+    <div className=" rounded-2xl  flex justify-between lg:justify-end items-start w-full ">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
         className="lg:hidden cursor-pointer  bg-amber-500/"
       >
         <svg
           stroke="currentColor"
-          className="size-10 translate-x-1 stroke-[0.25px] "
+          className="size-10 stroke-[0.25px] "
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +31,7 @@ function HeaderActions() {
 
       <div className=" cursor-pointer lg:mt-0.5 mr-1 ">
         <img
-          className="size-11 rounded-[18px] shadow-xl shadow-gray-200"
+          className="size-10 rounded-2xl  shadow-xl shadow-gray-200"
           src="assets/profile-img.png"
           alt="profile image"
         />
