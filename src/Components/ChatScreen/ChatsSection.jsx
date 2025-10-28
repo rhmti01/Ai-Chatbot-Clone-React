@@ -4,13 +4,12 @@ import Loader from "../ui/Loader";
 import { useGeminiStore } from "../../store/useGeminiStore";
 
 function ChatsSection() {
-  // const { showResults, loading , chatsList , chatScreenMode } = useGemini();
-  const showResults = useGeminiStore((state) => state.showResults);
+  // const { showResult, loading , chatsList , chatScreenMode } = useGemini();
   const loading = useGeminiStore((state) => state.loading);
   const chatsList = useGeminiStore((state) => state.chatsList);
   const chatScreenMode = useGeminiStore((state) => state.chatScreenMode);
 
-  console.log(showResults);
+  console.log(loading);
   console.log(chatsList);
 
   return (

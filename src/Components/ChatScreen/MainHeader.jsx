@@ -2,7 +2,7 @@ import React from "react";
 
 export default function MainHeader() {
   return (
-    <div className="  bg-blue-500/ pb-5 absolute w-full top-1/2 -translate-y-1/2  text-center space-y-3   ">
+    <div className="  bg-blue-500/ pb-16 absolute w-full top-1/2 -translate-y-1/2  text-center space-y-3   ">
       <h1
         className="font-semibold px-3 py-1.5 inline-block bg-surface  rounded-3xl
          text-md tracking-wider shadow-gray-100 shadow-sm"
