@@ -1,4 +1,5 @@
 import runChat from "../../services/gemini";
+import { timeBasedUUID } from "../../utils/timeBasedUUID";
 
 export const createChatSlice = (set, get) => ({
     //  initial values
@@ -7,7 +8,8 @@ export const createChatSlice = (set, get) => ({
   inputPrompt: "",
   loading: false,
   showResult: false,
-  chatScreenMode: "starter", // this will be removed when react router would be added
+  chatUUID :"" ,
+  currentChatId : null ,
 
   // initial methods
   setInputText: (value) => set({ inputText: value }),
@@ -15,22 +17,25 @@ export const createChatSlice = (set, get) => ({
   setInputPrompt: (value) => set({ inputPrompt: value }),
   setLoading: (value) => set({ loading: value }),
   setshowResult: (value) => set({ showResult: value }),
-  setChatScreenMode: (value) => set({ chatScreenMode: value }),
+  setChatUUID : (value)=> set({chatUUID : value}) ,
+  setCurrentChatId : (value)=> set({currentChatId : value}) ,
 
   // fetch prompt response from api
-  onSendPrompt: async () => {
+  onSendPrompt: async (navigate) => {
     const { inputText, chatsList } = get();
     if (!inputText.trim()) return;
-
+    
     const newChat = { id: Date.now(), prompt: inputText, response: null };
+    const uuidNumber = timeBasedUUID()
+    navigate(uuidNumber)
 
     // sending step
     set({
       inputText: "",
-      chatScreenMode: "response",
       chatsList: [...chatsList, newChat],
       loading: true,
       showResult: true,
+      chatUUID : uuidNumber ,
     });
 
     const response = await runChat(inputText);

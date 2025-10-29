@@ -1,13 +1,23 @@
 import { SidebarProvider } from "./context/SidebarContext";
 import "./index.css";
-import "./services/gemini"
+import "./services/gemini";
 import HomePage from "./pages/HomePage";
+import { Navigate, Route, Routes } from "react-router";
+import NoteFound from "./pages/NoteFound";
+import SingleChat from "./pages/SingleChat.jsx";
+import MainHeader from "./ui/ChatScreen/MainHeader.jsx";
 
 function App() {
-
   return (
     <SidebarProvider>
-      <HomePage/>
+      <Routes>
+        <Route path="/" element={<Navigate to="/chats" />} />
+        <Route path="chats" element={<HomePage />}>
+          <Route index element={<MainHeader />} />
+          <Route path=":id" element={<SingleChat />} />
+        </Route>
+        <Route path="*" element={<NoteFound />} />
+      </Routes>
     </SidebarProvider>
   );
 }

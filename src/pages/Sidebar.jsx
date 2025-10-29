@@ -1,12 +1,12 @@
 import React from "react";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarOverlay from "../Components/Sidebar/sidebarOverlay";
-import SidebarHeader from "../Components/Sidebar/SidebarHeader";
-import ChatListHeader from "../Components/Sidebar/ChatListHeader";
-import ChatList from "../Components/Sidebar/ChatList";
-import SidebarContainer from "../Components/Sidebar/SidebarContainer";
-import Divider from "../Components/ui/Divider";
-import SidebarFooter from "../Components/Sidebar/SidebarFooter";
+import SidebarOverlay from "../ui/Sidebar/sidebarOverlay";
+import SidebarHeader from "../ui/Sidebar/SidebarHeader";
+import ChatListHeader from "../ui/Sidebar/ChatListHeader";
+import ChatList from "../ui/Sidebar/ChatList";
+import SidebarContainer from "../ui/Sidebar/SidebarContainer";
+import Divider from "../ui/Divider";
+import SidebarFooter from "../ui/Sidebar/SidebarFooter";
 
 export default function Sidebar() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();

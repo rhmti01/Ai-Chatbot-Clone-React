@@ -1,8 +1,9 @@
 import React from "react";
 import { useGeminiStore } from "../../store/useGeminiStore";
+import { useNavigate } from "react-router";
 
 export default function PromptInput() {
-  // const { input, setInput, onSendPrompt, showResult } = useGemini();
+  const navigate = useNavigate()
   const inputText = useGeminiStore((state) => state.inputText);
   const setInputText = useGeminiStore((state) => state.setInputText);
   const onSendPrompt = useGeminiStore((state) => state.onSendPrompt);
@@ -31,14 +32,14 @@ export default function PromptInput() {
         onChange={(e) => setInputText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            onSendPrompt();
+            onSendPrompt(navigate);
           }
         }}
       />
 
       <button
         onClick={() => {
-          onSendPrompt();
+          onSendPrompt(navigate);
         }}
         className={` ${
           showResult ? "p-4" : "p-3"
