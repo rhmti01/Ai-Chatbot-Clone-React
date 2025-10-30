@@ -32,7 +32,7 @@ function HeaderActions() {
       <div className=" cursor-pointer lg:mt-0.5 mr-1 ">
         <img
           className="size-9 rounded-2xl  shadow-xl shadow-gray-200"
-          src="assets/profile-img.png"
+          src="/assets/profile-img.png"
           alt="profile image"
         />
       </div>

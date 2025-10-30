@@ -34,7 +34,7 @@ function SidebarFooter() {
       <div className="flex items-center justify-start gap-x-2 p-1.5 rounded-full ring-1 ring-gray-200/80 cursor-pointer hover:scale-105 duration-300 hover:bg-gray-100">
         <img
           className="size-10 rounded-full"
-          src="assets/profile-img.png"
+          src="/assets/profile-img.png"
           alt="user profile"
         />
         <p className="text-sm">Andrew Neilson</p>

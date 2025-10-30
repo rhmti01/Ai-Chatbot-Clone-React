@@ -18,7 +18,7 @@ export default function PromptInput() {
     >
       <img
         className="size-6 ml-3 mr-0.5"
-        src="assets/brain.png"
+        src="/assets/brain.png"
         alt="thinking"
       />
 

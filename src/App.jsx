@@ -15,6 +15,7 @@ function App() {
         <Route path="chats" element={<HomePage />}>
           <Route index element={<MainHeader />} />
           <Route path=":id" element={<SingleChat />} />
+          <Route path="*" element={<NoteFound />} />
         </Route>
         <Route path="*" element={<NoteFound />} />
       </Routes>
