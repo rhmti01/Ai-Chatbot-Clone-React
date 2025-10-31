@@ -2,11 +2,15 @@ import React from "react";
 import { Button } from "@heroui/button";
 import { useNavigate } from "react-router";
 import { useSidebar } from "../../context/SidebarContext";
+import { useGeminiStore } from "../../store/useGeminiStore";
 
 export default function SidebarHeader() {
   const navigate = useNavigate();
   const pathname = location.pathname;
   const { setSidebarOpen } = useSidebar();
+  const currentChatHandler = useGeminiStore(
+    (state) => state.currentChatHandler
+  );
 
   return (
     <div className="*:px-7 pt-6 flex flex-col items-start">
@@ -22,12 +26,9 @@ export default function SidebarHeader() {
       <div className="flex w-full mt-12 space-x-2">
         <button
           onClick={() => {
-            if (pathname === "/chats" || pathname === "/") {
-              return;
-            } else {
+              setSidebarOpen(false);
               navigate("/");
-              setSidebarOpen(false)
-            }
+              currentChatHandler(pathname);
           }}
           className="cursor-pointer w-full py-3 font-light bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex justify-center items-center gap-x-2 hover:gap-x-4"
         >
