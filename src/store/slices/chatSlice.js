@@ -19,13 +19,6 @@ export const createChatSlice = (set, get) => ({
   setChatUUID : (value)=> set({chatUUID : value}) ,
   setCurrentChatId : (value)=> set({currentChatId : value}) ,
 
-  currentChatHandler : (pathname)=>{
-    console.log(pathname == get().currentChatId);
-    console.log(pathname);
-    // get().setCurrentChatId(null)
-    console.log(get().currentChatId);
-  } ,
-
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
     const { inputText, chatsList, currentChatId } = get();

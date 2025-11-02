@@ -7,7 +7,7 @@ function HeaderActions() {
     <div className=" rounded-2xl  flex justify-between lg:justify-end items-start w-full ">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden cursor-pointer  bg-amber-500/"
+        className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "
       >
         <svg
           stroke="currentColor"
@@ -29,7 +29,7 @@ function HeaderActions() {
         </svg>
       </button>
 
-      <div className=" cursor-pointer lg:mt-0.5 mr-1 ">
+      <div className=" cursor-pointer lg:mt-0.5 mr-1 animate-moveInRight ">
         <img
           className="size-9 rounded-2xl  shadow-xl shadow-gray-200"
           src="/assets/profile-img.png"

@@ -12,7 +12,7 @@ export default function PromptInput() {
 
   return (
     <div
-      className=" absolute bottom-7 flex items-center justify-between w-[calc(94%-2vw)] max-w-[690px] 
+      className=" animate-moveInBottom animate-delay-xs absolute bottom-7 flex items-center justify-between w-[calc(94%-2vw)] max-w-[690px] 
       p-2 rounded-[34px] bg-surface shadow-gray-200 shadow-md focus-within:shadow-[#bfc4ca] focus-within:shadow-lg duration-300 
      "
     >

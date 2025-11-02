@@ -2,14 +2,221 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  /* Fonts & Breakpoints */
   --font-outfit: "Outfit", "Vazirmatn";
-
   --breakpoint-xx: 350px;
   --breakpoint-lg: 1130px;
 
+  /* Colors */
   --color-main: #f0f1f2;
-  --color-surface: #ffffff;
+  --color-surface: #fff;
   --color-primary: #5661f6;
-  --color-text: #111111;
+  --color-text: #111;
   --color-sub: #a1a0a0;
+
+  /* Animations */
+  --animate-moveInLeft: moveInLeft 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+  --animate-moveInRight: moveInRight 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+  --animate-moveInBottom: moveInBottom 1s cubic-bezier(0.25, 1, 0.5, 1) both;
+  --animate-moveInTop: moveInTop 1s cubic-bezier(0.25, 1, 0.5, 1) both;
+  --animate-zoomIn: zoomIn 0.8s ease-out both;
+  --animate-zoomOut: zoomOut 0.8s ease-in both;
+  --animate-fadeIn: fadeIn 1s ease-in-out both;
+  --animate-fadeOut: fadeOut 1s ease-in-out both;
+  --animate-rotateIn: rotateIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+
+  /* blur + bounce combo */
+  --animate-blurBounce: blurBounce 1.8s ease-out both,
+    blurBounceLoop 1s ease-in-out 1.8s infinite;
+  --animate-blurIn: blurIn 0.8s ease-out both;
+
+  --animate-blurFade: blurIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+
+
+  @keyframes moveInLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    80% {
+      transform: translateX(1px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes moveInRight {
+    0% {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    80% {
+      transform: translateX(-1px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes moveInBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    80% {
+      transform: translateY(-8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes moveInTop {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    80% {
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes zoomIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes zoomOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    40% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes rotateIn {
+    0% {
+      opacity: 0;
+      transform: rotate(-90deg) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+  }
+
+  @keyframes blurBounce {
+    0% {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(25px);
+    }
+    50% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+    80% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes blurBounceLoop {
+    0%,
+    100% {
+      transform: translateY(0);
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      -o-transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+      -webkit-transform: translateY(-8px);
+      -moz-transform: translateY(-8px);
+      -ms-transform: translateY(-8px);
+      -o-transform: translateY(-8px);
+    }
+  }
+
+  @keyframes blurIn {
+    0% {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer utilities {
+  .animate-delay-0 {
+    animation-delay: 0s;
+  }
+  .animate-delay-xs {
+    animation-delay: 0.1s;
+  }
+  .animate-delay-sm {
+    animation-delay: 0.3s;
+  }
+  .animate-delay-md {
+    animation-delay: 0.5s;
+  }
+  .animate-delay-lg {
+    animation-delay: 0.8s;
+  }
+  .animate-delay-xl {
+    animation-delay: 1s;
+  }
+  .animate-delay-2xl {
+    animation-delay: 1.3s;
+  }
 }

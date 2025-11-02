@@ -1,16 +1,15 @@
 import React from "react";
-import { Button } from "@heroui/button";
 import { useNavigate } from "react-router";
 import { useSidebar } from "../../context/SidebarContext";
 import { useGeminiStore } from "../../store/useGeminiStore";
 
 export default function SidebarHeader() {
   const navigate = useNavigate();
-  const pathname = location.pathname;
   const { setSidebarOpen } = useSidebar();
-  const currentChatHandler = useGeminiStore(
-    (state) => state.currentChatHandler
-  );
+  const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
+  const currentChatId = useGeminiStore((state) => state.currentChatId);
+
+  console.log(currentChatId);
 
   return (
     <div className="*:px-7 pt-6 flex flex-col items-start">
@@ -26,9 +25,9 @@ export default function SidebarHeader() {
       <div className="flex w-full mt-12 space-x-2">
         <button
           onClick={() => {
-              setSidebarOpen(false);
-              navigate("/");
-              currentChatHandler(pathname);
+            setSidebarOpen(false);
+            navigate("/");
+            setCurrentChatId(null);
           }}
           className="cursor-pointer w-full py-3 font-light bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex justify-center items-center gap-x-2 hover:gap-x-4"
         >
@@ -50,7 +49,7 @@ export default function SidebarHeader() {
         </button>
 
         <button
-          className="bg-black py-3 px-3.5 rounded-full inline cursor-pointer shadow-xl shadow-gray-300 hover:shadow-gray-400/70 group"
+          className="bg-black py-3 px-3.5 rounded-full inline cursor-pointer shadow-xl shadow-gray-200 hover:shadow-gray-400/70 group"
           size=""
         >
           <svg
