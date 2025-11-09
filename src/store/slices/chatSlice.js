@@ -30,6 +30,7 @@ export const createChatSlice = (set, get) => ({
       prompt: inputText,
       response: "",
       loading: true,
+      loadWithAnimation : true
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -77,7 +78,7 @@ export const createChatSlice = (set, get) => ({
         if (chatData.id === get().currentChatId) {
           const updatedMessages = chatData.messages.map((msg) =>
             msg.id === newMessage.id
-              ? { ...msg, response, loading: false }
+              ? { ...msg, response, loading: false ,  loadWithAnimation: false }
               : msg
           );
           return { ...chatData, messages: updatedMessages };

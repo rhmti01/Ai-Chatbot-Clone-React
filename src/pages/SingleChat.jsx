@@ -22,12 +22,13 @@ function SingleChat() {
         2xl:[&::-webkit-scrollbar-track]:rounded-2xl 2xl:[&::-webkit-scrollbar-track]:bg-sub/40
         2xl:[&::-webkit-scrollbar-thumb]:bg-gray-400 2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl"
     >
-      {selectedChat?.messages?.map(({ prompt, response, id, loading }) => (
+      {selectedChat?.messages?.map(({ prompt, response, id, loading , loadWithAnimation }) => (
         <ChatMessage
           key={id}
           prompt={prompt}
           response={response}
           loading={loading}
+          loadWithAnimation={loadWithAnimation}
         />
       ))}
     </div>
