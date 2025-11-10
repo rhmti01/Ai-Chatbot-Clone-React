@@ -2,11 +2,11 @@ import React from "react";
 import { useSidebar } from "../../context/SidebarContext";
 
 function HeaderActions() {
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
+  const { sidebarStatus, setSidebarStatus } = useSidebar();
   return (
     <div className=" rounded-2xl  flex justify-between lg:justify-end items-start w-full ">
       <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
+        onClick={() => setSidebarStatus(!sidebarStatus)}
         className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "
       >
         <svg

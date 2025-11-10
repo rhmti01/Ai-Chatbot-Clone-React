@@ -1,10 +1,28 @@
 import React from "react";
+import { useNavigate } from "react-router";
+import { useGeminiStore } from "../../store/useGeminiStore";
+import { useSidebar } from "../../context/SidebarContext";
 
-function ChatItem() {
+function ChatItem({ title, id }) {
+  const navigate = useNavigate()
+     const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
+     const currentChatId = useGeminiStore((state) => state.currentChatId);
+     const { setSidebarStatus } = useSidebar();
+  
   return (
-    <li className="mx-auto py-3 cursor-pointer hover:pl-10 overflow-hidden hover:bg-indigo-50 rounded-2xl duration-300 group">
-      <a className="flex items-center gap-x-2 relative" href="#">
-        <span className="absolute -left-10 group-hover:left-0 group-hover:-translate-x-10 hover:scale-110 duration-300 bg-red-500 py-1.5 pr-2 pl-1 rounded-tr-2xl rounded-br-2xl">
+    <li
+      onClick={() => {
+        navigate(`/chats/${id}`)
+        setCurrentChatId(id)
+        setSidebarStatus(false);
+        console.log(currentChatId);
+      }}
+      className=" select-none mx-auto flex  flex-col justify-center h-12 py-6 bg-gray-500/ cursor-pointer 
+      hover:pl-10 overflow-hidden hover:bg-indigo-50 rounded-2xl duration-300 group"
+    >
+      <div className="flex items-center gap-x-2 relative  ">
+        <span className="absolute -left-10 group-hover:left-0 group-hover:-translate-x-10 hover:scale-110 
+        duration-300 bg-red-500 py-1.5 pr-2 pl-1 rounded-tr-2xl rounded-br-2xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className=" size-5 "
@@ -36,9 +54,9 @@ function ChatItem() {
         </svg>
 
         <p className="w-[200px] truncate text-[15px] font-medium group-hover:text-indigo-400 duration-300">
-          Create Chatbot GPT Api Rendering
+          {title || "Chat Title"}
         </p>
-      </a>
+      </div>
     </li>
   );
 }

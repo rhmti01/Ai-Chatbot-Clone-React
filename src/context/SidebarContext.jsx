@@ -4,11 +4,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 const SidebarContext = createContext();
 
 export function SidebarProvider({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarStatus, setSidebarStatus] = useState(false);
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth > 1140) {
-        setSidebarOpen(false);
+        setSidebarStatus(false);
       }
     }
 
@@ -19,7 +19,7 @@ export function SidebarProvider({ children }) {
   },[]);
 
   return (
-    <SidebarContext.Provider value={{ sidebarOpen , setSidebarOpen }}>
+    <SidebarContext.Provider value={{ sidebarStatus , setSidebarStatus }}>
       {children}
     </SidebarContext.Provider>
   );

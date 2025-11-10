@@ -9,16 +9,16 @@ import Divider from "../ui/Divider";
 import SidebarFooter from "../ui/Sidebar/SidebarFooter";
 
 export default function Sidebar() {
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
+  const { sidebarStatus, setSidebarStatus } = useSidebar();
 
   return (
     <>
       <SidebarOverlay
-        sidebarOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        sidebarStatus={sidebarStatus}
+        onClose={() => setSidebarStatus(false)}
       />
 
-      <SidebarContainer sidebarOpen={sidebarOpen}>
+      <SidebarContainer sidebarStatus={sidebarStatus}>
         <div className="flex flex-col">
           <SidebarHeader />
           <Divider />

@@ -32,7 +32,6 @@
 
   --animate-blurFade: blurIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
 
-
   @keyframes moveInLeft {
     0% {
       opacity: 0;
@@ -218,5 +217,69 @@
   }
   .animate-delay-2xl {
     animation-delay: 1.3s;
+  }
+}
+
+/* costum window scrol */
+@layer base {
+  body::-webkit-scrollbar {
+    width: 8px;
+    cursor: pointer;
+  }
+
+  body::-webkit-scrollbar-track {
+    background: #ffffff;
+    cursor: pointer;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background-color: #888685;
+    cursor: pointer;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+  div::-webkit-scrollbar {
+    width: 7px;
+    height: 3px;
+    cursor: pointer;
+  }
+
+  div.scrollbar-hovered ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  div::-webkit-scrollbar-thumb:hover {
+    width: 16px;
+    background-color: #555;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+  div::-webkit-scrollbar-track {
+    background: #e0d7d7;
+    cursor: pointer;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+  }
+
+  div::-webkit-scrollbar-thumb {
+    background-color: #5a5f669c;
+    border: 2px solid #efefef00;
+    cursor: pointer;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;  
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
   }
 }

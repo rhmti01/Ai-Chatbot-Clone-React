@@ -1,13 +1,13 @@
 import React from "react";
 
-export default function SidebarContainer({ sidebarOpen, children }) {
+export default function SidebarContainer({ sidebarStatus, children }) {
   return (
     <div
       className={`
         fixed top-0 left-0 h-full w-full xx:w-[300px] lg:max-w-[330px] @min-[390px]:min-w-[350px]
         z-50 transform duration-300 lg:w-full shadow-2xl lg:shadow-none p-0 lg:p-6 lg:pr-0
         bg-surface lg:bg-main scroll-auto animate-moveInLeft
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:block
+        ${sidebarStatus ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:block
       `}
     >
       <div className="flex flex-col justify-between h-full rounded-3xl shadow-md shadow-gray-200 bg-surface overflow-y-auto overflow-x-hidden">

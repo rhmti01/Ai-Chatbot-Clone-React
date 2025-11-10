@@ -5,18 +5,15 @@ import { useGeminiStore } from "../../store/useGeminiStore";
 
 export default function SidebarHeader() {
   const navigate = useNavigate();
-  const { setSidebarOpen } = useSidebar();
+  const { setSidebarStatus } = useSidebar();
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
-  const currentChatId = useGeminiStore((state) => state.currentChatId);
-
-  console.log(currentChatId);
 
   return (
     <div className="*:px-7 pt-6 flex flex-col items-start">
       {/* AI title */}
       <button
         onClick={() => navigate("/")}
-        className=" cursor-pointer font-semibold xx:text-2xl text-lg inline-block bg-surface rounded-3xl tracking-wider shadow-gray-100 shadow-sm"
+        className=" cursor-pointer font-semibold xx:text-2xl text-lg inline-block bg-surface rounded-3xl tracking-wider "
       >
         CHAT A.I+
       </button>
@@ -25,7 +22,7 @@ export default function SidebarHeader() {
       <div className="flex w-full mt-12 space-x-2">
         <button
           onClick={() => {
-            setSidebarOpen(false);
+            setSidebarStatus(false);
             navigate("/");
             setCurrentChatId(null);
           }}

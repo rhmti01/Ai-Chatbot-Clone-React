@@ -19,6 +19,23 @@ export const createChatSlice = (set, get) => ({
   setChatUUID : (value)=> set({chatUUID : value}) ,
   setCurrentChatId : (value)=> set({currentChatId : value}) ,
 
+  // update message hasAnimated status
+  setMessageAnimated: (chatId, messageId) => {
+  set({
+    chatsList: get().chatsList.map(chat =>
+      chat.id === chatId
+        ? {
+            ...chat,
+            messages: chat.messages.map(msg =>
+              msg.id === messageId ? { ...msg, hasAnimated: true } : msg
+            )
+          }
+        : chat
+    )
+  });
+},
+
+
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
     const { inputText, chatsList, currentChatId } = get();
@@ -30,7 +47,7 @@ export const createChatSlice = (set, get) => ({
       prompt: inputText,
       response: "",
       loading: true,
-      loadWithAnimation : true
+      hasAnimated: false
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -38,9 +55,12 @@ export const createChatSlice = (set, get) => ({
       const chatUUID = timeBasedUUID();
       navigate(`/chats/${chatUUID}`);
 
+       const chatNumber = chatsList.length + 1;
+
       // define new chat group structure
       const chatData = {
         id: chatUUID,
+        headerTitle : ` Chat-${chatNumber} from Local Storage Chats List! `,
         messages: [newMessage],
       };
 
@@ -78,7 +98,7 @@ export const createChatSlice = (set, get) => ({
         if (chatData.id === get().currentChatId) {
           const updatedMessages = chatData.messages.map((msg) =>
             msg.id === newMessage.id
-              ? { ...msg, response, loading: false ,  loadWithAnimation: false }
+              ? { ...msg, response, loading: false ,  hasAnimated: false}
               : msg
           );
           return { ...chatData, messages: updatedMessages };
