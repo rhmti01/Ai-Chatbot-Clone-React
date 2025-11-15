@@ -18,16 +18,19 @@ function SingleChat() {
     <div
       ref={chatContainerRef}
       className="h-full flex-1 relative w-full overflow-auto scroll-smooth
-        2xl:[&::-webkit-scrollbar]:w-2 mb-16 
+        2xl:[&::-webkit-scrollbar]:w-2 
+        -------pb-[70vh]---------
+        pb-16
         2xl:[&::-webkit-scrollbar-track]:rounded-2xl 
-         2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl"
+         2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl bg-amber-400/ "
     >
       {selectedChat?.messages?.map(({ prompt, response, id, loading , loadWithAnimation , hasAnimated }) => (
         <ChatMessage
           key={id}
           id={id}
           prompt={prompt}
-          response={response}
+          responseText={response.text}
+          responseError={response.error}
           loading={loading}
           loadWithAnimation={loadWithAnimation}
           hasAnimated={hasAnimated}

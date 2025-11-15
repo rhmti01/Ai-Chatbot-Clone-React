@@ -6,10 +6,12 @@ import { Navigate, Route, Routes } from "react-router";
 import NoteFound from "./pages/NoteFound";
 import SingleChat from "./pages/SingleChat.jsx";
 import MainHeader from "./ui/ChatScreen/MainHeader.jsx";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <SidebarProvider>
+      <Toaster/>
       <Routes>
         <Route path="/" element={<Navigate to="/chats" />} />
         <Route path="chats" element={<HomePage />}>

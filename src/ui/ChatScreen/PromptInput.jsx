@@ -12,7 +12,7 @@ export default function PromptInput() {
 
   return (
     <div
-      className=" animate-moveInBottom animate-delay-xs absolute bottom-7 flex items-center justify-between w-[calc(94%-2vw)] max-w-[690px] 
+      className=" animate-moveInBottom animate-delay-xs absolute bottom-4 lg:bottom-5 flex items-center justify-between w-[calc(95.7%-2vw)] max-w-[690px] 
       p-2 rounded-[34px] bg-surface shadow-gray-200 shadow-md focus-within:shadow-[#bfc4ca] focus-within:shadow-lg duration-300 
      "
     >
@@ -43,7 +43,7 @@ export default function PromptInput() {
         }}
         className={` ${
           showResult ? "p-4" : "p-3"
-        } shadow-indigo-200 shadow-md  rounded-full bg-primary hover:bg-indigo-600/90  cursor-pointer  `}
+        } shadow-indigo-200 shadow-md  rounded-full bg-primary hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none  `}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

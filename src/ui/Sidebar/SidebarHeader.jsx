@@ -19,7 +19,7 @@ export default function SidebarHeader() {
       </button>
 
       {/* New chat + search */}
-      <div className="flex w-full mt-12 space-x-2">
+      <div className="flex w-full mt-9 space-x-2">
         <button
           onClick={() => {
             setSidebarStatus(false);

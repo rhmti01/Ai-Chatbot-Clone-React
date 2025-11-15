@@ -9,7 +9,8 @@ import { useGeminiStore } from "../../store/useGeminiStore";
 export default function ChatMessage({
   id,
   prompt,
-  response,
+  responseText,
+  responseError,
   loading,
   hasAnimated,
 }) {
@@ -25,18 +26,18 @@ export default function ChatMessage({
   useEffect(() => {
     if (!hasAnimated) {
       setLocalAnimation(true);
-      const timeout = setTimeout(() => setLocalAnimation(false),800 );
+      const timeout = setTimeout(() => setLocalAnimation(false), 800);
       return () => clearTimeout(timeout);
     }
   }, [hasAnimated]);
 
   // type effect
-  const typingEffectResponse = useTypeEffect(response || "", 10);
+  const typingEffectResponse = useTypeEffect(responseText || "", 10);
 
   // decide which text to show
   const displayedText = useMemo(() => {
-    return hasAnimated ? response : typingEffectResponse;
-  }, [hasAnimated, response, typingEffectResponse]);
+    return hasAnimated ? responseText : typingEffectResponse;
+  }, [hasAnimated, responseText, typingEffectResponse]);
 
   // scroll to the message when mounted
   useEffect(() => {
@@ -47,14 +48,14 @@ export default function ChatMessage({
 
   // detect when typing animation ends
   useEffect(() => {
-    if (!loading && displayedText === response && !hasAnimated) {
+    if (!loading && displayedText === responseText && !hasAnimated) {
       setMessageAnimated(currentChatId, id);
     }
   }, [
     displayedText,
     loading,
     hasAnimated,
-    response,
+    responseText,
     id,
     currentChatId,
     setMessageAnimated,
@@ -63,7 +64,7 @@ export default function ChatMessage({
   return (
     <div
       ref={messageRef}
-      className="flex flex-col px-6 pt-4 bg-amber-500/ text-justify max-w-[720px] mx-auto mt-2 text-[16.5px]"
+      className="flex flex-col px-3 pt-4 bg-amber-500/ text-justify max-w-[720px] mx-auto mt-2 text-[16.5px]  bg-blue-300/  overflow-x-hidden  "
     >
       {/* User prompt */}
       <div className="flex justify-between items-center gap-x-3">
@@ -77,7 +78,7 @@ export default function ChatMessage({
       </div>
 
       {/* AI response */}
-      <div className="flex flex-col mt-5 pl-2 pr-2 pb-7 bg-amber-100/">
+      <div className="flex flex-col mt-4 pl-2 pr-2 pb-7 bg-amber-100/">
         <div
           className={`${
             localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
@@ -103,7 +104,13 @@ export default function ChatMessage({
         {loading ? (
           <Loader />
         ) : (
-          <div className="prose prose-gray max-w-none mt-1 leading-normal font-[500]  mb-0">
+          <div
+            className={`${
+              responseError
+                ? "text-red-600"
+                : "prose prose-gray"
+            } max-w-none mt-1 leading-normal font-[500] mb-0   `}
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}

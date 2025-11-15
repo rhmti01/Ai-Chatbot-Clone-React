@@ -4,7 +4,7 @@ import { useSidebar } from "../../context/SidebarContext";
 function HeaderActions() {
   const { sidebarStatus, setSidebarStatus } = useSidebar();
   return (
-    <div className=" rounded-2xl  flex justify-between lg:justify-end items-start w-full ">
+    <div className=" rounded-2xl  flex justify-between lg:justify-end items-start w-full pr-2 ">
       <button
         onClick={() => setSidebarStatus(!sidebarStatus)}
         className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "

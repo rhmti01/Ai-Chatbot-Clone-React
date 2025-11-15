@@ -4,7 +4,6 @@ import { timeBasedUUID } from "../../utils/timeBasedUUID";
 export const createChatSlice = (set, get) => ({
     //  initial values
   chatsList: [],
-
   inputText: "",
   inputPrompt: "",
   showResult: false,
@@ -45,9 +44,12 @@ export const createChatSlice = (set, get) => ({
     const newMessage = {
       id: Date.now(),
       prompt: inputText,
-      response: "",
+      response: {
+        error : false,
+        text : ""
+      },
       loading: true,
-      hasAnimated: false
+      hasAnimated: false ,
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -108,6 +110,5 @@ export const createChatSlice = (set, get) => ({
       showResult: false,
     });
   },
-
 
 });
