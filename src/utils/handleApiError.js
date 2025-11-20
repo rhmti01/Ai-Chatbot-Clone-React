@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 
 export function handleApiError() {
   const handleError = (error) => {
@@ -34,7 +33,7 @@ export function handleApiError() {
     }
 
     console.error("API Error:", error);
-    toast.error(message);
+    // toast.error(message);
     return message;      
   };
 

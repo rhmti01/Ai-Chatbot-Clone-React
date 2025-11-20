@@ -16,6 +16,7 @@
     "@heroui/theme": "^2.4.23",
     "@tailwindcss/vite": "^4.1.14",
     "framer-motion": "^12.23.24",
+    "iconsax-reactjs": "^0.0.8",
     "mime": "^4.1.0",
     "openai": "^6.5.0",
     "react": "^19.2.0",

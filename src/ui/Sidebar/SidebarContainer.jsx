@@ -5,7 +5,7 @@ export default function SidebarContainer({ sidebarStatus, children }) {
     <div
       className={`
         fixed top-0 left-0 h-full w-full xx:w-[300px] lg:max-w-[330px] @min-[390px]:min-w-[350px]
-        z-50 transform duration-300 lg:w-full shadow-2xl lg:shadow-none p-0 lg:p-6 lg:pr-0
+        z-50 transform duration-300 lg:w-full shadow-2xl lg:shadow-none p-0 lg:p-5 lg:pr-0
         bg-surface lg:bg-main scroll-auto animate-moveInLeft
         ${sidebarStatus ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:block
       `}

@@ -10,7 +10,8 @@ function SingleChat() {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [selectedChat?.messages]);
 
@@ -18,24 +19,39 @@ function SingleChat() {
     <div
       ref={chatContainerRef}
       className="h-full flex-1 relative w-full overflow-auto scroll-smooth
-        2xl:[&::-webkit-scrollbar]:w-2 
+        2xl:[&::-webkit-scrollbar]:w-0
         -------pb-[70vh]---------
-        pb-16
+        pb-24
         2xl:[&::-webkit-scrollbar-track]:rounded-2xl 
-         2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl bg-amber-400/ "
+         2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl
+           "
     >
-      {selectedChat?.messages?.map(({ prompt, response, id, loading , loadWithAnimation , hasAnimated }) => (
-        <ChatMessage
-          key={id}
-          id={id}
-          prompt={prompt}
-          responseText={response.text}
-          responseError={response.error}
-          loading={loading}
-          loadWithAnimation={loadWithAnimation}
-          hasAnimated={hasAnimated}
-        />
-      ))}
+      {selectedChat?.messages?.map(
+        ({
+          prompt,
+          response,
+          id,
+          loading,
+          loadWithAnimation,
+          hasAnimated,
+        } , index) => {
+          const isLast = index === selectedChat.messages.length - 1;
+
+          return (
+            <ChatMessage
+              key={index}
+              isLast={isLast}
+              id={id}
+              prompt={prompt}
+              responseText={response.text}
+              responseError={response.error}
+              loading={loading}
+              loadWithAnimation={loadWithAnimation}
+              hasAnimated={hasAnimated}
+            />
+          );
+        }
+      )}
     </div>
   );
 }

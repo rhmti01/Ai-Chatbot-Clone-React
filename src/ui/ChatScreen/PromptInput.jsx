@@ -12,8 +12,8 @@ export default function PromptInput() {
 
   return (
     <div
-      className=" animate-moveInBottom animate-delay-xs absolute bottom-4 lg:bottom-5 flex items-center justify-between w-[calc(95.7%-2vw)] max-w-[690px] 
-      p-2 rounded-[34px] bg-surface shadow-gray-200 shadow-md focus-within:shadow-[#bfc4ca] focus-within:shadow-lg duration-300 
+      className=" animate-moveInBottom animate-delay-xs absolute bottom-4 lg:bottom-8 flex items-center justify-between w-[calc(95.7%-2vw)] max-w-[690px] 
+      p-1.5 rounded-[34px] bg-surface shadow-gray-200 shadow-xl focus-within:shadow-[#d2dde9]  duration-300 
      "
     >
       <img
@@ -23,8 +23,8 @@ export default function PromptInput() {
       />
 
       <input
-        className="  w-full mx-2 outline-none border-0 placeholder:font-normal
-          placeholder:text-sub focus:placeholder:text-stone-600/85 peer duration-300"
+        className="  w-full mx-2 outline-none border-0 placeholder:font-normal placeholder:text-[15.5px] text-[15.5px]
+          placeholder:text-sub focus:placeholder:text-stone-600/80 peer duration-300"
         type="text"
         name="prompt-input"
         placeholder="What’s on your mind?"
