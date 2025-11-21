@@ -13,7 +13,7 @@ export default function SidebarHeader() {
       {/* AI title */}
       <button
         onClick={() => navigate("/")}
-        className=" cursor-pointer font-semibold xx:text-2xl text-lg inline-block bg-surface rounded-3xl tracking-wider "
+        className=" cursor-pointer font-semibold xx:text-2xl text-lg inline-block  rounded-3xl tracking-wider "
       >
         CHAT A.I+
       </button>

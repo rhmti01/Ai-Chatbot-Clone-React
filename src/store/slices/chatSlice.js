@@ -35,6 +35,15 @@ export const createChatSlice = (set, get) => ({
 },
 
 
+  // delete chat  from chatsList by id
+  onDeleteChat: (chatId) =>{
+    console.log(chatId);
+    set({
+      chatsList: get().chatsList.filter(chat => chat.id !== chatId),
+    })
+  },
+
+
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
     const { inputText, chatsList, currentChatId } = get();
@@ -62,7 +71,7 @@ export const createChatSlice = (set, get) => ({
       // define new chat group structure
       const chatData = {
         id: chatUUID,
-        headerTitle : ` Chat-${chatNumber} from Local Storage Chats List! `,
+        headerTitle : ` Chat Message ${chatNumber}  ! `,
         messages: [newMessage],
       };
 

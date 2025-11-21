@@ -18,7 +18,7 @@ function SingleChat() {
   return (
     <div
       ref={chatContainerRef}
-      className="h-full flex-1 relative w-full overflow-auto scroll-smooth
+      className="h-full flex-1 relative w-full overflow-hidden scroll-smooth
         2xl:[&::-webkit-scrollbar]:w-0
         -------pb-[70vh]---------
         pb-24

@@ -2,8 +2,11 @@ import React from "react";
 
 function SidebarFooter() {
   return (
-    <div className="mb-8 lg:mb-6 w-[240px] mx-auto flex flex-col space-y-3">
-      <div className="flex items-center justify-start gap-x-2 p-1.5 rounded-full ring-1 ring-gray-200/80 cursor-pointer hover:scale-105 duration-300 hover:bg-gray-100">
+    <div className="z-50 bg-surface absolute bottom-8 lg:bottom-0 pb-6 pt-3 left-0 right-0 w-full flex-col space-y-3">
+      {/* <div
+        className=" w-full max-w-[87%] mx-auto flex items-center justify-start gap-x-2 p-1.5 rounded-full ring-1 ring-gray-200/80 
+      cursor-pointer hover:scale-105 duration-300 hover:bg-gray-100"
+      >
         <span className=" p-3 rounded-full bg-gray-200 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -30,14 +33,17 @@ function SidebarFooter() {
           </svg>
         </span>
         <p className="text-sm">Settings</p>
-      </div>
-      <div className="flex items-center justify-start gap-x-2 p-1.5 rounded-full ring-1 ring-gray-200/80 cursor-pointer hover:scale-105 duration-300 hover:bg-gray-100">
+      </div> */}
+      <div
+        className=" w-full max-w-[87%] mx-auto flex items-center justify-start gap-x-2 p-1.5 rounded-full ring-1 ring-gray-200/80
+       cursor-pointer hover:scale-[102%] duration-300 hover:bg-gray-50 hover:shadow-sm "
+      >
         <img
           className="size-10 rounded-full"
           src="/assets/profile-img.png"
           alt="user profile"
         />
-        <p className="text-sm">Andrew Neilson</p>
+        <p className="text-[14.8px] font-medium mx-1 text-gray-950 text-shadow-gray-900  ">Andrew Neilson</p>
       </div>
     </div>
   );

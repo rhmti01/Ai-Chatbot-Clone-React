@@ -19,13 +19,11 @@ export default function Sidebar() {
       />
 
       <SidebarContainer sidebarStatus={sidebarStatus}>
-        <div className="flex flex-col">
           <SidebarHeader />
           <Divider />
           <ChatListHeader />
           <Divider />
           <ChatList />
-        </div>
         <SidebarFooter />
       </SidebarContainer>
     </>

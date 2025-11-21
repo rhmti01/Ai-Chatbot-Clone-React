@@ -4,16 +4,17 @@ import { useGeminiStore } from "../../store/useGeminiStore";
 import { useSidebar } from "../../context/SidebarContext";
 
 function ChatItem({ title, id }) {
-  const navigate = useNavigate()
-     const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
-     const currentChatId = useGeminiStore((state) => state.currentChatId);
-     const { setSidebarStatus } = useSidebar();
-  
+  const navigate = useNavigate();
+  const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
+  const onDeleteChat = useGeminiStore((state) => state.onDeleteChat);
+  const currentChatId = useGeminiStore((state) => state.currentChatId);
+  const { setSidebarStatus } = useSidebar();
+
   return (
     <li
       onClick={() => {
-        navigate(`/chats/${id}`)
-        setCurrentChatId(id)
+        navigate(`/chats/${id}`);
+        setCurrentChatId(id);
         setSidebarStatus(false);
         console.log(currentChatId);
       }}
@@ -21,8 +22,18 @@ function ChatItem({ title, id }) {
       hover:pl-10 overflow-hidden hover:bg-indigo-50 rounded-2xl duration-300 group"
     >
       <div className="flex items-center gap-x-2 relative  ">
-        <span className="absolute -left-10 group-hover:left-0 group-hover:-translate-x-10 hover:scale-110 
-        duration-300 bg-red-500 py-1.5 pr-2 pl-1 rounded-tr-2xl rounded-br-2xl">
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onDeleteChat(id);
+            if (currentChatId === id) {
+              setCurrentChatId(null);
+              navigate("/chats");
+            }
+          }}
+          className="absolute -left-10 group-hover:left-0 group-hover:-translate-x-10 hover:scale-110 
+        duration-300 bg-red-500 py-1.5 pr-2 pl-1 rounded-tr-2xl rounded-br-2xl cursor-pointer "
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className=" size-5 "
@@ -37,7 +48,7 @@ function ChatItem({ title, id }) {
               strokeLinejoin="round"
             ></path>
           </svg>
-        </span>
+        </button>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

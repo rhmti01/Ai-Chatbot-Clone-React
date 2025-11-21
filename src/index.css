@@ -8,7 +8,7 @@
   --breakpoint-lg: 1130px;
 
   /* Colors */
-  --color-main: #F3F6FB;
+  --color-main: #f3f6fb;
   --color-surface: #fff;
   --color-primary: #5661f6;
   --color-text: #111;
@@ -203,6 +203,9 @@
   .animate-delay-xs {
     animation-delay: 0.1s;
   }
+  .animate-delay-xx {
+    animation-delay: 0.25s;
+  }
   .animate-delay-sm {
     animation-delay: 0.3s;
   }
@@ -240,10 +243,10 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-}
+  }
 
   div::-webkit-scrollbar {
-    width: 7px;
+    width: 6px;
     height: 3px;
     cursor: pointer;
   }
@@ -254,13 +257,13 @@
 
   div::-webkit-scrollbar-thumb:hover {
     width: 16px;
-    background-color: #555;
+    background-color: #7d7c7c;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-}
+  }
 
   div::-webkit-scrollbar-track {
     background: #e0d7d7;
@@ -273,13 +276,18 @@
   }
 
   div::-webkit-scrollbar-thumb {
-    background-color: #5a5f669c;
+    background-color: #696a6c9c;
+    transition: all 0.8s ease-in-out;
     border: 2px solid #efefef00;
     cursor: pointer;
     border-radius: 10px;
-    -webkit-border-radius: 10px;  
+    -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    -webkit-transition: all 0.8s ease-in-out;
+    -moz-transition: all 0.8s ease-in-out;
+    -ms-transition: all 0.8s ease-in-out;
+    -o-transition: all 0.8s ease-in-out;
   }
 }
