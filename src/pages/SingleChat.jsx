@@ -1,3 +1,4 @@
+// SingleChat.jsx
 import { useEffect, useRef } from "react";
 import { useGeminiStore } from "../store/useGeminiStore";
 import ChatMessage from "../ui/ChatScreen/ChatMessage";
@@ -18,8 +19,8 @@ function SingleChat() {
   return (
     <div
       ref={chatContainerRef}
-      className="h-full flex-1 relative w-full overflow-hidden scroll-smooth
-        2xl:[&::-webkit-scrollbar]:w-0
+      className="h-full flex-1 relative w-full overflow-auto scroll-smooth
+        [&::-webkit-scrollbar]:w-0
         -------pb-[70vh]---------
         pb-24
         2xl:[&::-webkit-scrollbar-track]:rounded-2xl 
@@ -27,27 +28,50 @@ function SingleChat() {
            "
     >
       {selectedChat?.messages?.map(
-        ({
-          prompt,
-          response,
-          id,
-          loading,
-          loadWithAnimation,
-          hasAnimated,
-        } , index) => {
+        (
+          {
+            prompt,
+            responses,
+            response,
+            id,
+            loading,
+            hasAnimated,
+            MessageActions,
+            isTypingTextFinished,
+          },
+          index
+        ) => {
           const isLast = index === selectedChat.messages.length - 1;
+          let activeResponse;
+          if (responses) {
+            activeResponse = responses.find((resp) => resp.active) || responses[responses.length - 1];
+          } else {
+            activeResponse = {
+              id: 'legacy-' + id,
+              text: response?.text || '',
+              error: response?.error || false,
+              loading: loading || false,
+              hasAnimated: hasAnimated || false,
+              MessageActions: MessageActions || false,
+              isTypingTextFinished: isTypingTextFinished || false,
+              active: true,
+            };
+          }
 
           return (
             <ChatMessage
               key={index}
               isLast={isLast}
               id={id}
+              chatPageId={selectedChat.id}
               prompt={prompt}
-              responseText={response.text}
-              responseError={response.error}
-              loading={loading}
-              loadWithAnimation={loadWithAnimation}
-              hasAnimated={hasAnimated}
+              responseText={activeResponse.text}
+              responseError={activeResponse.error}
+              loading={activeResponse.loading}
+              hasAnimated={activeResponse.hasAnimated}
+              messageActions={activeResponse.MessageActions}
+              isTypingTextFinished={activeResponse.isTypingTextFinished}
+              responseId={activeResponse.id}
             />
           );
         }

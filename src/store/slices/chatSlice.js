@@ -2,63 +2,43 @@ import runChat from "../../services/gemini";
 import { timeBasedUUID } from "../../utils/timeBasedUUID";
 
 export const createChatSlice = (set, get) => ({
-    //  initial values
+  // initial values
   chatsList: [],
   inputText: "",
   inputPrompt: "",
   showResult: false,
-  chatUUID :"" ,
-  currentChatId : null ,
+  chatUUID: "",
+  currentChatId: null,
 
   // initial methods
   setInputText: (value) => set({ inputText: value }),
   setChatsList: (value) => set({ chatsList: value }),
   setInputPrompt: (value) => set({ inputPrompt: value }),
   setshowResult: (value) => set({ showResult: value }),
-  setChatUUID : (value)=> set({chatUUID : value}) ,
-  setCurrentChatId : (value)=> set({currentChatId : value}) ,
-
-  // update message hasAnimated status
-  setMessageAnimated: (chatId, messageId) => {
-  set({
-    chatsList: get().chatsList.map(chat =>
-      chat.id === chatId
-        ? {
-            ...chat,
-            messages: chat.messages.map(msg =>
-              msg.id === messageId ? { ...msg, hasAnimated: true } : msg
-            )
-          }
-        : chat
-    )
-  });
-},
-
-
-  // delete chat  from chatsList by id
-  onDeleteChat: (chatId) =>{
-    console.log(chatId);
-    set({
-      chatsList: get().chatsList.filter(chat => chat.id !== chatId),
-    })
-  },
-
+  setChatUUID: (value) => set({ chatUUID: value }),
+  setCurrentChatId: (value) => set({ currentChatId: value }),
 
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
     const { inputText, chatsList, currentChatId } = get();
     if (!inputText.trim()) return;
 
-    // create new message object
+    // create new message object with responses array
     const newMessage = {
       id: Date.now(),
       prompt: inputText,
-      response: {
-        error : false,
-        text : ""
-      },
-      loading: true,
-      hasAnimated: false ,
+      responses: [
+        {
+          id: Date.now(),
+          text: "",
+          error: false,
+          loading: true,
+          hasAnimated: false,
+          MessageActions: false,
+          isTypingTextFinished: false,
+          active: true,
+        },
+      ],
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -66,12 +46,12 @@ export const createChatSlice = (set, get) => ({
       const chatUUID = timeBasedUUID();
       navigate(`/chats/${chatUUID}`);
 
-       const chatNumber = chatsList.length + 1;
+      const chatNumber = chatsList.length + 1;
 
       // define new chat group structure
       const chatData = {
         id: chatUUID,
-        headerTitle : ` Chat Message ${chatNumber}  ! `,
+        headerTitle: ` Chat Message ${chatNumber}  ! `,
         messages: [newMessage],
       };
 
@@ -83,7 +63,7 @@ export const createChatSlice = (set, get) => ({
         chatUUID,
         currentChatId: chatUUID,
       });
-    } 
+    }
     // CASE 2: if chat already exists -> push message into that group
     else {
       set({
@@ -101,15 +81,28 @@ export const createChatSlice = (set, get) => ({
     }
 
     // fetch response from AI API
-    const response = await runChat(inputText);
+    const apiResponse = await runChat(inputText);
 
-    // update the specific message's response in current chat
+    // update the specific message's first response in current chat
     set({
       chatsList: get().chatsList.map((chatData) => {
         if (chatData.id === get().currentChatId) {
           const updatedMessages = chatData.messages.map((msg) =>
             msg.id === newMessage.id
-              ? { ...msg, response, loading: false ,  hasAnimated: false}
+              ? {
+                  ...msg,
+                  responses: msg.responses.map((resp) =>
+                    resp.id === newMessage.responses[0].id
+                      ? {
+                          ...resp,
+                          text: apiResponse.text,
+                          error: apiResponse.error,
+                          loading: false,
+                          hasAnimated: false,
+                        }
+                      : resp
+                  ),
+                }
               : msg
           );
           return { ...chatData, messages: updatedMessages };
@@ -120,4 +113,131 @@ export const createChatSlice = (set, get) => ({
     });
   },
 
+  // call for regenerate response
+  onRegenerateResponse: async (chatPageId, messageId, prompt) => {
+    const { chatsList } = get();
+
+    // find chat and message
+    const chatIndex = chatsList.findIndex((chat) => chat.id === chatPageId);
+    if (chatIndex === -1) return;
+
+    const updatedChats = [...chatsList];
+    const messages = [...updatedChats[chatIndex].messages];
+    const msgIndex = messages.findIndex((msg) => msg.id === messageId);
+    if (msgIndex === -1) return;
+
+    // deactivate all previous responses
+    const updatedResponses = messages[msgIndex].responses.map((resp) => ({
+      ...resp,
+      active: false,
+    }));
+
+    // add new response
+    const newResponse = {
+      id: Date.now(),
+      text: "",
+      error: false,
+      loading: true,
+      hasAnimated: false,
+      MessageActions: false,
+      isTypingTextFinished: false,
+      active: true,
+    };
+    updatedResponses.push(newResponse);
+
+    messages[msgIndex] = { ...messages[msgIndex], responses: updatedResponses };
+    updatedChats[chatIndex] = { ...updatedChats[chatIndex], messages };
+
+    set({ chatsList: updatedChats, showResult: true });
+
+    // fetch response from AI API
+    const apiResponse = await runChat(prompt);
+
+    // update the new response
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id === chatPageId) {
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) => {
+              if (msg.id === messageId) {
+                return {
+                  ...msg,
+                  responses: msg.responses.map((resp) =>
+                    resp.id === newResponse.id
+                      ? {
+                          ...resp,
+                          text: apiResponse.text,
+                          error: apiResponse.error,
+                          loading: false,
+                          hasAnimated: false,
+                        }
+                      : resp
+                  ),
+                };
+              }
+              return msg;
+            }),
+          };
+        }
+        return chat;
+      }),
+      showResult: false,
+    }));
+  },
+
+  // update response hasAnimated status
+  setMessageAnimated: (chatId, messageId, responseId) => {
+    set({
+      chatsList: get().chatsList.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: chat.messages.map((msg) =>
+                msg.id === messageId
+                  ? {
+                      ...msg,
+                      responses: msg.responses.map((resp) =>
+                        resp.id === responseId ? { ...resp, hasAnimated: true } : resp
+                      ),
+                    }
+                  : msg
+              ),
+            }
+          : chat
+      ),
+    });
+  },
+
+  // display response Action buttons after typing finished
+  setMessageActionsDisplay: (chatId, messageId, responseId, isFinished) => {
+    set({
+      chatsList: get().chatsList.map((chat) => {
+        if (chat.id === chatId) {
+          const updatedMessages = chat.messages.map((msg) =>
+            msg.id === messageId
+              ? {
+                  ...msg,
+                  responses: msg.responses.map((resp) =>
+                    resp.id === responseId
+                      ? { ...resp, isTypingTextFinished: isFinished }
+                      : resp
+                  ),
+                }
+              : msg
+          );
+          return { ...chat, messages: updatedMessages };
+        }
+        return chat;
+      }),
+    });
+  },
+
+  // delete chat from chatsList by id
+  onDeleteChat: (chatId) => {
+    console.log(chatId);
+    set({
+      chatsList: get().chatsList.filter((chat) => chat.id !== chatId),
+    });
+  },
 });

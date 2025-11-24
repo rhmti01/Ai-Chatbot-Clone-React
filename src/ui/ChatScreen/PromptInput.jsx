@@ -63,7 +63,7 @@ export default function PromptInput() {
           onClick={() => {
           }}
           className={`  ${
-            showResult ? "size-4 block bg-surface rounded-sm " : "hidden"
+            showResult ? "size-3 block bg-surface rounded-sm " : "hidden"
           } `}
         ></span>
       </button>

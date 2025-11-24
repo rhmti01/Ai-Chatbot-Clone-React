@@ -18,10 +18,10 @@ function ChatItem({ title, id }) {
         setSidebarStatus(false);
         console.log(currentChatId);
       }}
-      className=" select-none mx-auto flex  flex-col justify-center h-12 py-6 bg-gray-500/ cursor-pointer 
+      className=" select-none ml-6 flex  flex-col justify-center items-start h-12 py-1 bg-gray-100/ cursor-pointer 
       hover:pl-10 overflow-hidden hover:bg-indigo-50 rounded-2xl duration-300 group"
     >
-      <div className="flex items-center gap-x-2 relative  ">
+      <div className="flex items-center gap-x-2 relative bg-green-400/">
         <button
           onClick={(e) => {
             e.stopPropagation()
@@ -55,7 +55,7 @@ function ChatItem({ title, id }) {
           viewBox="0 0 24 24"
           strokeWidth={2}
           stroke="currentColor"
-          className="size-5 group-hover:stroke-indigo-400 duration-300 "
+          className="size-[19px] group-hover:stroke-indigo-400 duration-300 "
         >
           <path
             strokeLinecap="round"

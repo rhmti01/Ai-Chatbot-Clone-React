@@ -12,7 +12,8 @@ export default function SidebarContainer({ sidebarStatus, children }) {
         } lg:translate-x-0 lg:static lg:block
       `}
     >
-      <div className="relative flex flex-col justify-between h-full rounded-3xl shadow-md shadow-gray-200 bg-surface pb-24   max-w-full  overflow-x-hidden">
+      <div className="relative flex flex-col justify-between h-full rounded-3xl bg-surface ring-1 ring-gray-100 
+       pb-24 pt-[230px]  max-w-full  overflow-x-hidden shadow-lg shadow-zinc-100 ">
         {children}
       </div>
     </div>

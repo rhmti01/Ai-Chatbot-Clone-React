@@ -1,40 +1,48 @@
 import { useEffect, useState, useRef } from "react";
 
-export function useTypeEffect(text = "", speed = 35) {
+export function useTypeEffect(text = "", speed = 65) {
   const safeText = typeof text === "string" ? text : "";
-  const [displayed, setDisplayed] = useState("");
+
+  const [displayedTypingText, setdisplayedTypingText] = useState("");
+  const [isFinished, setIsFinished] = useState(false);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
     if (!safeText) {
-      setDisplayed("");
+      setdisplayedTypingText("");
+      setIsFinished(true);
       return;
     }
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     let index = 0;
-    setDisplayed("");
+    setdisplayedTypingText("");
+    setIsFinished(false);
 
     const typeNext = () => {
-      setDisplayed((prev) => {
+      setdisplayedTypingText((prev) => {
         if (index < safeText.length) {
           const next = prev + safeText[index];
           index++;
-          timeoutRef.current = setTimeout(typeNext, speed + Math.random() * 25);
+
+          if (index === safeText.length) {
+            setIsFinished(true);
+          } else {
+            timeoutRef.current = setTimeout(typeNext, speed + Math.random() * 25);
+          }
+
           return next;
         } else {
-          return prev; 
+          return prev;
         }
       });
     };
 
     timeoutRef.current = setTimeout(typeNext, 50);
 
-    return () => {
-      clearTimeout(timeoutRef.current);
-    };
+    return () => clearTimeout(timeoutRef.current);
   }, [safeText, speed]);
 
-  return displayed;
+  return { displayedTypingText, isFinished, setIsFinished };
 }

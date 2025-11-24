@@ -26,7 +26,7 @@ export default function SidebarHeader() {
             navigate("/");
             setCurrentChatId(null);
           }}
-          className="cursor-pointer w-full py-3 font-light bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex justify-center items-center gap-x-2 hover:gap-x-4"
+          className="cursor-pointer w-full py-3 font-normal bg-primary hover:bg-indigo-600/90 duration-300 text-surface rounded-4xl inline-flex justify-center items-center gap-x-2 hover:gap-x-4"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
