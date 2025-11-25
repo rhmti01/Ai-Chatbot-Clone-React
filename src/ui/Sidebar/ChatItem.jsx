@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import { useSidebar } from "../../context/SidebarContext";
 
-function ChatItem({ title, id }) {
+function ChatItem({ title, id  }) {
   const navigate = useNavigate();
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
   const onDeleteChat = useGeminiStore((state) => state.onDeleteChat);
@@ -16,10 +16,9 @@ function ChatItem({ title, id }) {
         navigate(`/chats/${id}`);
         setCurrentChatId(id);
         setSidebarStatus(false);
-        console.log(currentChatId);
       }}
-      className=" select-none ml-6 flex  flex-col justify-center items-start h-12 py-1 bg-gray-100/ cursor-pointer 
-      hover:pl-10 overflow-hidden hover:bg-indigo-50 rounded-2xl duration-300 group"
+      className={`  ${id===currentChatId ? "text-indigo-600 bg-indigo-50 " : ""} select-none ml-6 mr-8 flex  flex-col justify-center items-start h-12 py-1 bg-gray-100/ cursor-pointer 
+      hover:pl-10 overflow-hidden hover:bg-indigo-50/65 rounded-2xl duration-300 group  `}
     >
       <div className="flex items-center gap-x-2 relative bg-green-400/">
         <button
@@ -36,7 +35,7 @@ function ChatItem({ title, id }) {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className=" size-5 "
+            className=" size-[18px] "
             viewBox="0 0 24 24"
             fill="none"
           >

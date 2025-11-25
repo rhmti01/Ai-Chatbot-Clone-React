@@ -3,12 +3,11 @@ import { useGeminiStore } from "../../store/useGeminiStore";
 import { useNavigate } from "react-router";
 
 export default function PromptInput() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const inputText = useGeminiStore((state) => state.inputText);
   const setInputText = useGeminiStore((state) => state.setInputText);
   const onSendPrompt = useGeminiStore((state) => state.onSendPrompt);
   const showResult = useGeminiStore((state) => state.showResult);
-
 
   return (
     <div
@@ -39,7 +38,9 @@ export default function PromptInput() {
 
       <button
         onClick={() => {
-          onSendPrompt(navigate);
+          // if (showResult) {
+            onSendPrompt(navigate);
+          // }
         }}
         className={` ${
           showResult ? "p-4" : "p-3"
@@ -60,14 +61,12 @@ export default function PromptInput() {
         </svg>
 
         <span
-          onClick={() => {
-          }}
+          onClick={() => {}}
           className={`  ${
-            showResult ? "size-3 block bg-surface rounded-sm " : "hidden"
+            showResult ? "size-4 block bg-surface rounded-sm " : "hidden"
           } `}
         ></span>
       </button>
-
     </div>
   );
 }

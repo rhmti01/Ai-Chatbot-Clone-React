@@ -22,7 +22,7 @@
   --animate-zoomIn: zoomIn 0.8s ease-out both;
   --animate-zoomOut: zoomOut 0.8s ease-in both;
   --animate-fadeIn: fadeIn 1s ease-in-out both;
-  --animate-fadeIn-fast: fadeIn 0.2s ease-in-out both;
+  --animate-fadeIn-fast: fadeIn 0.4s ease-in-out both;
   --animate-fadeOut: fadeOut 1s ease-in-out both;
   --animate-rotateIn: rotateIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 

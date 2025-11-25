@@ -22,9 +22,8 @@ export default function ChatMessage({
   const messageRef = useRef();
   const currentChatId = useGeminiStore((state) => state.currentChatId);
   const [localAnimation, setLocalAnimation] = useState(false);
-  const [displayResponseActions, setDisplayResponseActions] = useState(
-    messageActions
-  );
+  const [displayResponseActions, setDisplayResponseActions] =
+    useState(messageActions);
 
   // store actions
   const setMessageAnimated = useGeminiStore(
@@ -37,22 +36,11 @@ export default function ChatMessage({
     (state) => state.setMessageActionsDisplay
   );
 
-  // check page reloading
-  const isPageReloaded =
-    performance.getEntriesByType("navigation")[0]?.type === "reload";
-
-  // display respnse with type effect
-  const { displayedTypingText, isFinished, setIsFinished } = useTypeEffect(
+  const { displayedTypingText, isFinished } = useTypeEffect(
     responseText || "",
-    10
+    10,
+    hasAnimated // Skip if hasAnimated=true
   );
-
-  // if page reloaded => disable typing effect
-  useEffect(() => {
-    if (isPageReloaded) {
-      setIsFinished(true); 
-    }
-  }, [isPageReloaded, setIsFinished]);
 
   // trigger local animation on mount
   useEffect(() => {
@@ -68,13 +56,21 @@ export default function ChatMessage({
     if (isFinished && !loading) {
       // show response actions
       setDisplayResponseActions(true);
-      setMessageActionsDisplay(chatPageId, messageId, responseId, true );
+      setMessageActionsDisplay(chatPageId, messageId, responseId, true);
     } else {
       // hide  response actions
       setDisplayResponseActions(false);
       setMessageActionsDisplay(chatPageId, messageId, responseId, false);
     }
-  }, [chatPageId, isFinished, loading, messageId, responseId, setMessageActionsDisplay]);
+  }, [
+    chatPageId,
+    isFinished,
+    loading,
+    messageId,
+    responseId,
+    setMessageActionsDisplay,
+    hasAnimated,
+  ]);
 
   // decide which text to show
   const displayedText = useMemo(() => {
@@ -184,7 +180,6 @@ export default function ChatMessage({
             />
           </svg>
         </div>
-
         {loading ? (
           <Loader />
         ) : (
@@ -213,8 +208,10 @@ export default function ChatMessage({
             }
           `}
       >
-        <div className="  flex items-center justify-between  bg-green-400/ my-4 w-[92%] mr-[2%]
-         bg-amber-300/  ">
+        <div
+          className="  flex items-center justify-between  bg-green-400/ my-4 w-[92%] mr-[2%]
+         bg-amber-300/  "
+        >
           <div
             className={`$  flex items-center gap-x-3  rounded-2xl shadow-sm shadow-gray-100
                text-gray-600 bg-surface px-3 py-[6px] `}
@@ -282,14 +279,11 @@ export default function ChatMessage({
                 d="M22 6.9v4.2c0 3.5-1.4 4.9-4.9 4.9H16v-3.1C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2h4.2C20.6 2 22 3.4 22 6.9z"
               ></path>
             </svg>
+            {}
           </div>
           <button
             onClick={() => {
-              onRegenerateResponse(
-                chatPageId,
-                messageId,
-                prompt,
-              );
+              onRegenerateResponse(chatPageId, messageId, prompt);
             }}
             className={`   px-3 py-1.5  hover:shadow-sm duration-300 bg-surface shadow-gray-100
                cursor-pointer rounded-full flex gap-x-1.5 items-center text-gray-700 text-[14px] font-medium

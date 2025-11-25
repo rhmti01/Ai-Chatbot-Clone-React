@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-export function useTypeEffect(text = "", speed = 65) {
+export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
   const safeText = typeof text === "string" ? text : "";
 
   const [displayedTypingText, setdisplayedTypingText] = useState("");
@@ -15,6 +15,13 @@ export function useTypeEffect(text = "", speed = 65) {
     }
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    // Skip typing effect if skipTyping is true (for old messages)
+    if (skipTyping) {
+      setdisplayedTypingText(safeText);
+      setIsFinished(true);
+      return;
+    }
 
     let index = 0;
     setdisplayedTypingText("");
@@ -42,7 +49,7 @@ export function useTypeEffect(text = "", speed = 65) {
     timeoutRef.current = setTimeout(typeNext, 50);
 
     return () => clearTimeout(timeoutRef.current);
-  }, [safeText, speed]);
+  }, [safeText, speed, skipTyping]);  // Add skipTyping to dependencies
 
-  return { displayedTypingText, isFinished, setIsFinished };
+  return { displayedTypingText, isFinished };
 }

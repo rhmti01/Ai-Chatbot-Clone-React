@@ -5,9 +5,7 @@ import { useGeminiStore } from "../store/useGeminiStore";
 
 function HomePage() {
   const pathName = location.pathname;
-  const currentChatId = useGeminiStore((state) => state.currentChatId);
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
-  console.log(currentChatId);
 
   useEffect(() => {
     if (pathName == "/chats" || pathName == "/" ||  pathName == "/chats/") {
