@@ -22,7 +22,7 @@
   --animate-zoomIn: zoomIn 0.8s ease-out both;
   --animate-zoomOut: zoomOut 0.8s ease-in both;
   --animate-fadeIn: fadeIn 1s ease-in-out both;
-  --animate-fadeIn-fast: fadeIn 0.4s ease-in-out both;
+  --animate-fadeIn-fast: fadeIn 0.2s ease-in-out both;
   --animate-fadeOut: fadeOut 1s ease-in-out both;
   --animate-rotateIn: rotateIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 
@@ -261,7 +261,7 @@
 
   div::-webkit-scrollbar-thumb:hover {
     width: 16px;
-    background-color: #7d7c7c;
+    background-color: #484848;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -270,7 +270,7 @@
   }
 
   div::-webkit-scrollbar-track {
-    background: #e0d7d7;
+    background: transparent;
     cursor: pointer;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -280,7 +280,7 @@
   }
 
   div::-webkit-scrollbar-thumb {
-    background-color: #696a6c9c;
+    background-color: #616161ed;
     transition: all 0.8s ease-in-out;
     border: 2px solid #efefef00;
     cursor: pointer;

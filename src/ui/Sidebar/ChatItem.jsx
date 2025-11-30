@@ -13,7 +13,7 @@ function ChatItem({ title, id  }) {
   return (
     <li
       onClick={() => {
-        navigate(`/chats/${id}`);
+        navigate(`/c/${id}`);
         setCurrentChatId(id);
         setSidebarStatus(false);
       }}
@@ -27,7 +27,7 @@ function ChatItem({ title, id  }) {
             onDeleteChat(id);
             if (currentChatId === id) {
               setCurrentChatId(null);
-              navigate("/chats");
+              navigate("/c");
             }
           }}
           className="absolute -left-10 group-hover:left-0 group-hover:-translate-x-10 hover:scale-110 

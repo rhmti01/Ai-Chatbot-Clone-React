@@ -18,6 +18,8 @@ export const createChatSlice = (set, get) => ({
   setChatUUID: (value) => set({ chatUUID: value }),
   setCurrentChatId: (value) => set({ currentChatId: value }),
 
+
+
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
     const { inputText, chatsList, currentChatId } = get();
@@ -27,6 +29,7 @@ export const createChatSlice = (set, get) => ({
     const newMessage = {
       id: Date.now(),
       prompt: inputText,
+      activeResponseIndex : 0 ,
       responses: [
         {
           id: Date.now(),
@@ -36,7 +39,6 @@ export const createChatSlice = (set, get) => ({
           hasAnimated: false,
           MessageActions: false,
           isTypingTextFinished: false,
-          active: true,
         },
       ],
     };
@@ -44,7 +46,7 @@ export const createChatSlice = (set, get) => ({
     // CASE 1: if there is no active chat -> create new chat group
     if (!currentChatId) {
       const chatUUID = timeBasedUUID();
-      navigate(`/chats/${chatUUID}`);
+      navigate(`/c/${chatUUID}`);
 
       const chatNumber = chatsList.length + 1;
 
@@ -113,83 +115,110 @@ export const createChatSlice = (set, get) => ({
     });
   },
 
+
+
   // call for regenerate response
   onRegenerateResponse: async (chatPageId, messageId, prompt) => {
-    const { chatsList } = get();
 
-    // find chat and message
-    const chatIndex = chatsList.findIndex((chat) => chat.id === chatPageId);
-    if (chatIndex === -1) return;
+    // add new response to existed responses
+    set((state) => ({
+        chatsList: state.chatsList.map((chat) => {
+          if (chat.id !== chatPageId) return chat;
 
-    const updatedChats = [...chatsList];
-    const messages = [...updatedChats[chatIndex].messages];
-    const msgIndex = messages.findIndex((msg) => msg.id === messageId);
-    if (msgIndex === -1) return;
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) => {
+              if (msg.id !== messageId) return msg;
 
-    // deactivate all previous responses
-    const updatedResponses = messages[msgIndex].responses.map((resp) => ({
-      ...resp,
-      active: false,
-    }));
+              // new response with empty values
+              const newResponse = {
+                id: Date.now(),
+                text: "",
+                error: false,
+                loading: true,
+                hasAnimated: false,
+                MessageActions: false,
+                isTypingTextFinished: false,
+              };
 
-    // add new response
-    const newResponse = {
-      id: Date.now(),
-      text: "",
-      error: false,
-      loading: true,
-      hasAnimated: false,
-      MessageActions: false,
-      isTypingTextFinished: false,
-      active: true,
-    };
-    updatedResponses.push(newResponse);
-
-    messages[msgIndex] = { ...messages[msgIndex], responses: updatedResponses };
-    updatedChats[chatIndex] = { ...updatedChats[chatIndex], messages };
-
-    set({ chatsList: updatedChats, showResult: true });
+              return {
+                ...msg,
+                responses: [...msg.responses, newResponse],
+                activeResponseIndex: msg.responses.length, 
+              };
+            }),
+          };
+        }),
+        showResult: true,
+      }));
 
     // fetch response from AI API
     const apiResponse = await runChat(prompt);
 
     // update the new response
     set((state) => ({
-      chatsList: state.chatsList.map((chat) => {
-        if (chat.id === chatPageId) {
+        chatsList: state.chatsList.map((chat) => {
+          if (chat.id !== chatPageId) return chat;
+
           return {
             ...chat,
             messages: chat.messages.map((msg) => {
-              if (msg.id === messageId) {
-                return {
-                  ...msg,
-                  responses: msg.responses.map((resp) =>
-                    resp.id === newResponse.id
-                      ? {
-                          ...resp,
-                          text: apiResponse.text,
-                          error: apiResponse.error,
-                          loading: false,
-                          hasAnimated: false,
-                        }
-                      : resp
-                  ),
-                };
-              }
-              return msg;
+              if (msg.id !== messageId) return msg;
+
+              return {
+                ...msg,
+                responses: msg.responses.map((resp, idx) =>
+                  idx === msg.activeResponseIndex
+                    ? {
+                        ...resp,
+                        text: apiResponse.text,
+                        error: apiResponse.error,
+                        loading: false,
+                        hasAnimated: false,
+                      }
+                    : resp
+                ),
+              };
             }),
           };
-        }
-        return chat;
-      }),
-      showResult: false,
-    }));
+        }),
+        showResult: false,
+      }));
   },
 
+
+
+  // switch responses by user selection
+  onSwitchResponse : (chatPageId , messageId , direction)=>{
+    set((state) => ({
+        chatsList: state.chatsList.map((chat) => {
+          if (chat.id !== chatPageId) return chat;
+
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) => {
+              if (msg.id !== messageId) return msg;
+
+              let newIndex = msg.activeResponseIndex + direction;
+              newIndex = Math.max(0, newIndex);
+              newIndex = Math.min(newIndex, msg.responses.length - 1);
+
+              return {
+                ...msg,
+                activeResponseIndex: newIndex,
+              };
+            }),
+          };
+        }),
+      }));
+  },
+
+
+
   // update response hasAnimated status
-  setMessageAnimated: (chatId, messageId, responseId) => {
-    set({
-      chatsList: get().chatsList.map((chat) =>
+  setMessageAnimated: (chatId, messageId) => {
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) =>
         chat.id === chatId
           ? {
               ...chat,
@@ -197,8 +226,10 @@ export const createChatSlice = (set, get) => ({
                 msg.id === messageId
                   ? {
                       ...msg,
-                      responses: msg.responses.map((resp) =>
-                        resp.id === responseId ? { ...resp, hasAnimated: true } : resp
+                      responses: msg.responses.map((resp, idx) =>
+                        idx === msg.activeResponseIndex
+                          ? { ...resp, hasAnimated: true }
+                          : resp
                       ),
                     }
                   : msg
@@ -206,32 +237,37 @@ export const createChatSlice = (set, get) => ({
             }
           : chat
       ),
-    });
+    }));
   },
 
+
+
   // display response Action buttons after typing finished
-  setMessageActionsDisplay: (chatId, messageId, responseId, isFinished) => {
-    set({
-      chatsList: get().chatsList.map((chat) => {
-        if (chat.id === chatId) {
-          const updatedMessages = chat.messages.map((msg) =>
-            msg.id === messageId
-              ? {
-                  ...msg,
-                  responses: msg.responses.map((resp) =>
-                    resp.id === responseId
-                      ? { ...resp, isTypingTextFinished: isFinished }
-                      : resp
-                  ),
-                }
-              : msg
-          );
-          return { ...chat, messages: updatedMessages };
-        }
-        return chat;
-      }),
-    });
+  setMessageActionsDisplay: (chatId, messageId, isFinished) => {
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: chat.messages.map((msg) =>
+                msg.id === messageId
+                  ? {
+                      ...msg,
+                      responses: msg.responses.map((resp, idx) =>
+                        idx === msg.activeResponseIndex
+                          ? { ...resp, isTypingTextFinished: isFinished }
+                          : resp
+                      ),
+                    }
+                  : msg
+              ),
+            }
+          : chat
+      ),
+    }));
   },
+
+
 
   // delete chat from chatsList by id
   onDeleteChat: (chatId) => {

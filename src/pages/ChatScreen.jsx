@@ -6,7 +6,7 @@ import { Outlet } from "react-router";
 function ChatScreen() {
   return (
     <div className="h-full w-full bg-main text-text flex justify-between flex-col 
-    items-center p-2 pr-0 lg:pb-12 lg:p-6   ">
+    items-center  lg:pb-12 lg:p-0 lg:pr-0 relative  ">
       <HeaderActions/>
       <Outlet/>
       <PromptInput />

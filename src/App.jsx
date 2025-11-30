@@ -13,8 +13,8 @@ function App() {
     <SidebarProvider>
       <Toaster />
       <Routes>
-        <Route index path="/" element={<Navigate to="/chats" />} />
-        <Route  path="/chats" element={<HomePage />}>
+        <Route index path="/" element={<Navigate to="/c" />} />
+        <Route  path="/c" element={<HomePage />}>
           <Route index element={<MainHeader />} />
           <Route path=":id" element={<SingleChat />} />
         </Route>

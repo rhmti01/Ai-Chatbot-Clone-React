@@ -21,61 +21,37 @@ function SingleChat() {
       ref={chatContainerRef}
       className="h-full flex-1 relative w-full overflow-auto scroll-smooth
         [&::-webkit-scrollbar]:w-0
-        -------pb-[70vh]---------
-        pb-24
+        lg:[&::-webkit-scrollbar]:w-2 pt-14
         2xl:[&::-webkit-scrollbar-track]:rounded-2xl 
          2xl:[&::-webkit-scrollbar-thumb]:rounded-2xl
+        -------pb-[70vh]---------
+        pb-24
            "
     >
-      {selectedChat?.messages?.map(
-        (
-          {
-            prompt,
-            responses,
-            response,
-            id,
-            loading,
-            hasAnimated,
-            MessageActions,
-            isTypingTextFinished,
-          },
-          index
-        ) => {
-          const isLast = index === selectedChat.messages.length - 1;
-          let activeResponse;
-          if (responses) {
-            activeResponse = responses.find((resp) => resp.active) || responses[responses.length - 1];
-          } else {
-            activeResponse = {
-              id: 'legacy-' + id,
-              text: response?.text || '',
-              error: response?.error || false,
-              loading: loading || false,
-              hasAnimated: hasAnimated || false,
-              MessageActions: MessageActions || false,
-              isTypingTextFinished: isTypingTextFinished || false,
-              active: true,
-            };
-          }
+    {selectedChat?.messages?.map(({ prompt, responses, id, activeResponseIndex }, index) => {
+      const isLast = index === selectedChat.messages.length - 1;
 
-          return (
-            <ChatMessage
-              key={index}
-              isLast={isLast}
-              id={id}
-              chatPageId={selectedChat.id}
-              prompt={prompt}
-              responseText={activeResponse.text}
-              responseError={activeResponse.error}
-              loading={activeResponse.loading}
-              hasAnimated={activeResponse.hasAnimated}
-              messageActions={activeResponse.MessageActions}
-              isTypingTextFinished={activeResponse.isTypingTextFinished}
-              responseId={activeResponse.id}
-            />
-          );
-        }
-      )}
+      const activeResponse = responses[activeResponseIndex] || responses[responses.length - 1];
+
+      return (
+        <ChatMessage
+          key={id}
+          isLast={isLast}
+          id={id}
+          chatPageId={selectedChat.id}
+          prompt={prompt}
+          responseText={activeResponse.text}
+          responseError={activeResponse.error}
+          loading={activeResponse.loading}
+          hasAnimated={activeResponse.hasAnimated}
+          messageActions={activeResponse.MessageActions}
+          isTypingTextFinished={activeResponse.isTypingTextFinished}
+          responseId={activeResponse.id}
+          totalResponsesLength={responses.length}
+          activeResponseIndex={activeResponseIndex}  
+        />
+      );
+    })}
     </div>
   );
 }

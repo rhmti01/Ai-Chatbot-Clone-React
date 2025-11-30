@@ -8,7 +8,7 @@ function HomePage() {
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
 
   useEffect(() => {
-    if (pathName == "/chats" || pathName == "/" ||  pathName == "/chats/") {
+    if (pathName == "/c" || pathName == "/" ||  pathName == "/c/") {
       setCurrentChatId(null)
     }
   }, [pathName, setCurrentChatId]);

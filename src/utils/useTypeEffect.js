@@ -5,7 +5,8 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
 
   const [displayedTypingText, setdisplayedTypingText] = useState("");
   const [isFinished, setIsFinished] = useState(false);
-  const timeoutRef = useRef(null);
+  const animationRef = useRef(null);
+  const startTimeRef = useRef(null);
 
   useEffect(() => {
     if (!safeText) {
@@ -14,8 +15,6 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
       return;
     }
 
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
     // Skip typing effect if skipTyping is true (for old messages)
     if (skipTyping) {
       setdisplayedTypingText(safeText);
@@ -23,33 +22,51 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
       return;
     }
 
-    let index = 0;
     setdisplayedTypingText("");
     setIsFinished(false);
+    startTimeRef.current = Date.now() + 50; // Initial delay like before
 
-    const typeNext = () => {
-      setdisplayedTypingText((prev) => {
-        if (index < safeText.length) {
-          const next = prev + safeText[index];
-          index++;
+    let currentIndex = 0;
 
-          if (index === safeText.length) {
-            setIsFinished(true);
-          } else {
-            timeoutRef.current = setTimeout(typeNext, speed + Math.random() * 25);
-          }
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = now - startTimeRef.current;
 
-          return next;
-        } else {
-          return prev;
-        }
-      });
+      if (elapsed < 0) {
+        // Still in initial delay
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      // Calculate target index based on real time (characters per speed ms)
+      const targetIndex = Math.min(
+        safeText.length,
+        Math.floor(elapsed / speed)
+      );
+
+      if (currentIndex < targetIndex) {
+        // Catch up: add all missed characters at once
+        setdisplayedTypingText(safeText.slice(0, targetIndex));
+        currentIndex = targetIndex;
+      }
+
+      if (currentIndex >= safeText.length) {
+        setIsFinished(true);
+        return; // Stop animation
+      }
+
+      // Continue animation
+      animationRef.current = requestAnimationFrame(animate);
     };
 
-    timeoutRef.current = setTimeout(typeNext, 50);
+    animationRef.current = requestAnimationFrame(animate);
 
-    return () => clearTimeout(timeoutRef.current);
-  }, [safeText, speed, skipTyping]);  // Add skipTyping to dependencies
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [safeText, speed, skipTyping]);  // Dependencies same as before
 
   return { displayedTypingText, isFinished };
 }
