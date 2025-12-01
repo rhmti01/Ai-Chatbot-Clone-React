@@ -4,7 +4,8 @@ import { useSidebar } from "../../context/SidebarContext";
 function HeaderActions() {
   const { sidebarStatus, setSidebarStatus } = useSidebar();
   return (
-    <div className=" bg-main lg:bg-transparent shadow-sm lg:shadow-none  rounded-b-xl p-2 lg:py-4 lg:px-8 flex justify-between lg:justify-end items-start w-full absolute z-20 ">
+    <div className=" bg-main lg:bg-transparent shadow-[0_4px_3px_-4px_rgba(0,0,0,0.2)] lg:shadow-none  
+     p-2 lg:py-4 lg:px-8 flex justify-between lg:justify-end items-start w-full absolute z-20 ">
       <button
         onClick={() => setSidebarStatus(!sidebarStatus)}
         className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "

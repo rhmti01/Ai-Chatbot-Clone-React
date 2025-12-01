@@ -13,13 +13,13 @@ export default function SidebarHeader() {
       {/* AI title */}
       <button
         onClick={() => navigate("/")}
-        className=" cursor-pointer font-semibold xx:text-2xl text-lg inline-block  rounded-3xl tracking-wider "
+        className=" cursor-pointer font-medium xx:text-2xl text-lg inline-block  rounded-3xl tracking-wider "
       >
         CHAT A.I+
       </button>
 
       {/* New chat + search */}
-      <div className="flex w-full mt-9 space-x-2">
+      <div className="flex items-center justify-start w-full mt-8 gap-x-2 ">
         <button
           onClick={() => {
             setSidebarStatus(false);

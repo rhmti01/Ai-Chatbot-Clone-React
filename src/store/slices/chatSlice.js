@@ -39,6 +39,7 @@ export const createChatSlice = (set, get) => ({
           hasAnimated: false,
           MessageActions: false,
           isTypingTextFinished: false,
+          isResponseLiked : null ,
         },
       ],
     };
@@ -207,6 +208,37 @@ export const createChatSlice = (set, get) => ({
                 ...msg,
                 activeResponseIndex: newIndex,
               };
+            }),
+          };
+        }),
+      }));
+  },
+
+
+
+  // change response like attribute 
+  onToggleResponseLike : (chatPageId , messageId , responseId , status)=>{
+    set((state) => ({
+        chatsList: state.chatsList.map((chat) => {
+          if (chat.id !== chatPageId) return chat;
+
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) => {
+              if (msg.id !== messageId) return msg;
+
+              return {
+                ...msg ,
+                responses : msg.responses.map((response)=>{
+                  if (response.id !== responseId) return response;
+
+                  return {
+                    ...response ,
+                    isResponseLiked : status
+                  }
+
+                })
+              }
             }),
           };
         }),
