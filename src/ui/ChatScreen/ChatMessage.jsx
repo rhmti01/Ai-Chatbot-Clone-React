@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 
 export default function ChatMessage({
   id: messageId,
-  isLast,
   prompt,
   responseText,
   responseError,
@@ -107,7 +106,7 @@ export default function ChatMessage({
     <div
       ref={messageRef}
       data-chat-message
-      className="flex flex-col mt-4 pt-4 text-left max-w-[820px] 
+      className="flex flex-col mt-4 pt-4 mb-9 text-left max-w-[820px] 
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
@@ -468,7 +467,6 @@ export default function ChatMessage({
         </div>
       </div>
 
-      {!isLast && <div className="bg-gray-400/40 h-[0.75px] mt-4  " />}
     </div>
   );
 }

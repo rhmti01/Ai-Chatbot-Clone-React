@@ -13,12 +13,12 @@ function App() {
     <SidebarProvider>
       <Toaster />
       <Routes>
-        <Route index path="/" element={<Navigate to="/c" />} />
-        <Route  path="/c" element={<HomePage />}>
+        <Route path="/" element={<HomePage />}>
           <Route index element={<MainHeader />} />
-          <Route path=":id" element={<SingleChat />} />
+          <Route path="c/:id" element={<SingleChat />} />
         </Route>
         <Route path="*" element={<NoteFound />} />
+        <Route path="/not-found" element={<NoteFound />} />
       </Routes>
     </SidebarProvider>
   );
