@@ -54,7 +54,7 @@ export const createChatSlice = (set, get) => ({
       // define new chat group structure
       const chatData = {
         id: chatUUID,
-        headerTitle: ` Chat Message ${chatNumber}  ! `,
+        title: ` Chat Message ${chatNumber}  ! `,
         messages: [newMessage],
       };
 
@@ -303,9 +303,22 @@ export const createChatSlice = (set, get) => ({
 
   // delete chat from chatsList by id
   onDeleteChat: (chatId) => {
-    console.log(chatId);
     set({
       chatsList: get().chatsList.filter((chat) => chat.id !== chatId),
     });
   },
+
+
+  // edit chat main title
+  onEditChatTitle: (chatId , updatedTitle) => {
+    set({
+      chatsList: get().chatsList.map((chat) =>{
+        if (chat.id !== chatId) return chat ;
+
+        return {
+          ...chat , title: updatedTitle
+        }
+      }),
+    });
+  }
 });

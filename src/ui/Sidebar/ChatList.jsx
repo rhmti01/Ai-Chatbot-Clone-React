@@ -8,10 +8,10 @@ export default function ChatList() {
 
   return (
     <div className="mt-1 overflow-x-hidden  ">
-      <ul className="flex flex-col w-full space-y-0.5 max-h-[calc(100vh-50px)]  bg-amber-500/  ">
+      <ul className="flex flex-col w-full max-h-[calc(100vh-50px)] duration-300 bg-amber-400/  ">
           {
-            chatsList.map(({headerTitle , id})=>{
-              return <ChatItem  key={id} title={headerTitle} id={id} />
+            chatsList.map(({title , id})=>{
+              return <ChatItem  key={id} title={title} id={id} />
             })
           }
       </ul>

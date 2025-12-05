@@ -9,7 +9,7 @@ export default function MainHeader() {
       >
         CHAT A.I+
       </h1>
-      <p className="tracking-wide font-semibold text-text-primary text-[26px] mx-4 text-center animate-blurIn animate-delay-md ">
+      <p className="tracking-wide font-semibold text-text-primary text-[26px] mx-4 text-center animate-blurIn animate-delay-sm ">
         Good Day! How may I assist you today?
       </p>
     </div>

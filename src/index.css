@@ -210,7 +210,7 @@
   .animate-delay-sm {
     animation-delay: 0.3s;
   }
-    .animate-delay-ss {
+  .animate-delay-ss {
     animation-delay: 0.45s;
   }
   .animate-delay-md {
@@ -227,7 +227,7 @@
   }
 }
 
-/* costum window scrol */
+/* costum window scroll */
 @layer base {
   body::-webkit-scrollbar {
     width: 8px;
@@ -294,4 +294,9 @@
     -ms-transition: all 0.8s ease-in-out;
     -o-transition: all 0.8s ease-in-out;
   }
+}
+
+/* user text selection */
+::selection {
+  @apply bg-indigo-500 text-white; 
 }

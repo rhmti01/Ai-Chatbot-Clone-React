@@ -1,11 +1,17 @@
 import React from "react";
 import { useSidebar } from "../../context/SidebarContext";
+import { useLocation } from "react-router";
 
 function HeaderActions() {
   const { sidebarStatus, setSidebarStatus } = useSidebar();
+  const {pathname} = useLocation()
+
   return (
-    <div className=" bg-main lg:bg-transparent shadow-[0_2px_12px_-6px_rgba(0,0,0,0.2)] lg:shadow-none  
-     p-2 lg:py-4 lg:px-8 flex justify-between lg:justify-end items-start w-full absolute z-20 ">
+    <div className={` 
+    ${pathname==="/" ? "shadow-none" : "shadow-[0_2px_12px_-6px_rgba(0,0,0,0.2)]"}
+    bg-main lg:bg-transparent  lg:shadow-none  
+     p-2 lg:py-4 lg:px-8 flex justify-between lg:justify-end items-start w-full absolute z-20
+    `}>
       <button
         onClick={() => setSidebarStatus(!sidebarStatus)}
         className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "

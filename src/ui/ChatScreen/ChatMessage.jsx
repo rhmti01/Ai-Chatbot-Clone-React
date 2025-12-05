@@ -102,15 +102,16 @@ export default function ChatMessage({
     setMessageAnimated,
   ]);
 
+
   return (
     <div
       ref={messageRef}
       data-chat-message
-      className="flex flex-col mt-4 pt-4 mb-9 text-left max-w-[820px] 
+      className="flex flex-col mt-4 pt-4 mb-9 text-left max-w-[880px] 
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
-      <div className="px-6 flex justify-between items-end gap-x-3">
+      <div className="px-6 flex justify-between items-end gap-x-3 bg-blue-500/ ">
         <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
           <img
             className={`    ${
@@ -131,7 +132,7 @@ export default function ChatMessage({
         <button
           className={` ${
             localAnimation ? "animate-moveInRight" : ""
-          } cursor-pointer basis-6 bg-amber-500/  `}
+          } cursor-pointer basis-6 bg-amber-500/ mb-2  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -358,7 +359,6 @@ export default function ChatMessage({
                 className={`   flex items-center space-x-1 rounded-2xl shadow-sm shadow-gray-100
                text-gray-600 bg-surface px-1.5 py-[6px]  `}
               >
-                
                 {/* LEFT - back to last response */}
                 <button
                   disabled={activeResponseIndex === 0}
@@ -392,7 +392,7 @@ export default function ChatMessage({
                 <p className=" text-[14px] font-medium  ">
                   {` ${activeResponseIndex + 1} / ${totalResponsesLength} `}
                 </p>
-                
+
                 {/* RIGHT - go to furthur response */}
                 <button
                   disabled={activeResponseIndex === totalResponsesLength - 1}
@@ -462,11 +462,10 @@ export default function ChatMessage({
                 d="M7.82 17.18v-2.67h2.67M16.18 6.82v2.67h-2.67"
               ></path>
             </svg>
-            <span className=" hidden sm:block " >Regenerate</span>
+            <span className=" hidden sm:block ">Regenerate</span>
           </button>
         </div>
       </div>
-
     </div>
   );
 }

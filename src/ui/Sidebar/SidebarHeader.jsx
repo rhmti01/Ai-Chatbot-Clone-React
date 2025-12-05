@@ -10,13 +10,34 @@ export default function SidebarHeader() {
 
   return (
     <div className="*:px-7 pt-6 flex flex-col items-start">
-      {/* AI title */}
-      <button
-        onClick={() => navigate("/")}
-        className=" cursor-pointer font-medium xx:text-2xl text-lg inline-block  rounded-3xl tracking-wider "
-      >
-        CHAT A.I+
-      </button>
+      <div className=" flex justify-between items-center w-full ">
+        {/* App header title */}
+        <h1 className=" cursor-pointer font-medium xx:text-2xl text-xl inline-block  rounded-3xl tracking-wider ">
+          CHAT A.I+
+        </h1>
+
+        <button
+        className=" cursor-pointer lg:hidden "
+          onClick={() => {
+            setSidebarStatus(false);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="size-7 stroke-stone-700 "
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="m9.17 14.83 5.66-5.66M14.83 14.83 9.17 9.17M9 22h6c5 0 7-2 7-7V9c0-5-2-7-7-7H9C4 2 2 4 2 9v6c0 5 2 7 7 7Z"
+              stroke="stroke-current"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </button>
+      </div>
 
       {/* New chat + search */}
       <div className="flex items-center justify-start w-full mt-8 gap-x-2 ">
