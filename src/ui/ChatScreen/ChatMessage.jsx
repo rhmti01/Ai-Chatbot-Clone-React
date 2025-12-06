@@ -28,6 +28,8 @@ export default function ChatMessage({
   const [copied, setCopied] = useState(false);
   const [displayResponseActions, setDisplayResponseActions] =
     useState(messageActions);
+  const [ActiveEditPrompt, setActiveEditPrompt] = useState(false);
+  const [editedPromptValue, setEditedPromptValue] = useState(prompt);
 
   // store actions
   const onRegenerateResponse = useGeminiStore(
@@ -102,7 +104,6 @@ export default function ChatMessage({
     setMessageAnimated,
   ]);
 
-
   return (
     <div
       ref={messageRef}
@@ -112,7 +113,7 @@ export default function ChatMessage({
     >
       {/* User prompt */}
       <div className="px-6 flex justify-between items-end gap-x-3 bg-blue-500/ ">
-        <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
+        <div className="flex items-end space-x-2 w-full bg-amber-200/` basis-full ">
           <img
             className={`    ${
               localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
@@ -120,23 +121,73 @@ export default function ChatMessage({
             src="/assets/profile-img.png"
             alt="USER-PROFILE"
           />
-          <p
-            className={`${
-              localAnimation ? "animate-moveInLeft  " : ""
-            }    font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
+
+
+          {!ActiveEditPrompt ? (
+            <p
+              className={`${
+                localAnimation ? "animate-moveInLeft  " : ""
+              }    font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
              rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px] w-{30%} break-all  `}
-          >
-            {prompt}
-          </p>
+            >
+              {prompt}
+            </p>
+          ) : (
+            <div
+              className="bg-surface rounded-3xl shadow-sm shadow-gray-100
+              w-full max-w-[360px] md:max-w-[480px] xl:max-w-[560px]
+              flex flex-col gap-y-6 p-4 animate-fadeIn-fast "
+            >
+              <textarea
+                autoFocus
+                onChange={(e) => {
+                  setEditedPromptValue(e.target.value);
+                  e.target.style.height = "auto";
+                  const maxHeight = 200;
+                  const newHeight = Math.min(e.target.scrollHeight, maxHeight);
+                  e.target.style.height = `${newHeight}px`;
+                }}
+                value={editedPromptValue}
+                className="px-2 outline-0 resize-none w-full break-all 
+              overflow-y-auto min-h-[60px] max-h-[200px]"
+                name="edit-prompt"
+              ></textarea>
+
+              <div className="flex w-full justify-end gap-x-2 items-center">
+                <button
+                 onClick={()=>setActiveEditPrompt(false)}
+                 className="text-surface bg-gray-600 px-3 py-1
+                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85"
+                >
+                  Cancel
+                </button>
+                <button
+                onClick={()=>{
+                  setActiveEditPrompt(false)
+                  toast(editedPromptValue)
+                }}
+                  className="text-surface bg-indigo-600 px-3 py-1
+                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* edit prompt  */}
         <button
+          onClick={() => setActiveEditPrompt(true)}
           className={` ${
-            localAnimation ? "animate-moveInRight" : ""
-          } cursor-pointer basis-6 bg-amber-500/ mb-2  `}
+            localAnimation ? "animate-moveInRight" : "" 
+          }  
+          ${!ActiveEditPrompt ? "hover:scale-105 cursor-pointer " : "cursor-auto "}
+          basis-6 bg-amber-500/ mb-1.5  duration-300  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-[21px] cursor-pointer text-gray-700 hover:text-gray-900 duration-500 "
+            className="size-[21px]  text-gray-700 hover:text-gray-900 duration-500 "
             viewBox="0 0 24 24"
             fill="none"
           >
@@ -230,6 +281,7 @@ export default function ChatMessage({
             >
               {/* like response */}
               <button
+                className=" cursor-pointer hover:scale-105 duration-300 "
                 onClick={() => {
                   onToggleResponseLike(chatPageId, messageId, responseId, true);
                 }}
@@ -263,6 +315,7 @@ export default function ChatMessage({
               <span className=" h-4 w-[2px] bg-gray-400/85 rounded-full "></span>
               {/* dislike response */}
               <button
+                className=" cursor-pointer hover:scale-105 duration-300 "
                 onClick={() => {
                   onToggleResponseLike(
                     chatPageId,
@@ -302,6 +355,7 @@ export default function ChatMessage({
 
               {/* copy response text */}
               <button
+                className=" cursor-pointer hover:scale-105 duration-300 "
                 onClick={() => {
                   navigator.clipboard.writeText(responseText).then(() => {
                     toast.success("Copied");
@@ -430,7 +484,7 @@ export default function ChatMessage({
             onClick={() => {
               onRegenerateResponse(chatPageId, messageId, prompt);
             }}
-            className={`   px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100
+            className={`    hover:scale-105  px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100
                cursor-pointer rounded-full flex gap-x-1 items-center text-gray-700 text-[14.5px] font-medium
                 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:shadow-none `}
           >

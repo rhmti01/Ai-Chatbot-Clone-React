@@ -43,7 +43,7 @@ function SingleChat() {
 
   // invalid root error handling
   if (!selectedChat) {
-    return <Navigate to="/not-found" replace />;
+    if (id)  return <Navigate to="/" replace />;
   }
   return (
 <div
