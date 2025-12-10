@@ -25,8 +25,8 @@ export const createChatSlice = (set, get) => ({
     const { inputText, chatsList, currentChatId } = get();
     if (!inputText.trim()) return;
 
-    // create new message object with responses array
-    const newMessage = {
+    // create new prompt structure
+    const singlePromptData = {
       id: Date.now(),
       prompt: inputText,
       activeResponseIndex : 0 ,
@@ -42,6 +42,13 @@ export const createChatSlice = (set, get) => ({
           isResponseLiked : null ,
         },
       ],
+    }
+
+    // create new message 
+    const newMessage = {
+      id: Date.now(),
+      activePromptIndex: 0,
+      prompts : [singlePromptData],
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -51,14 +58,14 @@ export const createChatSlice = (set, get) => ({
 
       const chatNumber = chatsList.length + 1;
 
-      // define new chat group structure
+      // define new chat structure
       const chatData = {
         id: chatUUID,
         title: ` Chat Message ${chatNumber}  ! `,
         messages: [newMessage],
       };
 
-      // update store state
+      // update store state (add new chat to chatsList)
       set({
         inputText: "",
         chatsList: [...chatsList, chatData],
@@ -94,17 +101,24 @@ export const createChatSlice = (set, get) => ({
             msg.id === newMessage.id
               ? {
                   ...msg,
-                  responses: msg.responses.map((resp) =>
-                    resp.id === newMessage.responses[0].id
-                      ? {
-                          ...resp,
+                  prompts : msg.prompts.map((singlePrompt)=>{
+                    if(singlePrompt.id !== singlePromptData.id) return singlePrompt ;
+
+                    return {
+                      ...singlePrompt,
+                      responses: singlePrompt.responses.map((singleResponse, index)=>{
+                        if(index !== singlePrompt.activeResponseIndex) return singleResponse ;
+                        
+                        return {
+                          ...singleResponse,
+                          hasAnimated: false,
+                          loading: false,
                           text: apiResponse.text,
                           error: apiResponse.error,
-                          loading: false,
-                          hasAnimated: false,
                         }
-                      : resp
-                  ),
+                      })
+                    }
+                  })
                 }
               : msg
           );
@@ -119,7 +133,7 @@ export const createChatSlice = (set, get) => ({
 
 
   // call for regenerate response
-  onRegenerateResponse: async (chatPageId, messageId, prompt) => {
+  onRegenerateResponse: async (chatPageId, messageId , promptText , promptId) => {
 
     // add new response to existed responses
     set((state) => ({
@@ -131,30 +145,39 @@ export const createChatSlice = (set, get) => ({
             messages: chat.messages.map((msg) => {
               if (msg.id !== messageId) return msg;
 
-              // new response with empty values
-              const newResponse = {
-                id: Date.now(),
-                text: "",
-                error: false,
-                loading: true,
-                hasAnimated: false,
-                MessageActions: false,
-                isTypingTextFinished: false,
-              };
-
               return {
-                ...msg,
-                responses: [...msg.responses, newResponse],
-                activeResponseIndex: msg.responses.length, 
-              };
-            }),
+                ...msg ,
+                prompts : msg.prompts.map((singlePrompt)=>{
+                  if(singlePrompt.id !== promptId) return singlePrompt ;
+
+                  const newResponse = {
+                    id: Date.now(),
+                    text: "",
+                    error: false,
+                    loading: true,
+                    hasAnimated: false,
+                    MessageActions: false,
+                    isTypingTextFinished: false,
+                  };
+
+                  return {
+                    ...singlePrompt,
+                    responses : [...singlePrompt.responses , newResponse],
+                    activeResponseIndex : singlePrompt.responses.length  ,
+                  }
+                
+                })
+              }
+            }
+          
+          ),
           };
         }),
         showResult: true,
       }));
 
     // fetch response from AI API
-    const apiResponse = await runChat(prompt);
+    const apiResponse = await runChat(promptText);
 
     // update the new response
     set((state) => ({
@@ -168,18 +191,28 @@ export const createChatSlice = (set, get) => ({
 
               return {
                 ...msg,
-                responses: msg.responses.map((resp, idx) =>
-                  idx === msg.activeResponseIndex
-                    ? {
-                        ...resp,
-                        text: apiResponse.text,
-                        error: apiResponse.error,
-                        loading: false,
-                        hasAnimated: false,
-                      }
-                    : resp
-                ),
+                prompts: msg.prompts.map((singlePrompt) => {
+                  if (singlePrompt.id !== promptId) return singlePrompt;
+
+                  return {
+                    ...singlePrompt,
+                    responses: singlePrompt.responses.map((singleResponse , index)=>{
+                      if(index !== singlePrompt.activeResponseIndex) return singleResponse ;
+
+                        return {
+                          ...singleResponse ,
+                          text : apiResponse.text ,
+                          error : apiResponse.error ,
+                          loading : false ,
+                          hasAnimated : false ,
+                        }
+
+                    })
+
+                  };
+                }),
               };
+
             }),
           };
         }),
@@ -190,7 +223,7 @@ export const createChatSlice = (set, get) => ({
 
 
   // switch responses by user selection
-  onSwitchResponse : (chatPageId , messageId , direction)=>{
+  onSwitchResponse : (chatPageId  , messageId , promptId ,  direction)=>{
     set((state) => ({
         chatsList: state.chatsList.map((chat) => {
           if (chat.id !== chatPageId) return chat;
@@ -200,41 +233,18 @@ export const createChatSlice = (set, get) => ({
             messages: chat.messages.map((msg) => {
               if (msg.id !== messageId) return msg;
 
-              let newIndex = msg.activeResponseIndex + direction;
-              newIndex = Math.max(0, newIndex);
-              newIndex = Math.min(newIndex, msg.responses.length - 1);
-
-              return {
+              return{
                 ...msg,
-                activeResponseIndex: newIndex,
-              };
-            }),
-          };
-        }),
-      }));
-  },
+                prompts: msg.prompts.map((singlePrompt)=>{
+                  if(singlePrompt.id !== promptId) return singlePrompt ;
 
+                  let newIndex = singlePrompt.activeResponseIndex + direction;
+                  newIndex = Math.max(0, newIndex);
+                  newIndex = Math.min(newIndex, singlePrompt.responses.length - 1);
 
-
-  // change response like attribute 
-  onToggleResponseLike : (chatPageId , messageId , responseId , status)=>{
-    set((state) => ({
-        chatsList: state.chatsList.map((chat) => {
-          if (chat.id !== chatPageId) return chat;
-
-          return {
-            ...chat,
-            messages: chat.messages.map((msg) => {
-              if (msg.id !== messageId) return msg;
-
-              return {
-                ...msg ,
-                responses : msg.responses.map((response)=>{
-                  if (response.id !== responseId) return response;
-
-                  return {
-                    ...response ,
-                    isResponseLiked : status
+                  return{
+                    ...singlePrompt,
+                    activeResponseIndex: newIndex,
                   }
 
                 })
@@ -247,56 +257,40 @@ export const createChatSlice = (set, get) => ({
 
 
 
-  // update response hasAnimated status
-  setMessageAnimated: (chatId, messageId) => {
+  // change response like attribute
+  onToggleResponseLike : (chatPageId , messageId , promptId , responseId , status)=>{
     set((state) => ({
-      chatsList: state.chatsList.map((chat) =>
-        chat.id === chatId
-          ? {
-              ...chat,
-              messages: chat.messages.map((msg) =>
-                msg.id === messageId
-                  ? {
-                      ...msg,
-                      responses: msg.responses.map((resp, idx) =>
-                        idx === msg.activeResponseIndex
-                          ? { ...resp, hasAnimated: true }
-                          : resp
-                      ),
-                    }
-                  : msg
-              ),
-            }
-          : chat
-      ),
-    }));
-  },
+        chatsList: state.chatsList.map((chat) => {
+          if (chat.id !== chatPageId) return chat;
 
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) => {
+              if (msg.id !== messageId) return msg;
 
+              return{
+                ...msg,
+                prompts: msg.prompts.map((singlePrompt)=>{
+                  if(singlePrompt.id !== promptId) return singlePrompt ;
 
-  // display response Action buttons after typing finished
-  setMessageActionsDisplay: (chatId, messageId, isFinished) => {
-    set((state) => ({
-      chatsList: state.chatsList.map((chat) =>
-        chat.id === chatId
-          ? {
-              ...chat,
-              messages: chat.messages.map((msg) =>
-                msg.id === messageId
-                  ? {
-                      ...msg,
-                      responses: msg.responses.map((resp, idx) =>
-                        idx === msg.activeResponseIndex
-                          ? { ...resp, isTypingTextFinished: isFinished }
-                          : resp
-                      ),
-                    }
-                  : msg
-              ),
-            }
-          : chat
-      ),
-    }));
+                  return {
+                    ...singlePrompt,
+                    responses : singlePrompt.responses.map((response)=>{
+                      if(response.id !== responseId) return response ;
+
+                        return {
+                          ...response ,
+                          isResponseLiked : status
+                        }
+
+                    })
+                  }
+                })
+              }
+            }),
+          };
+        }),
+      }));
   },
 
 
@@ -307,6 +301,7 @@ export const createChatSlice = (set, get) => ({
       chatsList: get().chatsList.filter((chat) => chat.id !== chatId),
     });
   },
+
 
 
   // edit chat main title
@@ -320,5 +315,82 @@ export const createChatSlice = (set, get) => ({
         }
       }),
     });
-  }
+  },
+
+
+
+  // update response hasAnimated status
+  setMessageAnimated: (chatId, messageId , promptId , responseId) => {
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) =>{
+        if (chat.id !== chatId) return chat ;
+
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) =>{
+            if (msg.id !== messageId) return msg ;
+
+            return {
+              ...msg,
+              prompts: msg.prompts.map((singlePrompt)=>{
+                if(singlePrompt.id !== promptId) return singlePrompt ;
+
+                return {
+                  ...singlePrompt ,
+                  responses: singlePrompt.responses.map((singleResponse)=>{
+                    if(singleResponse.id !== responseId) return singleResponse ;
+
+                    return{
+                      ...singleResponse ,
+                      hasAnimated : true ,
+                    }
+                  })
+
+                }
+              }),
+            };
+          }),
+        }
+      })
+    }));
+  },
+
+
+
+  // display response Action buttons after typing finished
+  setMessageActionsDisplay: (chatId, messageId, promptId , isFinished) => {
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) =>{
+        
+        if (chat.id !== chatId) return chat ;
+
+        return {
+          ...chat,
+          messages: chat.messages.map((msg)=>{
+            if (msg.id !== messageId) return msg ;
+        
+              return {
+                ...msg,
+                prompts: msg.prompts.map((singlePrompt)=>{
+
+                  if(singlePrompt.id !== promptId) return singlePrompt ;
+
+                  return {
+                    ...singlePrompt,
+                    responses: singlePrompt.responses.map((singleResponse, index)=>{
+                      if (index !== singlePrompt.activeResponseIndex) return singleResponse;
+
+                        return {
+                          ...singleResponse,
+                          isTypingTextFinished: isFinished
+                        };
+                      
+                    })
+                  }
+                }),
+              };
+          })
+       })
+    }),
+    }
 });

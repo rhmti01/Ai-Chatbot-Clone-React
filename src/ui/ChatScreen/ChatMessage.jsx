@@ -23,6 +23,7 @@ export default function ChatMessage({
 }) {
   // refs and states
   const messageRef = useRef();
+  const editRef = useRef();
   const currentChatId = useGeminiStore((state) => state.currentChatId);
   const [localAnimation, setLocalAnimation] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -104,6 +105,15 @@ export default function ChatMessage({
     setMessageAnimated,
   ]);
 
+  // focus on end of edited  prmpt value
+  useEffect(() => {
+    if (ActiveEditPrompt && editRef.current) {
+      const el = editRef.current;
+      el.focus();
+      el.selectionStart = el.selectionEnd = el.value.length;
+    }
+  }, [ActiveEditPrompt]);
+
   return (
     <div
       ref={messageRef}
@@ -122,50 +132,57 @@ export default function ChatMessage({
             alt="USER-PROFILE"
           />
 
-
           {!ActiveEditPrompt ? (
             <p
               className={`${
                 localAnimation ? "animate-moveInLeft  " : ""
-              }    font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
-             rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px] w-{30%} break-all  `}
+              }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
+             rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px] break-all  `}
             >
               {prompt}
             </p>
           ) : (
             <div
-              className="bg-surface rounded-3xl shadow-sm shadow-gray-100
-              w-full max-w-[360px] md:max-w-[480px] xl:max-w-[560px]
-              flex flex-col gap-y-6 p-4 animate-fadeIn-fast "
+              className="bg-gray-200 rounded-3xl shadow-sm shadow-gray-100
+              w-full flex flex-col gap-y-6 p-4 animate-fadeIn-fast h-full "
             >
               <textarea
+                ref={editRef}
                 autoFocus
                 onChange={(e) => {
-                  setEditedPromptValue(e.target.value);
+                  const v = e.target.value;
+                  setEditedPromptValue(v);
                   e.target.style.height = "auto";
                   const maxHeight = 200;
                   const newHeight = Math.min(e.target.scrollHeight, maxHeight);
                   e.target.style.height = `${newHeight}px`;
                 }}
                 value={editedPromptValue}
-                className="px-2 outline-0 resize-none w-full break-all 
-              overflow-y-auto min-h-[60px] max-h-[200px]"
+                className={`
+                    px-2 outline-0 resize-none w-full break-words overflow-y-auto
+                    ${
+                      editedPromptValue.split("\n").length >= 3 || editedPromptValue.length > 80
+                        ? "min-h-[140px]"
+                        : "min-h-[60px]"
+                    }
+                  `}
                 name="edit-prompt"
-              ></textarea>
+              />
 
               <div className="flex w-full justify-end gap-x-2 items-center">
                 <button
-                 onClick={()=>setActiveEditPrompt(false)}
-                 className="text-surface bg-gray-600 px-3 py-1
+                  onClick={() => setActiveEditPrompt(false)}
+                  className="text-surface bg-gray-600 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85"
                 >
                   Cancel
                 </button>
                 <button
-                onClick={()=>{
-                  setActiveEditPrompt(false)
-                  toast(editedPromptValue)
-                }}
+                  onClick={() => {
+                    setActiveEditPrompt(false);
+                    console.log(editedPromptValue);
+                    toast(editedPromptValue);
+                  }}
                   className="text-surface bg-indigo-600 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
                 >
@@ -179,11 +196,9 @@ export default function ChatMessage({
         {/* edit prompt  */}
         <button
           onClick={() => setActiveEditPrompt(true)}
-          className={` ${
-            localAnimation ? "animate-moveInRight" : "" 
-          }  
-          ${!ActiveEditPrompt ? "hover:scale-105 cursor-pointer " : "cursor-auto "}
-          basis-6 bg-amber-500/ mb-1.5  duration-300  `}
+          className={` ${localAnimation ? "animate-moveInRight" : ""} 
+          ${!ActiveEditPrompt ? " block " : " hidden "}
+          basis-6 bg-amber-500/ mb-1.5  duration-300 hover:scale-105 cursor-pointer  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
