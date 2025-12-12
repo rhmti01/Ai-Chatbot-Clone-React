@@ -9,7 +9,7 @@ export const useGeminiStore = create(
       ...createChatSlice(set, get),
     }),
     {
-      name: "gemini-chat-storage",
+      name: "ai-chatbot-storage",
       partialize: (state) => ({
         chatsList: state.chatsList,
         currentChatId: state.currentChatId,

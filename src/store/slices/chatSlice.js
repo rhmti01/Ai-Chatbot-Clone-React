@@ -5,7 +5,6 @@ export const createChatSlice = (set, get) => ({
   // initial values
   chatsList: [],
   inputText: "",
-  inputPrompt: "",
   showResult: false,
   chatUUID: "",
   currentChatId: null,
@@ -13,12 +12,8 @@ export const createChatSlice = (set, get) => ({
   // initial methods
   setInputText: (value) => set({ inputText: value }),
   setChatsList: (value) => set({ chatsList: value }),
-  setInputPrompt: (value) => set({ inputPrompt: value }),
-  setshowResult: (value) => set({ showResult: value }),
   setChatUUID: (value) => set({ chatUUID: value }),
   setCurrentChatId: (value) => set({ currentChatId: value }),
-
-
 
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
@@ -29,7 +24,7 @@ export const createChatSlice = (set, get) => ({
     const singlePromptData = {
       id: Date.now(),
       prompt: inputText,
-      activeResponseIndex : 0 ,
+      activeResponseIndex: 0,
       responses: [
         {
           id: Date.now(),
@@ -39,16 +34,16 @@ export const createChatSlice = (set, get) => ({
           hasAnimated: false,
           MessageActions: false,
           isTypingTextFinished: false,
-          isResponseLiked : null ,
+          isResponseLiked: null,
         },
       ],
-    }
+    };
 
-    // create new message 
+    // create new message
     const newMessage = {
       id: Date.now(),
       activePromptIndex: 0,
-      prompts : [singlePromptData],
+      prompts: [singlePromptData],
     };
 
     // CASE 1: if there is no active chat -> create new chat group
@@ -65,7 +60,7 @@ export const createChatSlice = (set, get) => ({
         messages: [newMessage],
       };
 
-      // update store state (add new chat to chatsList)
+      // update store state
       set({
         inputText: "",
         chatsList: [...chatsList, chatData],
@@ -74,16 +69,13 @@ export const createChatSlice = (set, get) => ({
         currentChatId: chatUUID,
       });
     }
-    // CASE 2: if chat already exists -> push message into that group
+    // CASE 2: existing chat
     else {
       set({
         inputText: "",
         chatsList: get().chatsList.map((chatData) =>
           chatData.id === currentChatId
-            ? {
-                ...chatData,
-                messages: [...chatData.messages, newMessage],
-              }
+            ? { ...chatData, messages: [...chatData.messages, newMessage] }
             : chatData
         ),
         showResult: true,
@@ -93,7 +85,7 @@ export const createChatSlice = (set, get) => ({
     // fetch response from AI API
     const apiResponse = await runChat(inputText);
 
-    // update the specific message's first response in current chat
+    // update response
     set({
       chatsList: get().chatsList.map((chatData) => {
         if (chatData.id === get().currentChatId) {
@@ -101,24 +93,25 @@ export const createChatSlice = (set, get) => ({
             msg.id === newMessage.id
               ? {
                   ...msg,
-                  prompts : msg.prompts.map((singlePrompt)=>{
-                    if(singlePrompt.id !== singlePromptData.id) return singlePrompt ;
+                  prompts: msg.prompts.map((singlePrompt) => {
+                    if (singlePrompt.id !== singlePromptData.id) return singlePrompt;
 
                     return {
                       ...singlePrompt,
-                      responses: singlePrompt.responses.map((singleResponse, index)=>{
-                        if(index !== singlePrompt.activeResponseIndex) return singleResponse ;
-                        
+                      responses: singlePrompt.responses.map((singleResponse, index) => {
+                        if (index !== singlePrompt.activeResponseIndex)
+                          return singleResponse;
+
                         return {
                           ...singleResponse,
                           hasAnimated: false,
                           loading: false,
                           text: apiResponse.text,
                           error: apiResponse.error,
-                        }
-                      })
-                    }
-                  })
+                        };
+                      }),
+                    };
+                  }),
                 }
               : msg
           );
@@ -130,267 +123,199 @@ export const createChatSlice = (set, get) => ({
     });
   },
 
-
-
-  // call for regenerate response
-  onRegenerateResponse: async (chatPageId, messageId , promptText , promptId) => {
-
-    // add new response to existed responses
+  // regenerate response
+  onRegenerateResponse: async (chatPageId, messageId, promptText, promptId) => {
     set((state) => ({
-        chatsList: state.chatsList.map((chat) => {
-          if (chat.id !== chatPageId) return chat;
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
 
-          return {
-            ...chat,
-            messages: chat.messages.map((msg) => {
-              if (msg.id !== messageId) return msg;
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
 
-              return {
-                ...msg ,
-                prompts : msg.prompts.map((singlePrompt)=>{
-                  if(singlePrompt.id !== promptId) return singlePrompt ;
+            return {
+              ...msg,
+              prompts: msg.prompts.map((singlePrompt) => {
+                if (singlePrompt.id !== promptId) return singlePrompt;
 
-                  const newResponse = {
-                    id: Date.now(),
-                    text: "",
-                    error: false,
-                    loading: true,
-                    hasAnimated: false,
-                    MessageActions: false,
-                    isTypingTextFinished: false,
-                  };
+                // create new response structure
+                const newResponse = {
+                  id: Date.now(),
+                  text: "",
+                  error: false,
+                  loading: true,
+                  hasAnimated: false,
+                  MessageActions: false,
+                  isTypingTextFinished: false,
+                };
 
-                  return {
-                    ...singlePrompt,
-                    responses : [...singlePrompt.responses , newResponse],
-                    activeResponseIndex : singlePrompt.responses.length  ,
-                  }
-                
-                })
-              }
-            }
-          
-          ),
-          };
-        }),
-        showResult: true,
-      }));
+                return {
+                  ...singlePrompt,
+                  responses: [...singlePrompt.responses, newResponse],
+                  activeResponseIndex: singlePrompt.responses.length,
+                };
+              }),
+            };
+          }),
+        };
+      }),
+      showResult: true,
+    }));
 
     // fetch response from AI API
     const apiResponse = await runChat(promptText);
 
-    // update the new response
     set((state) => ({
-        chatsList: state.chatsList.map((chat) => {
-          if (chat.id !== chatPageId) return chat;
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
 
-          return {
-            ...chat,
-            messages: chat.messages.map((msg) => {
-              if (msg.id !== messageId) return msg;
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
 
-              return {
-                ...msg,
-                prompts: msg.prompts.map((singlePrompt) => {
-                  if (singlePrompt.id !== promptId) return singlePrompt;
+            return {
+              ...msg,
+              prompts: msg.prompts.map((singlePrompt) => {
+                if (singlePrompt.id !== promptId) return singlePrompt;
 
-                  return {
-                    ...singlePrompt,
-                    responses: singlePrompt.responses.map((singleResponse , index)=>{
-                      if(index !== singlePrompt.activeResponseIndex) return singleResponse ;
+                return {
+                  ...singlePrompt,
+                  responses: singlePrompt.responses.map((singleResponse, index) => {
+                    if (index !== singlePrompt.activeResponseIndex)
+                      return singleResponse;
 
-                        return {
-                          ...singleResponse ,
-                          text : apiResponse.text ,
-                          error : apiResponse.error ,
-                          loading : false ,
-                          hasAnimated : false ,
-                        }
-
-                    })
-
-                  };
-                }),
-              };
-
-            }),
-          };
-        }),
-        showResult: false,
-      }));
+                    return {
+                      ...singleResponse,
+                      text: apiResponse.text,
+                      error: apiResponse.error,
+                      loading: false,
+                      hasAnimated: false,
+                    };
+                  }),
+                };
+              }),
+            };
+          }),
+        };
+      }),
+      showResult: false,
+    }));
   },
 
-
-
-  // switch responses by user selection
-  onSwitchResponse : (chatPageId  , messageId , promptId ,  direction)=>{
+  // switch response
+  onSwitchResponse: (chatPageId, messageId, promptId, direction) => {
     set((state) => ({
-        chatsList: state.chatsList.map((chat) => {
-          if (chat.id !== chatPageId) return chat;
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
 
-          return {
-            ...chat,
-            messages: chat.messages.map((msg) => {
-              if (msg.id !== messageId) return msg;
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
 
-              return{
-                ...msg,
-                prompts: msg.prompts.map((singlePrompt)=>{
-                  if(singlePrompt.id !== promptId) return singlePrompt ;
+            return {
+              ...msg,
+              prompts: msg.prompts.map((singlePrompt) => {
+                if (singlePrompt.id !== promptId) return singlePrompt;
 
-                  let newIndex = singlePrompt.activeResponseIndex + direction;
-                  newIndex = Math.max(0, newIndex);
-                  newIndex = Math.min(newIndex, singlePrompt.responses.length - 1);
+                let newIndex = singlePrompt.activeResponseIndex + direction;
+                newIndex = Math.max(0, newIndex);
+                newIndex = Math.min(newIndex, singlePrompt.responses.length - 1);
 
-                  return{
-                    ...singlePrompt,
-                    activeResponseIndex: newIndex,
-                  }
-
-                })
-              }
-            }),
-          };
-        }),
-      }));
+                // update active response index
+                return {
+                  ...singlePrompt,
+                  activeResponseIndex: newIndex,
+                };
+              }),
+            };
+          }),
+        };
+      }),
+    }));
   },
 
-
-
-  // change response like attribute
-  onToggleResponseLike : (chatPageId , messageId , promptId , responseId , status)=>{
+  // like toggle
+  onToggleResponseLike: (chatPageId, messageId, promptId, responseId, status) => {
     set((state) => ({
-        chatsList: state.chatsList.map((chat) => {
-          if (chat.id !== chatPageId) return chat;
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
 
-          return {
-            ...chat,
-            messages: chat.messages.map((msg) => {
-              if (msg.id !== messageId) return msg;
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
 
-              return{
-                ...msg,
-                prompts: msg.prompts.map((singlePrompt)=>{
-                  if(singlePrompt.id !== promptId) return singlePrompt ;
+            return {
+              ...msg,
+              prompts: msg.prompts.map((singlePrompt) => {
+                if (singlePrompt.id !== promptId) return singlePrompt;
 
-                  return {
-                    ...singlePrompt,
-                    responses : singlePrompt.responses.map((response)=>{
-                      if(response.id !== responseId) return response ;
+                // update response like status
+                return {
+                  ...singlePrompt,
+                  responses: singlePrompt.responses.map((response) => {
+                    if (response.id !== responseId) return response;
 
-                        return {
-                          ...response ,
-                          isResponseLiked : status
-                        }
-
-                    })
-                  }
-                })
-              }
-            }),
-          };
-        }),
-      }));
+                    return { ...response, isResponseLiked: status };
+                  }),
+                };
+              }),
+            };
+          }),
+        };
+      }),
+    }));
   },
 
-
-
-  // delete chat from chatsList by id
+  // delete chat
   onDeleteChat: (chatId) => {
     set({
       chatsList: get().chatsList.filter((chat) => chat.id !== chatId),
     });
   },
 
-
-
-  // edit chat main title
-  onEditChatTitle: (chatId , updatedTitle) => {
+  // edit chat title
+  onEditChatTitle: (chatId, updatedTitle) => {
     set({
-      chatsList: get().chatsList.map((chat) =>{
-        if (chat.id !== chatId) return chat ;
-
-        return {
-          ...chat , title: updatedTitle
-        }
-      }),
+      chatsList: get().chatsList.map((chat) =>
+        chat.id === chatId ? { ...chat, title: updatedTitle } : chat
+      ),
     });
   },
 
-
-
-  // update response hasAnimated status
-  setMessageAnimated: (chatId, messageId , promptId , responseId) => {
+  // set animation flag
+  setMessageAnimated: (chatId, messageId, promptId, responseId) => {
     set((state) => ({
-      chatsList: state.chatsList.map((chat) =>{
-        if (chat.id !== chatId) return chat ;
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatId) return chat;
 
         return {
           ...chat,
-          messages: chat.messages.map((msg) =>{
-            if (msg.id !== messageId) return msg ;
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
 
             return {
               ...msg,
-              prompts: msg.prompts.map((singlePrompt)=>{
-                if(singlePrompt.id !== promptId) return singlePrompt ;
+              prompts: msg.prompts.map((singlePrompt) => {
+                if (singlePrompt.id !== promptId) return singlePrompt;
 
+                // update message animation flag
                 return {
-                  ...singlePrompt ,
-                  responses: singlePrompt.responses.map((singleResponse)=>{
-                    if(singleResponse.id !== responseId) return singleResponse ;
+                  ...singlePrompt,
+                  responses: singlePrompt.responses.map((singleResponse) => {
+                    if (singleResponse.id !== responseId) return singleResponse;
 
-                    return{
-                      ...singleResponse ,
-                      hasAnimated : true ,
-                    }
-                  })
-
-                }
+                    return { ...singleResponse, hasAnimated: true };
+                  }),
+                };
               }),
             };
           }),
-        }
-      })
+        };
+      }),
     }));
   },
-
-
-
-  // display response Action buttons after typing finished
-  setMessageActionsDisplay: (chatId, messageId, promptId , isFinished) => {
-    set((state) => ({
-      chatsList: state.chatsList.map((chat) =>{
-        
-        if (chat.id !== chatId) return chat ;
-
-        return {
-          ...chat,
-          messages: chat.messages.map((msg)=>{
-            if (msg.id !== messageId) return msg ;
-        
-              return {
-                ...msg,
-                prompts: msg.prompts.map((singlePrompt)=>{
-
-                  if(singlePrompt.id !== promptId) return singlePrompt ;
-
-                  return {
-                    ...singlePrompt,
-                    responses: singlePrompt.responses.map((singleResponse, index)=>{
-                      if (index !== singlePrompt.activeResponseIndex) return singleResponse;
-
-                        return {
-                          ...singleResponse,
-                          isTypingTextFinished: isFinished
-                        };
-                      
-                    })
-                  }
-                }),
-              };
-          })
-       })
-    }),
-    }
 });

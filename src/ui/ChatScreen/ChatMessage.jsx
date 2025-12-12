@@ -9,7 +9,9 @@ import toast from "react-hot-toast";
 
 export default function ChatMessage({
   id: messageId,
-  prompt,
+  promptText,
+  promptId,
+  promptsList,
   responseText,
   responseError,
   loading,
@@ -21,6 +23,9 @@ export default function ChatMessage({
   totalResponsesLength,
   isResponseLiked,
 }) {
+
+  toast(promptsList.length)
+
   // refs and states
   const messageRef = useRef();
   const editRef = useRef();
@@ -30,7 +35,7 @@ export default function ChatMessage({
   const [displayResponseActions, setDisplayResponseActions] =
     useState(messageActions);
   const [ActiveEditPrompt, setActiveEditPrompt] = useState(false);
-  const [editedPromptValue, setEditedPromptValue] = useState(prompt);
+  const [editedPromptValue, setEditedPromptValue] = useState(promptText);
 
   // store actions
   const onRegenerateResponse = useGeminiStore(
@@ -42,9 +47,6 @@ export default function ChatMessage({
   );
   const onToggleResponseLike = useGeminiStore(
     (state) => state.onToggleResponseLike
-  );
-  const setMessageActionsDisplay = useGeminiStore(
-    (state) => state.setMessageActionsDisplay
   );
 
   // response text typing effect on ui
@@ -68,11 +70,9 @@ export default function ChatMessage({
     if (isFinished && !loading) {
       // show response actions
       setDisplayResponseActions(true);
-      setMessageActionsDisplay(chatPageId, messageId, responseId, true);
     } else {
       // hide  response actions
       setDisplayResponseActions(false);
-      setMessageActionsDisplay(chatPageId, messageId, responseId, false);
     }
   }, [
     chatPageId,
@@ -80,7 +80,6 @@ export default function ChatMessage({
     loading,
     messageId,
     responseId,
-    setMessageActionsDisplay,
     hasAnimated,
   ]);
 
@@ -92,18 +91,9 @@ export default function ChatMessage({
   // detect when typing animation ends
   useEffect(() => {
     if (!loading && displayedText === responseText && !hasAnimated) {
-      setMessageAnimated(currentChatId, messageId, responseId);
+      setMessageAnimated(currentChatId, messageId, promptId , responseId);
     }
-  }, [
-    displayedText,
-    loading,
-    hasAnimated,
-    responseText,
-    messageId,
-    currentChatId,
-    responseId,
-    setMessageAnimated,
-  ]);
+  }, [displayedText, loading, hasAnimated, responseText, messageId, currentChatId, responseId, setMessageAnimated, promptId]);
 
   // focus on end of edited  prmpt value
   useEffect(() => {
@@ -139,7 +129,7 @@ export default function ChatMessage({
               }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
              rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px] break-all  `}
             >
-              {prompt}
+              {promptText}
             </p>
           ) : (
             <div
@@ -298,7 +288,7 @@ export default function ChatMessage({
               <button
                 className=" cursor-pointer hover:scale-105 duration-300 "
                 onClick={() => {
-                  onToggleResponseLike(chatPageId, messageId, responseId, true);
+                  onToggleResponseLike(chatPageId, messageId, promptId , responseId, true);
                 }}
               >
                 <svg
@@ -335,6 +325,7 @@ export default function ChatMessage({
                   onToggleResponseLike(
                     chatPageId,
                     messageId,
+                    promptId,
                     responseId,
                     false
                   );
@@ -432,7 +423,7 @@ export default function ChatMessage({
                 <button
                   disabled={activeResponseIndex === 0}
                   onClick={() => {
-                    onSwitchResponse(chatPageId, messageId, -1);
+                    onSwitchResponse(chatPageId, messageId, promptId , -1);
                   }}
                   className={`  ${
                     activeResponseIndex === 0
@@ -466,7 +457,7 @@ export default function ChatMessage({
                 <button
                   disabled={activeResponseIndex === totalResponsesLength - 1}
                   onClick={() => {
-                    onSwitchResponse(chatPageId, messageId, +1);
+                    onSwitchResponse(chatPageId, messageId, promptId, +1);
                   }}
                   className={`  ${
                     activeResponseIndex === totalResponsesLength - 1
@@ -497,7 +488,7 @@ export default function ChatMessage({
           {/* regenerate action button */}
           <button
             onClick={() => {
-              onRegenerateResponse(chatPageId, messageId, prompt);
+              onRegenerateResponse(chatPageId, messageId, promptText, promptId);
             }}
             className={`    hover:scale-105  px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100
                cursor-pointer rounded-full flex gap-x-1 items-center text-gray-700 text-[14.5px] font-medium
