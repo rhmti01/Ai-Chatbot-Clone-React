@@ -23,8 +23,7 @@ export default function ChatMessage({
   totalResponsesLength,
   isResponseLiked,
 }) {
-
-  toast(promptsList.length)
+  console.log(promptsList)
 
   // refs and states
   const messageRef = useRef();
@@ -48,6 +47,7 @@ export default function ChatMessage({
   const onToggleResponseLike = useGeminiStore(
     (state) => state.onToggleResponseLike
   );
+  const onEditPrompt = useGeminiStore((state) => state.onEditPrompt);
 
   // response text typing effect on ui
   const { displayedTypingText, isFinished } = useTypeEffect(
@@ -74,14 +74,7 @@ export default function ChatMessage({
       // hide  response actions
       setDisplayResponseActions(false);
     }
-  }, [
-    chatPageId,
-    isFinished,
-    loading,
-    messageId,
-    responseId,
-    hasAnimated,
-  ]);
+  }, [chatPageId, isFinished, loading, messageId, responseId, hasAnimated]);
 
   // decide which text to show
   const displayedText = useMemo(() => {
@@ -91,11 +84,21 @@ export default function ChatMessage({
   // detect when typing animation ends
   useEffect(() => {
     if (!loading && displayedText === responseText && !hasAnimated) {
-      setMessageAnimated(currentChatId, messageId, promptId , responseId);
+      setMessageAnimated(currentChatId, messageId, promptId, responseId);
     }
-  }, [displayedText, loading, hasAnimated, responseText, messageId, currentChatId, responseId, setMessageAnimated, promptId]);
+  }, [
+    displayedText,
+    loading,
+    hasAnimated,
+    responseText,
+    messageId,
+    currentChatId,
+    responseId,
+    setMessageAnimated,
+    promptId,
+  ]);
 
-  // focus on end of edited  prmpt value
+  // focus on end of edited  prompt value
   useEffect(() => {
     if (ActiveEditPrompt && editRef.current) {
       const el = editRef.current;
@@ -127,7 +130,7 @@ export default function ChatMessage({
               className={`${
                 localAnimation ? "animate-moveInLeft  " : ""
               }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
-             rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px] break-all  `}
+             rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
             >
               {promptText}
             </p>
@@ -151,7 +154,8 @@ export default function ChatMessage({
                 className={`
                     px-2 outline-0 resize-none w-full break-words overflow-y-auto
                     ${
-                      editedPromptValue.split("\n").length >= 3 || editedPromptValue.length > 80
+                      editedPromptValue.split("\n").length >= 3 ||
+                      editedPromptValue.length > 80
                         ? "min-h-[140px]"
                         : "min-h-[60px]"
                     }
@@ -169,9 +173,12 @@ export default function ChatMessage({
                 </button>
                 <button
                   onClick={() => {
+                    if (!editedPromptValue.trim()) {
+                      toast.error("Prompt cannot be empty");
+                      return;
+                    }
                     setActiveEditPrompt(false);
-                    console.log(editedPromptValue);
-                    toast(editedPromptValue);
+                    onEditPrompt(chatPageId,messageId , editedPromptValue);
                   }}
                   className="text-surface bg-indigo-600 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
@@ -185,7 +192,9 @@ export default function ChatMessage({
 
         {/* edit prompt  */}
         <button
-          onClick={() => setActiveEditPrompt(true)}
+          onClick={() => {
+            if (!loading) setActiveEditPrompt(true);
+          }}
           className={` ${localAnimation ? "animate-moveInRight" : ""} 
           ${!ActiveEditPrompt ? " block " : " hidden "}
           basis-6 bg-amber-500/ mb-1.5  duration-300 hover:scale-105 cursor-pointer  `}
@@ -288,7 +297,13 @@ export default function ChatMessage({
               <button
                 className=" cursor-pointer hover:scale-105 duration-300 "
                 onClick={() => {
-                  onToggleResponseLike(chatPageId, messageId, promptId , responseId, true);
+                  onToggleResponseLike(
+                    chatPageId,
+                    messageId,
+                    promptId,
+                    responseId,
+                    true
+                  );
                 }}
               >
                 <svg
@@ -423,7 +438,7 @@ export default function ChatMessage({
                 <button
                   disabled={activeResponseIndex === 0}
                   onClick={() => {
-                    onSwitchResponse(chatPageId, messageId, promptId , -1);
+                    onSwitchResponse(chatPageId, messageId, promptId, -1);
                   }}
                   className={`  ${
                     activeResponseIndex === 0

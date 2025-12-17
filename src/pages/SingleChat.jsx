@@ -91,9 +91,9 @@ function SingleChat() {
       <div
         className="
       pointer-events-none
-      fixed bottom-6 right-88 
-      w-full max-w-[900px] h-[15%]
-      bg-[linear-gradient(to_top,#f4f5f6,transparent)]
+      fixed bottom-6 2xl:right-[10%] right-0
+      w-full 2xl:max-w-[900px] max-w-full h-[15%]
+      bg-[linear-gradient(to_top,##F4F5F6,transparent)]
       z-10
     "
       ></div>
