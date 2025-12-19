@@ -123,97 +123,96 @@ export const createChatSlice = (set, get) => ({
     });
   },
 
-// edit prompt text and generate new prompt
-onEditPrompt: async (chatPageId, messageId, newPromptText) => {
-  const newPromptId = Date.now();
-  const newResponseId = Date.now() + 1;
+  // edit prompt text and generate new prompt
+  onEditPrompt: async (chatPageId, messageId, newPromptText) => {
+    const newPromptId = Date.now();
+    const newResponseId = Date.now() + 1;
 
-  //  truncate messages + add new prompt (atomic)
-  set((state) => ({
-    chatsList: state.chatsList.map((chat) => {
-      if (chat.id !== chatPageId) return chat;
+    //  truncate messages + add new prompt (atomic)
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
 
-      const messageIndex = chat.messages.findIndex(
-        (msg) => msg.id === messageId
-      );
+        const messageIndex = chat.messages.findIndex(
+          (msg) => msg.id === messageId
+        );
 
-      if (messageIndex === -1) return chat;
+        if (messageIndex === -1) return chat;
 
-      return {
-        ...chat,
-        messages: chat.messages
-          .slice(0, messageIndex + 1)
-          .map((msg) => {
+        return {
+          ...chat,
+          messages: chat.messages
+            .slice(0, messageIndex + 1)
+            .map((msg) => {
+              if (msg.id !== messageId) return msg;
+
+              const newPromptData = {
+                id: newPromptId,
+                prompt: newPromptText,
+                activeResponseIndex: 0,
+                responses: [
+                  {
+                    id: newResponseId,
+                    text: "",
+                    error: false,
+                    loading: true,
+                    hasAnimated: false,
+                    MessageActions: false,
+                    isTypingTextFinished: false,
+                    isResponseLiked: null,
+                  },
+                ],
+              };
+
+              return {
+                ...msg,
+                prompts: [...msg.prompts, newPromptData],
+                activePromptIndex: msg.prompts.length,
+              };
+            }),
+        };
+      }),
+    }));
+
+    // fetch response
+    const apiResponse = await runChat(newPromptText);
+
+    //  update response by ID (safe async)
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
+
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
             if (msg.id !== messageId) return msg;
-
-            const newPromptData = {
-              id: newPromptId,
-              prompt: newPromptText,
-              activeResponseIndex: 0,
-              responses: [
-                {
-                  id: newResponseId,
-                  text: "",
-                  error: false,
-                  loading: true,
-                  hasAnimated: false,
-                  MessageActions: false,
-                  isTypingTextFinished: false,
-                  isResponseLiked: null,
-                },
-              ],
-            };
 
             return {
               ...msg,
-              prompts: [...msg.prompts, newPromptData],
-              activePromptIndex: msg.prompts.length,
+              prompts: msg.prompts.map((prompt) => {
+                if (prompt.id !== newPromptId) return prompt;
+
+                return {
+                  ...prompt,
+                  responses: prompt.responses.map((resp) =>
+                    resp.id !== newResponseId
+                      ? resp
+                      : {
+                          ...resp,
+                          text: apiResponse.text,
+                          error: apiResponse.error,
+                          loading: false,
+                          hasAnimated: false,
+                        }
+                  ),
+                };
+              }),
             };
           }),
-      };
-    }),
-  }));
-
-  // fetch response
-  const apiResponse = await runChat(newPromptText);
-
-  //  update response by ID (safe async)
-  set((state) => ({
-    chatsList: state.chatsList.map((chat) => {
-      if (chat.id !== chatPageId) return chat;
-
-      return {
-        ...chat,
-        messages: chat.messages.map((msg) => {
-          if (msg.id !== messageId) return msg;
-
-          return {
-            ...msg,
-            prompts: msg.prompts.map((prompt) => {
-              if (prompt.id !== newPromptId) return prompt;
-
-              return {
-                ...prompt,
-                responses: prompt.responses.map((resp) =>
-                  resp.id !== newResponseId
-                    ? resp
-                    : {
-                        ...resp,
-                        text: apiResponse.text,
-                        error: apiResponse.error,
-                        loading: false,
-                        hasAnimated: false,
-                      }
-                ),
-              };
-            }),
-          };
-        }),
-      };
-    }),
-  }));
-},
-
+        };
+      }),
+    }));
+  },
 
   // regenerate response
   onRegenerateResponse: async (chatPageId, messageId, promptText, promptId) => {
@@ -293,6 +292,33 @@ onEditPrompt: async (chatPageId, messageId, newPromptText) => {
         };
       }),
       showResult: false,
+    }));
+  },
+
+  // switch prompt
+  onSwitchPrompt: (chatPageId, messageId, direction) => {
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) => {
+        if (chat.id !== chatPageId) return chat;
+
+        return {
+          ...chat,
+          messages: chat.messages.map((msg) => {
+            if (msg.id !== messageId) return msg;
+
+                let newIndex = msg.activePromptIndex + direction;
+                newIndex = Math.max(0, newIndex);
+                newIndex = Math.min(newIndex, msg.prompts.length - 1);
+
+                // update active prompt index
+                return {
+                  ...msg,
+                  activePromptIndex: newIndex,
+                };
+
+          }),
+        };
+      }),
     }));
   },
 

@@ -6,12 +6,18 @@ import rehypeRaw from "rehype-raw";
 import { useRef, useEffect, useState, useMemo } from "react";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import toast from "react-hot-toast";
+import CopyResponseBtn from "../CopyResponseBtn";
+import SwitchResponses from "../SwitchResponses";
+import RegenerateResponseBtn from "../RegenerateResponseBtn";
+import SwitchPrompts from "../SwitchPrompts";
+import CopyPromptBtn from "../CopyPromptBtn";
 
 export default function ChatMessage({
   id: messageId,
-  promptText,
-  promptId,
+  activePromptText,
+  activePromptId,
   promptsList,
+  activePromptIndex,
   responseText,
   responseError,
   loading,
@@ -23,24 +29,25 @@ export default function ChatMessage({
   totalResponsesLength,
   isResponseLiked,
 }) {
-  console.log(promptsList)
 
   // refs and states
   const messageRef = useRef();
   const editRef = useRef();
   const currentChatId = useGeminiStore((state) => state.currentChatId);
   const [localAnimation, setLocalAnimation] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [isResponseCopied, setResponseCopied] = useState(false);
+  const [isPromptCopied, setPromptCopied] = useState(false);
   const [displayResponseActions, setDisplayResponseActions] =
     useState(messageActions);
   const [ActiveEditPrompt, setActiveEditPrompt] = useState(false);
-  const [editedPromptValue, setEditedPromptValue] = useState(promptText);
+  const [editedPromptValue, setEditedPromptValue] = useState(activePromptText);
 
   // store actions
   const onRegenerateResponse = useGeminiStore(
     (state) => state.onRegenerateResponse
   );
   const onSwitchResponse = useGeminiStore((state) => state.onSwitchResponse);
+  const onSwitchPrompt = useGeminiStore((state) => state.onSwitchPrompt);
   const setMessageAnimated = useGeminiStore(
     (state) => state.setMessageAnimated
   );
@@ -84,7 +91,7 @@ export default function ChatMessage({
   // detect when typing animation ends
   useEffect(() => {
     if (!loading && displayedText === responseText && !hasAnimated) {
-      setMessageAnimated(currentChatId, messageId, promptId, responseId);
+      setMessageAnimated(currentChatId, messageId, activePromptId, responseId);
     }
   }, [
     displayedText,
@@ -95,7 +102,7 @@ export default function ChatMessage({
     currentChatId,
     responseId,
     setMessageAnimated,
-    promptId,
+    activePromptId,
   ]);
 
   // focus on end of edited  prompt value
@@ -115,25 +122,43 @@ export default function ChatMessage({
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
-      <div className="px-6 flex justify-between items-end gap-x-3 bg-blue-500/ ">
-        <div className="flex items-end space-x-2 w-full bg-amber-200/` basis-full ">
+      <div className="px-6 pb-3 flex justify-between items-start gap-x-3 bg-green-500/">
+        <div className="flex items-start space-x-2 w-full bg-amber-200/ basis-full ">
           <img
             className={`    ${
               localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
-            }  -translate-x-0.5 size-7 rounded-2xl    `}
+            }  -translate-x-0.5 size-7 rounded-2xl  mt-1   `}
             src="/assets/profile-img.png"
             alt="USER-PROFILE"
           />
 
           {!ActiveEditPrompt ? (
-            <p
-              className={`${
-                localAnimation ? "animate-moveInLeft  " : ""
-              }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
+            <div className={`  ${promptsList.length > 1 ? "  " : " " } flex flex-col  bg-blue-400/  gap-y-1  `}>
+              <p
+                className={`${
+                  localAnimation ? "animate-moveInLeft  " : ""
+                }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
              rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
-            >
-              {promptText}
-            </p>
+              >
+                {activePromptText}
+              </p>
+              <div className={`  ${ localAnimation ? "animate-moveInLeft  " : ""}  flex gap-x-1 pl-1 py-[8px]  `} >
+                <CopyPromptBtn
+                  promptText={activePromptText}
+                  setPromptCopied={setPromptCopied}
+                  isPromptCopied={isPromptCopied}
+                  />
+                {promptsList.length > 1 && (
+                <SwitchPrompts
+                  prompsLength={promptsList.length}
+                  activePromptIndex={activePromptIndex}
+                  chatPageId={chatPageId}
+                  messageId={messageId}
+                  onSwitchPrompt={onSwitchPrompt}
+                />
+              )}
+              </div>
+            </div>
           ) : (
             <div
               className="bg-gray-200 rounded-3xl shadow-sm shadow-gray-100
@@ -163,6 +188,7 @@ export default function ChatMessage({
                 name="edit-prompt"
               />
 
+              {/* edit prompt actions */}
               <div className="flex w-full justify-end gap-x-2 items-center">
                 <button
                   onClick={() => setActiveEditPrompt(false)}
@@ -176,9 +202,12 @@ export default function ChatMessage({
                     if (!editedPromptValue.trim()) {
                       toast.error("Prompt cannot be empty");
                       return;
+                    } else if (editedPromptValue === activePromptText) {
+                      toast.error("No changes made to the prompt");
+                      return;
                     }
                     setActiveEditPrompt(false);
-                    onEditPrompt(chatPageId,messageId , editedPromptValue);
+                    onEditPrompt(chatPageId, messageId, editedPromptValue);
                   }}
                   className="text-surface bg-indigo-600 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
@@ -197,7 +226,7 @@ export default function ChatMessage({
           }}
           className={` ${localAnimation ? "animate-moveInRight" : ""} 
           ${!ActiveEditPrompt ? " block " : " hidden "}
-          basis-6 bg-amber-500/ mb-1.5  duration-300 hover:scale-105 cursor-pointer  `}
+          basis-6 bg-amber-500/  duration-300 hover:scale-105 cursor-pointer  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -233,7 +262,7 @@ export default function ChatMessage({
       </div>
 
       {/* AI response */}
-      <div className="flex flex-col mt-3 pl-16 pr-10 pb-7 bg-amber-100/">
+      <div className={`  ${promptsList.length>1 ? "" : ""}  flex flex-col  pl-16 pr-10 pb-7 bg-amber-100/   `}>
         <div
           className={`${
             localAnimation ? "animate-moveInLeft animate-delay-xx " : ""
@@ -300,7 +329,7 @@ export default function ChatMessage({
                   onToggleResponseLike(
                     chatPageId,
                     messageId,
-                    promptId,
+                    activePromptId,
                     responseId,
                     true
                   );
@@ -340,7 +369,7 @@ export default function ChatMessage({
                   onToggleResponseLike(
                     chatPageId,
                     messageId,
-                    promptId,
+                    activePromptId,
                     responseId,
                     false
                   );
@@ -375,170 +404,34 @@ export default function ChatMessage({
               <span className=" h-4 w-[2px] bg-gray-400/85 rounded-full "></span>
 
               {/* copy response text */}
-              <button
-                className=" cursor-pointer hover:scale-105 duration-300 "
-                onClick={() => {
-                  navigator.clipboard.writeText(responseText).then(() => {
-                    toast.success("Copied");
-                    setCopied(true);
-
-                    setTimeout(() => {
-                      setCopied(false);
-                    }, 1200);
-                  });
-                }}
-              >
-                {copied ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={3}
-                    className=" size-[18px] cursor-pointer stroke-indigo-500 animate-fadeOut "
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m4.5 12.75 6 6 9-13.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className=" size-[18px] cursor-pointer text-gray-500 hover:text-indigo-500 animate-fadeIn-fast  "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M16 12.9v4.2c0 3.5-1.4 4.9-4.9 4.9H6.9C3.4 22 2 20.6 2 17.1v-4.2C2 9.4 3.4 8 6.9 8h4.2c3.5 0 4.9 1.4 4.9 4.9z"
-                    ></path>
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M22 6.9v4.2c0 3.5-1.4 4.9-4.9 4.9H16v-3.1C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2h4.2C20.6 2 22 3.4 22 6.9z"
-                    ></path>
-                  </svg>
-                )}
-              </button>
+              <CopyResponseBtn
+                responseText={responseText}
+                setResponseCopied={setResponseCopied}
+                isResponseCopied={isResponseCopied}
+              />
             </div>
 
             {/* regenerated response switch */}
             {totalResponsesLength > 1 && (
-              <div
-                className={`   flex items-center space-x-1 rounded-2xl shadow-sm shadow-gray-100
-               text-gray-600 bg-surface px-1.5 py-[6px]  `}
-              >
-                {/* LEFT - back to last response */}
-                <button
-                  disabled={activeResponseIndex === 0}
-                  onClick={() => {
-                    onSwitchResponse(chatPageId, messageId, promptId, -1);
-                  }}
-                  className={`  ${
-                    activeResponseIndex === 0
-                      ? " text-gray-300 cursor-auto "
-                      : "cursor-pointer"
-                  }   `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className=" size-[14px] "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeMiterlimit="10"
-                      strokeWidth="2.5"
-                      d="M15 19.92L8.48 13.4c-.77-.77-.77-2.03 0-2.8L15 4.08"
-                    ></path>
-                  </svg>
-                </button>
-
-                {/* response counter */}
-                <p className=" text-[14px] font-medium  ">
-                  {` ${activeResponseIndex + 1} / ${totalResponsesLength} `}
-                </p>
-
-                {/* RIGHT - go to furthur response */}
-                <button
-                  disabled={activeResponseIndex === totalResponsesLength - 1}
-                  onClick={() => {
-                    onSwitchResponse(chatPageId, messageId, promptId, +1);
-                  }}
-                  className={`  ${
-                    activeResponseIndex === totalResponsesLength - 1
-                      ? " text-gray-300 cursor-auto "
-                      : "cursor-pointer"
-                  }   `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className=" size-[14px] "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeMiterlimit="10"
-                      strokeWidth="2.5"
-                      d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
+              <SwitchResponses
+                chatPageId={chatPageId}
+                messageId={messageId}
+                activePromptId={activePromptId}
+                activeResponseIndex={activeResponseIndex}
+                totalResponsesLength={totalResponsesLength}
+                onSwitchResponse={onSwitchResponse}
+              />
             )}
           </div>
 
           {/* regenerate action button */}
-          <button
-            onClick={() => {
-              onRegenerateResponse(chatPageId, messageId, promptText, promptId);
-            }}
-            className={`    hover:scale-105  px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100
-               cursor-pointer rounded-full flex gap-x-1 items-center text-gray-700 text-[14.5px] font-medium
-                disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:shadow-none `}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`   size-5 mt-0.5   `}
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-              ></path>
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8.01 14.51c.18.3.4.58.65.83a4.732 4.732 0 006.68 0 4.71 4.71 0 001.32-2.67M7.34 11.33c.14-.98.57-1.92 1.32-2.67a4.732 4.732 0 016.68 0c.26.26.47.54.65.83"
-              ></path>
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M7.82 17.18v-2.67h2.67M16.18 6.82v2.67h-2.67"
-              ></path>
-            </svg>
-            <span className=" hidden sm:block ">Regenerate</span>
-          </button>
+          <RegenerateResponseBtn
+            onRegenerateResponse={onRegenerateResponse}
+            chatPageId={chatPageId}
+            messageId={messageId}
+            promptText={activePromptText}
+            promptId={activePromptId}
+          />
         </div>
       </div>
     </div>

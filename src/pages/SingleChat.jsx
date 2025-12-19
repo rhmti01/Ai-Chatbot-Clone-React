@@ -73,8 +73,9 @@ function SingleChat() {
             data-chat-message
             chatPageId={selectedChat.id}
             promptsList={message.prompts}
-            promptText={activePrompt.prompt}
-            promptId={activePrompt.id}
+            activePromptText={activePrompt.prompt}
+            activePromptIndex={message.activePromptIndex}
+            activePromptId={activePrompt.id}
             responseText={activeResponse.text}
             responseError={activeResponse.error}
             messageActions={activeResponse.MessageActions}
