@@ -9,7 +9,7 @@ function SwitchPrompts({
 }) {
   return (
     <div
-      className={`  flex items-center space-x-[3px] rounded-2xl shadow-sm shadow-gray-100
+      className={`  flex items-center space-x-[3px] rounded-2xl 
                text-gray-600 bg-transparent px-2     `}
     >
       {/* LEFT - back to last response */}

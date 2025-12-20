@@ -2,7 +2,12 @@ import { useTypeEffect } from "../../utils/useTypeEffect";
 import Loader from "../../ui/Loader";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize";
+import { defaultSchema } from "rehype-sanitize";
+import "katex/dist/katex.min.css";
 import { useRef, useEffect, useState, useMemo } from "react";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import toast from "react-hot-toast";
@@ -11,6 +16,27 @@ import SwitchResponses from "../SwitchResponses";
 import RegenerateResponseBtn from "../RegenerateResponseBtn";
 import SwitchPrompts from "../SwitchPrompts";
 import CopyPromptBtn from "../CopyPromptBtn";
+import { normalizeLLMOutput } from "../../utils/normalizeLLMOutput";
+
+// default rehype sanitize schema with math tag support
+const schema = {
+  ...defaultSchema,
+  tagNames: [
+    ...defaultSchema.tagNames,
+    "span",
+    "div",
+    "math",
+    "mi",
+    "mn",
+    "mo",
+    "mrow",
+  ],
+  attributes: {
+    ...defaultSchema.attributes,
+    span: ["className", "style"],
+    div: ["className"],
+  },
+};
 
 export default function ChatMessage({
   id: messageId,
@@ -29,7 +55,6 @@ export default function ChatMessage({
   totalResponsesLength,
   isResponseLiked,
 }) {
-
   // refs and states
   const messageRef = useRef();
   const editRef = useRef();
@@ -122,18 +147,24 @@ export default function ChatMessage({
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
-      <div className="px-6 pb-3 flex justify-between items-start gap-x-3 bg-green-500/">
-        <div className="flex items-start space-x-2 w-full bg-amber-200/ basis-full ">
+      <div className="px-6 pb-3 flex justify-between items-end gap-x-3 bg-green-500/">
+        <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
           <img
             className={`    ${
               localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
-            }  -translate-x-0.5 size-7 rounded-2xl  mt-1   `}
+            }  ${
+              ActiveEditPrompt ? "  " : "-translate-y-11"
+            } -translate-x-0.5  size-7 rounded-2xl  mt-1   `}
             src="/assets/profile-img.png"
             alt="USER-PROFILE"
           />
 
           {!ActiveEditPrompt ? (
-            <div className={`  ${promptsList.length > 1 ? "  " : " " } flex flex-col  bg-blue-400/  gap-y-1  `}>
+            <div
+              className={`  ${
+                promptsList.length > 1 ? "  " : " "
+              } flex flex-col  bg-blue-400/  gap-y-1  `}
+            >
               <p
                 className={`${
                   localAnimation ? "animate-moveInLeft  " : ""
@@ -142,21 +173,25 @@ export default function ChatMessage({
               >
                 {activePromptText}
               </p>
-              <div className={`  ${ localAnimation ? "animate-moveInLeft  " : ""}  flex gap-x-1 pl-1 py-[8px]  `} >
+              <div
+                className={`  ${
+                  localAnimation ? "animate-moveInLeft animate-delay-ss " : ""
+                }  flex gap-x-1 pl-1 py-[8px]  `}
+              >
                 <CopyPromptBtn
                   promptText={activePromptText}
                   setPromptCopied={setPromptCopied}
                   isPromptCopied={isPromptCopied}
-                  />
-                {promptsList.length > 1 && (
-                <SwitchPrompts
-                  prompsLength={promptsList.length}
-                  activePromptIndex={activePromptIndex}
-                  chatPageId={chatPageId}
-                  messageId={messageId}
-                  onSwitchPrompt={onSwitchPrompt}
                 />
-              )}
+                {promptsList.length > 1 && (
+                  <SwitchPrompts
+                    prompsLength={promptsList.length}
+                    activePromptIndex={activePromptIndex}
+                    chatPageId={chatPageId}
+                    messageId={messageId}
+                    onSwitchPrompt={onSwitchPrompt}
+                  />
+                )}
               </div>
             </div>
           ) : (
@@ -226,7 +261,7 @@ export default function ChatMessage({
           }}
           className={` ${localAnimation ? "animate-moveInRight" : ""} 
           ${!ActiveEditPrompt ? " block " : " hidden "}
-          basis-6 bg-amber-500/  duration-300 hover:scale-105 cursor-pointer  `}
+          basis-6 bg-amber-500/ -translate-y-14  duration-300 hover:scale-105 cursor-pointer  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +297,11 @@ export default function ChatMessage({
       </div>
 
       {/* AI response */}
-      <div className={`  ${promptsList.length>1 ? "" : ""}  flex flex-col  pl-16 pr-10 pb-7 bg-amber-100/   `}>
+      <div
+        className={`  ${
+          promptsList.length > 1 ? "" : ""
+        }  flex flex-col  pl-16 pr-10 pb-7 bg-amber-100/   `}
+      >
         <div
           className={`${
             localAnimation ? "animate-moveInLeft animate-delay-xx " : ""
@@ -293,10 +332,10 @@ export default function ChatMessage({
             } font-outfit max-w-none mt-1 leading-normal font-[500] mb-0 text-[16]  `}
           >
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeSanitize, schema]]}
             >
-              {displayedText}
+              {normalizeLLMOutput(displayedText)}
             </ReactMarkdown>
           </div>
         )}

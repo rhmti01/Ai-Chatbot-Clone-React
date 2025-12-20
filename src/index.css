@@ -204,6 +204,9 @@
   .animate-delay-xs {
     animation-delay: 0.1s;
   }
+  .animate-delay-ss {
+    animation-delay: 0.1s;
+  }
   .animate-delay-xx {
     animation-delay: 0.25s;
   }
@@ -229,8 +232,7 @@
 
 /* costum window scroll */
 @layer base {
-
-   div::-webkit-scrollbar {
+  div::-webkit-scrollbar {
     width: 7px;
     height: 3px;
     cursor: auto;
@@ -253,7 +255,7 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-}
+  }
 
   div::-webkit-scrollbar-thumb {
     background-color: #616161ed;
@@ -268,7 +270,7 @@
     -moz-transition: all 0.8s ease-in-out;
     -ms-transition: all 0.8s ease-in-out;
     -o-transition: all 0.8s ease-in-out;
-  } 
+  }
 
   textarea::-webkit-scrollbar {
     width: 7px;
@@ -283,7 +285,7 @@
     -moz-border-radius: 14px;
     -ms-border-radius: 14px;
     -o-border-radius: 14px;
-}
+  }
 
   textarea::-webkit-scrollbar-track {
     background: rgb(197, 196, 196);
@@ -308,10 +310,10 @@
     -moz-transition: all 0.8s ease-in-out;
     -ms-transition: all 0.8s ease-in-out;
     -o-transition: all 0.8s ease-in-out;
-  } 
+  }
 }
 
 /* user text selection */
 ::selection {
-  @apply bg-indigo-500 text-white; 
+  @apply bg-indigo-500 text-white;
 }
