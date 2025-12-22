@@ -46,8 +46,6 @@ function SingleChat() {
     if (id) return <Navigate to="/" replace />;
   }
 
-  console.log(selectedChat);
-
   return (
     <div
       ref={chatContainerRef}
@@ -89,15 +87,15 @@ function SingleChat() {
         );
       })}
 
-      <div
+      {/* <div
         className="
       pointer-events-none
       fixed bottom-6 2xl:right-[10%] right-0
       w-full 2xl:max-w-[900px] max-w-full h-[15%]
-      bg-[linear-gradient(to_top,##F4F5F6,transparent)]
+      bg-[linear-gradient(to_top,#F4F5F6,transparent)]
       z-10
     "
-      ></div>
+      ></div> */}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import runChat from "../../services/gemini";
 import { timeBasedUUID } from "../../utils/timeBasedUUID";
+import { buildLLMPrompt } from "../../utils/prompt";
 
 export const createChatSlice = (set, get) => ({
   // initial values
@@ -8,12 +9,14 @@ export const createChatSlice = (set, get) => ({
   showResult: false,
   chatUUID: "",
   currentChatId: null,
+  selectedResponseMode: "default",
 
   // initial methods
   setInputText: (value) => set({ inputText: value }),
   setChatsList: (value) => set({ chatsList: value }),
   setChatUUID: (value) => set({ chatUUID: value }),
   setCurrentChatId: (value) => set({ currentChatId: value }),
+  setSelectedResponseMode: (modeId) => set({ selectedResponseMode: modeId }),
 
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
@@ -83,7 +86,8 @@ export const createChatSlice = (set, get) => ({
     }
 
     // fetch response from AI API
-    const apiResponse = await runChat(inputText);
+    const finalPrompt = buildLLMPrompt(inputText, get().selectedResponseMode);
+    const apiResponse = await runChat(finalPrompt);
 
     // update response
     set({
@@ -175,7 +179,8 @@ export const createChatSlice = (set, get) => ({
     }));
 
     // fetch response
-    const apiResponse = await runChat(newPromptText);
+    const finalPrompt = buildLLMPrompt(newPromptText, get().selectedResponseMode);
+    const apiResponse = await runChat(finalPrompt);
 
     //  update response by ID (safe async)
     set((state) => ({
@@ -255,7 +260,8 @@ export const createChatSlice = (set, get) => ({
     }));
 
     // fetch response from AI API
-    const apiResponse = await runChat(promptText);
+    const finalPrompt = buildLLMPrompt(promptText, get().selectedResponseMode);
+    const apiResponse = await runChat(finalPrompt);
 
     set((state) => ({
       chatsList: state.chatsList.map((chat) => {

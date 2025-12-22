@@ -147,7 +147,7 @@ export default function ChatMessage({
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
-      <div className="px-6 pb-3 flex justify-between items-end gap-x-3 bg-green-500/">
+      <div className="px-6 pb-1 flex justify-between items-end gap-x-3 bg-green-500/">
         <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
           <img
             className={`    ${
@@ -163,7 +163,7 @@ export default function ChatMessage({
             <div
               className={`  ${
                 promptsList.length > 1 ? "  " : " "
-              } flex flex-col  bg-blue-400/  gap-y-1  `}
+              } flex flex-col  bg-blue-400/  gap-y-0.5 group  `}
             >
               <p
                 className={`${
@@ -175,8 +175,8 @@ export default function ChatMessage({
               </p>
               <div
                 className={`  ${
-                  localAnimation ? "animate-moveInLeft animate-delay-ss " : ""
-                }  flex gap-x-1 pl-1 py-[8px]  `}
+                  localAnimation ? "animate-moveInLeft  " : ""
+                }  opacity-0 group-hover:opacity-100 flex gap-x-1 pl-1 py-[7px] mb-[8px] duration-500  `}
               >
                 <CopyPromptBtn
                   promptText={activePromptText}
