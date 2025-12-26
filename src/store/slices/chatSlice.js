@@ -54,12 +54,10 @@ export const createChatSlice = (set, get) => ({
       const chatUUID = timeBasedUUID();
       navigate(`/c/${chatUUID}`);
 
-      const chatNumber = chatsList.length + 1;
-
       // define new chat structure
       const chatData = {
         id: chatUUID,
-        title: ` Chat Message ${chatNumber}  ! `,
+        title: ` New Message  `,
         messages: [newMessage],
       };
 

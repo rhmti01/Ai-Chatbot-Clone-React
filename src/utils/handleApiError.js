@@ -3,7 +3,7 @@ export function handleApiError(error) {
 
   if (error?.message) {
     if (error.message.includes("Failed to fetch")) {
-      message = "Network error. Please check your internet connection.";
+      message = "Unable to connect to the service, Please check your connection and try again!";
     } else if (error.message.includes("HTTP 401")) {
       message = "Unauthorized. Server rejected the request.";
     } else if (error.message.includes("HTTP 403")) {

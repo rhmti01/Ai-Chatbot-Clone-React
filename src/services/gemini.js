@@ -17,5 +17,5 @@ export default async function runChat(PROMTS) {
   return({ error : false , text : response.text});
 } catch (error) {
   const errorMessage = handleApiError(error);
-  return({ error : true , text : "🔴 " + errorMessage });
+  return({ error : true , text :  errorMessage });
 }}

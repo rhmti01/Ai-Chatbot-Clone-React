@@ -5,10 +5,14 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
 
   const [displayedTypingText, setdisplayedTypingText] = useState("");
   const [isFinished, setIsFinished] = useState(false);
+
   const animationRef = useRef(null);
   const startTimeRef = useRef(null);
+  const stopRef = useRef(false); // Force stop typing
 
   useEffect(() => {
+    stopRef.current = false; // Reset stop flag on new run
+
     if (!safeText) {
       setdisplayedTypingText("");
       setIsFinished(true);
@@ -29,6 +33,10 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
     let currentIndex = 0;
 
     const animate = () => {
+      if (stopRef.current) {
+        return; // Force break animation
+      }
+
       const now = Date.now();
       const elapsed = now - startTimeRef.current;
 
@@ -66,7 +74,15 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [safeText, speed, skipTyping]);  // Dependencies same as before
+  }, [safeText, speed, skipTyping]); // Dependencies same as before
 
-  return { displayedTypingText, isFinished };
+  // Force stop typing immediately
+  const stopTyping = () => {
+    stopRef.current = true;
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+  return { displayedTypingText, isFinished, stopTyping };
 }

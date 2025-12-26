@@ -17,7 +17,9 @@ function SingleChat() {
   // access to dom chat blocks
   const chatContainerRef = useRef();
   const prevChatIdRef = useRef(id);
-  const prevMessagesLengthRef = useRef(selectedChat?.messages?.length || 0);
+  const prevMessagesLengthRef = useRef(
+    selectedChat?.messages?.length || 0
+  );
 
   // manage page scroll on user behavior
   useEffect(() => {
@@ -27,14 +29,21 @@ function SingleChat() {
     const container = chatContainerRef.current;
     const currentLength = selectedChat.messages.length || 0;
 
+    const scrollToBottom = () => {
+      container.scrollTop =
+        container.scrollHeight - container.clientHeight;
+    };
+
     if (id !== prevChatIdRef.current) {
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
+      // initial + delayed scroll (typing, animations, markdown)
+      scrollToBottom();
+      setTimeout(scrollToBottom, 60);
+      setTimeout(scrollToBottom, 180);
+      setTimeout(scrollToBottom, 350);
     } else if (currentLength > prevMessagesLengthRef.current) {
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
+      scrollToBottom();
+      setTimeout(scrollToBottom, 60);
+      setTimeout(scrollToBottom, 180);
     }
 
     prevChatIdRef.current = id;
@@ -50,19 +59,22 @@ function SingleChat() {
     <div
       ref={chatContainerRef}
       className="
-    h-full w-full relative
-    overflow-auto scroll-smooth
-    [&::-webkit-scrollbar]:w-0
-    lg:[&::-webkit-scrollbar]:w-2
-    pt-14 pb-28 bg-green-600/
-  "
+        h-full w-full relative
+        overflow-auto scroll-smooth
+        [&::-webkit-scrollbar]:w-0
+        lg:[&::-webkit-scrollbar]:w-2
+        pt-14 pb-28 bg-green-600/
+      "
     >
       {selectedChat.messages.map((message) => {
         const activePrompt = message.prompts[message.activePromptIndex];
 
+        
         const activeResponse =
-          activePrompt.responses[activePrompt.activeResponseIndex] ||
-          activePrompt.responses[activePrompt.responses.length - 1];
+        activePrompt.responses[activePrompt.activeResponseIndex] ||
+        activePrompt.responses[
+          activePrompt.responses.length - 1
+        ];
 
         return (
           <ChatMessage
@@ -86,16 +98,6 @@ function SingleChat() {
           />
         );
       })}
-
-      {/* <div
-        className="
-      pointer-events-none
-      fixed bottom-6 2xl:right-[10%] right-0
-      w-full 2xl:max-w-[900px] max-w-full h-[15%]
-      bg-[linear-gradient(to_top,#F4F5F6,transparent)]
-      z-10
-    "
-      ></div> */}
     </div>
   );
 }

@@ -13,6 +13,8 @@ export const useGeminiStore = create(
       partialize: (state) => ({
         chatsList: state.chatsList,
         currentChatId: state.currentChatId,
+        inputText : state.inputText ,
+        selectedResponseMode : state.selectedResponseMode,
       }), 
     }
   )

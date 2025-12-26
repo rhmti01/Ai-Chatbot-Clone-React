@@ -67,7 +67,8 @@ export default function SidebarHeader() {
         </button>
 
         <button
-          className="bg-black py-3 px-3.5 rounded-full inline cursor-pointer shadow-xl shadow-gray-200 hover:shadow-gray-400/70 group"
+          className="bg-black py-3.5 px-3.5 rounded-full inline cursor-pointer shadow-xl
+           shadow-gray-200 hover:shadow-gray-200/70 group"
           size=""
         >
           <svg

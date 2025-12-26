@@ -143,11 +143,15 @@ export default function ChatMessage({
     <div
       ref={messageRef}
       data-chat-message
-      className="flex flex-col mt-4 pt-4 mb-9 text-left max-w-[880px] 
+      className="flex flex-col mt-4 pt-4 mb-12 text-left max-w-[880px] 
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
-      <div className="px-6 pb-1 flex justify-between items-end gap-x-3 bg-green-500/">
+      <div
+        className={`  ${
+          ActiveEditPrompt ? "pb-5" : "pb-1"
+        } px-6  flex justify-between items-end gap-x-3 bg-green-500/  `}
+      >
         <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
           <img
             className={`    ${
@@ -168,7 +172,7 @@ export default function ChatMessage({
               <p
                 className={`${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  font-[400] text-[16px]  text-surface px-3 py-1.5 bg-gray-950 rounded-3xl 
+                }  font-[400] text-[16px]  text-black px-4 py-2.5 bg-white shadow-sm shadow-gray-200 ring-1 ring-gray-100 rounded-3xl 
              rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
               >
                 {activePromptText}
@@ -176,7 +180,7 @@ export default function ChatMessage({
               <div
                 className={`  ${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  opacity-0 group-hover:opacity-100 flex gap-x-1 pl-1 py-[7px] mb-[8px] duration-500  `}
+                }  opacity-0 group-hover:opacity-100 flex gap-x-1 pl-1 pb-[7px] pt-2 mb-[8px] duration-500  `}
               >
                 <CopyPromptBtn
                   promptText={activePromptText}
@@ -227,7 +231,7 @@ export default function ChatMessage({
               <div className="flex w-full justify-end gap-x-2 items-center">
                 <button
                   onClick={() => setActiveEditPrompt(false)}
-                  className="text-surface bg-gray-600 px-3 py-1
+                  className="text-surface bg-gray-500 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85"
                 >
                   Cancel
@@ -329,8 +333,32 @@ export default function ChatMessage({
           <div
             className={`${
               responseError ? "text-gray-700 " : "prose text-black/95"
-            } font-outfit max-w-none mt-1 leading-normal font-[500] mb-0 text-[16]  `}
+            } font-outfit max-w-none mt-1 leading-normal font-[500] mb-0 text-[16] 
+          ${responseError?"  flex justify-start items-center": ""} `}
           >
+            {/* error message icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`  ${responseError? " size-6 inline text-red-600 mr-1 " : "hidden"}  `}             
+            >
+              <path
+                d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5"
+                stroke="currentColor"
+                 strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M11.995 16h.009"
+                stroke="currentColor"
+                 strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkMath]}
               rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeSanitize, schema]]}

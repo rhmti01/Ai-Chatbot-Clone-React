@@ -19,7 +19,7 @@ export default function Sidebar() {
       />
 
       <SidebarContainer sidebarStatus={sidebarStatus}>
-        <div className="absolute top-0 pb-2 pt-3 left-0 right-0 w-full  z-50  " >
+        <div className="absolute top-0 pb-2 pt-3 left-0 right-0 w-full  z-10  " >
           <SidebarHeader />
           <Divider />
           <ChatListHeader />
