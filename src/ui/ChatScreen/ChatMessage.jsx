@@ -17,6 +17,7 @@ import RegenerateResponseBtn from "../RegenerateResponseBtn";
 import SwitchPrompts from "../SwitchPrompts";
 import CopyPromptBtn from "../CopyPromptBtn";
 import { normalizeLLMOutput } from "../../utils/normalizeLLMOutput";
+import { useUserStore } from "../../store/useUserStore";
 
 // default rehype sanitize schema with math tag support
 const schema = {
@@ -66,6 +67,7 @@ export default function ChatMessage({
     useState(messageActions);
   const [ActiveEditPrompt, setActiveEditPrompt] = useState(false);
   const [editedPromptValue, setEditedPromptValue] = useState(activePromptText);
+  const profileImage = useUserStore((s) => s.profileImage);
 
   // store actions
   const onRegenerateResponse = useGeminiStore(
@@ -158,8 +160,8 @@ export default function ChatMessage({
               localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
             }  ${
               ActiveEditPrompt ? "  " : "-translate-y-11"
-            } -translate-x-0.5  size-7 rounded-2xl  mt-1   `}
-            src="/assets/profile-img.png"
+            } -translate-x-0.5  size-8 rounded-2xl  mt-1 object-cover  `}
+            src={profileImage}
             alt="USER-PROFILE"
           />
 
@@ -341,7 +343,7 @@ export default function ChatMessage({
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
-              className={`  ${responseError? " size-6 inline text-red-600 mr-1 " : "hidden"}  `}             
+              className={`  ${responseError? " size-5 inline text-red-600 mr-1 " : "hidden"}  `}             
             >
               <path
                 d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5"

@@ -148,9 +148,9 @@ useEffect(() => {
                 setChatMenu((prev) => !prev);
               }}
               className={`
-                 ${isChatMenuOpen ? " block" : "hidden"}
-                group-hover:block duration-500 pr-2 pl-8 h-12 
-                rounded-r-2xl cursor-pointer bg-blue-300/ `}
+                 ${isChatMenuOpen ? " opacity-100" : " lg:opacity-0"}
+                group-hover:opacity-100 opacity-100 duration-500 pr-2 pl-6 h-12
+                rounded-r-2xl cursor-pointer bg-blue-100/ `}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ useEffect(() => {
                         />
                       </svg>
 
-                      <p className=" font-medium   text-gray-950 text-[15px] ">
+                      <p className=" font-medium   text-gray-950 text-[14.5px] ">
                         Pin Chat
                       </p>
                     </li>
@@ -224,7 +224,7 @@ useEffect(() => {
                           d="M18.25 5.75a3.536 3.536 0 0 0-5 0l-3.125 3.125-4.601 4.601a4 4 0 0 0-1.155 2.466L4 20l4.058-.369a4 4 0 0 0 2.466-1.155l7.726-7.726a3.536 3.536 0 0 0 0-5ZM12.5 7.5l4 4"
                         />
                       </svg>
-                      <p className=" font-medium  text-gray-950 text-[15px] ">
+                      <p className=" font-medium  text-gray-950 text-[14.5px] ">
                         Rename
                       </p>
                     </li>

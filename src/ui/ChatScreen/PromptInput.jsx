@@ -197,10 +197,10 @@ useEffect(() => {
 
   return (
     <div
-      className={`${pathname === "/" ? "shadow-xl" : "shadow-sm"}
+      className={`${pathname === "/" ? "shadow-sm" : "shadow-md"}
          animate-moveInBottom animate-delay-xs absolute bottom-3 
       lg:bottom-4 flex flex-col items-center gap-y-1 w-[calc(95.7%-2vw)] max-w-[750px] 
-      py-1.5 pl-1  rounded-[36px] bg-surface shadow-gray-200  focus-within:shadow-[#d8dce0] 
+      py-1.5 pl-1 rounded-[36px] bg-surface  focus-within:shadow-[#d8dce0] 
        duration-300 z-30 
         `}
     >
@@ -306,7 +306,7 @@ useEffect(() => {
                       setDropDownOpen(false);
                     }}
                     className={`
-                      px-3 py-2 rounded-2xl cursor-pointer
+                      px-3 py-2 rounded-xl cursor-pointer
                       hover:bg-indigo-50
                       flex gap-3 items-center
                       ${selectedModeId === mode.id ? "bg-slate-100" : ""}

@@ -1,17 +1,25 @@
 import React from "react";
 import { useSidebar } from "../../context/SidebarContext";
 import { useLocation } from "react-router";
+import { useUserStore } from "../../store/useUserStore";
 
 function HeaderActions() {
   const { sidebarStatus, setSidebarStatus } = useSidebar();
-  const {pathname} = useLocation()
+  const { pathname } = useLocation();
+  const profileImage = useUserStore((state) => state.profileImage);
 
   return (
-    <div className={` 
-    ${pathname==="/" ? "shadow-none" : "shadow-[0_2px_12px_-6px_rgba(0,0,0,0.2)]"}
+    <div
+      className={` 
+    ${
+      pathname === "/"
+        ? "shadow-none"
+        : "shadow-[0_2px_12px_-6px_rgba(0,0,0,0.2)]"
+    }
     bg-main lg:bg-transparent  lg:shadow-none  
      p-2 lg:py-4 lg:px-8 flex justify-between lg:justify-end items-start w-full absolute z-20
-    `}>
+    `}
+    >
       <button
         onClick={() => setSidebarStatus(!sidebarStatus)}
         className="lg:hidden cursor-pointer  bg-amber-500/ animate-moveInLeft "
@@ -38,8 +46,8 @@ function HeaderActions() {
 
       <div className=" cursor-pointer lg:mt-0.5 mr-1 animate-moveInRight ">
         <img
-          className="size-9 rounded-2xl  shadow-xl shadow-gray-200"
-          src="/assets/profile-img.png"
+          className="size-10 rounded-2xl  shadow-xl shadow-gray-200 object-cover"
+          src={profileImage}
           alt="profile image"
         />
       </div>

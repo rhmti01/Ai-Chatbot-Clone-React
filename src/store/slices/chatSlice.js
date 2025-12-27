@@ -10,12 +10,14 @@ export const createChatSlice = (set, get) => ({
   chatUUID: "",
   currentChatId: null,
   selectedResponseMode: "default",
+  userName : 'New User' ,
 
   // initial methods
   setInputText: (value) => set({ inputText: value }),
   setChatsList: (value) => set({ chatsList: value }),
   setChatUUID: (value) => set({ chatUUID: value }),
   setCurrentChatId: (value) => set({ currentChatId: value }),
+  setUserName: (value) => set({ userName: value }),
   setSelectedResponseMode: (modeId) => set({ selectedResponseMode: modeId }),
 
   // fetch prompt response from API
