@@ -11,6 +11,7 @@ export const useGeminiStore = create(
     {
       name: "ai-chatbot-storage",
       partialize: (state) => ({
+        userName : state.userName ,
         chatsList: state.chatsList,
         currentChatId: state.currentChatId,
         inputText : state.inputText ,

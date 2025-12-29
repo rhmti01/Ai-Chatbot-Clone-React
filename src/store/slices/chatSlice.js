@@ -61,6 +61,8 @@ export const createChatSlice = (set, get) => ({
         id: chatUUID,
         title: ` New Message  `,
         messages: [newMessage],
+        createdAt : Date.now(),
+        pinnedAt : null,
       };
 
       // update store state
@@ -399,6 +401,30 @@ export const createChatSlice = (set, get) => ({
     set({
       chatsList: get().chatsList.filter((chat) => chat.id !== chatId),
     });
+  },
+
+  // pin chat
+  onPinChat: (chatId) => {
+    const now = Date.now();
+
+    set((state) => ({
+      chatsList: state.chatsList.map((chat) =>
+        chat.id === chatId
+          ? { ...chat, pinnedAt: now }
+          : chat
+      ),
+    }));
+  },
+
+  // unpin chat 
+  onUnpinChat : (chatId)=>{
+    set((state) => ({
+      chatsList : state.chatsList.map((chat)=>
+        chat.id === chatId
+        ? {...chat , pinnedAt : null}
+        : chat
+      )
+    }))
   },
 
   // edit chat title

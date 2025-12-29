@@ -2,48 +2,36 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useGeminiStore } from "../store/useGeminiStore";
 import ChatMessage from "../ui/ChatScreen/ChatMessage";
 import { Navigate, useParams } from "react-router";
+import { useSidebar } from "../context/SidebarContext";
 
 function SingleChat() {
   const { id } = useParams();
-
+  const { sidebarStatus } = useSidebar();
+  const bottomRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const isAtBottomRef = useRef(true);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  
   const chatsList = useGeminiStore((state) => state.chatsList);
   const selectedChat = useMemo(
     () => chatsList.find((chat) => chat.id === id),
     [chatsList, id]
   );
-
-  const chatContainerRef = useRef(null);
-  const prevChatIdRef = useRef(id);
-  const prevMessagesLengthRef = useRef(selectedChat?.messages?.length || 0);
-
-  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-
-  const scrollToBottom = () => {
-    const container = chatContainerRef.current;
-    if (!container) return;
-    container.scrollTop = container.scrollHeight - container.clientHeight;
+  
+  const scrollToBottom = (behavior = "auto") => {
+    bottomRef.current?.scrollIntoView({ behavior });
   };
+  
+  const lastMessageId = selectedChat?.messages[selectedChat.messages.length - 1]?.id;
 
-  // auto scroll on chat change or new message
+  // call smooth scroll by user
   useEffect(() => {
-    if (!selectedChat || !chatContainerRef.current) return;
+    if (!selectedChat) return;
 
-    const currentLength = selectedChat.messages.length || 0;
-
-    if (id !== prevChatIdRef.current) {
-      scrollToBottom();
-      setTimeout(scrollToBottom, 60);
-      setTimeout(scrollToBottom, 180);
-      setTimeout(scrollToBottom, 350);
-    } else if (currentLength > prevMessagesLengthRef.current) {
-      scrollToBottom();
-      setTimeout(scrollToBottom, 60);
-      setTimeout(scrollToBottom, 180);
+    if (isAtBottomRef.current) {
+      scrollToBottom("smooth");
     }
-
-    prevChatIdRef.current = id;
-    prevMessagesLengthRef.current = currentLength;
-  }, [id, selectedChat]);
+  }, [lastMessageId]);
 
   // detect distance from bottom
   useEffect(() => {
@@ -51,50 +39,82 @@ function SingleChat() {
     if (!container) return;
 
     const onScroll = () => {
-      const distanceFromBottom =
+      const distance =
         container.scrollHeight - (container.scrollTop + container.clientHeight);
 
-      setShowScrollToBottom(distanceFromBottom > 120);
+      isAtBottomRef.current = distance < 120;
+      setShowScrollToBottom(distance >= 120);
     };
 
     container.addEventListener("scroll", onScroll);
     onScroll();
 
-    return () => {
-      container.removeEventListener("scroll", onScroll);
-    };
+    return () => container.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!selectedChat) {
-    if (id) return <Navigate to="/" replace />;
+  // make sure selected chat is routed
+  if (id && !selectedChat) {
+    return <Navigate to="/" replace />;
   }
 
   return (
-    <div
-      ref={chatContainerRef}
-      className="
+    <div className="relative h-full ">
+      <div
+        ref={chatContainerRef}
+        className="
         relative h-full w-full
-        overflow-auto scroll-smooth
+        overflow-auto 
         [&::-webkit-scrollbar]:w-0
         lg:[&::-webkit-scrollbar]:w-2
         pt-14 pb-28
       "
-    >
+      >
+        {selectedChat.messages.map((message) => {
+          const activePrompt = message.prompts[message.activePromptIndex];
+
+          const activeResponse =
+            activePrompt.responses[activePrompt.activeResponseIndex] ||
+            activePrompt.responses[activePrompt.responses.length - 1];
+
+          return (
+            <ChatMessage
+              key={message.id}
+              id={message.id}
+              chatPageId={selectedChat.id}
+              promptsList={message.prompts}
+              activePromptText={activePrompt.prompt}
+              activePromptIndex={message.activePromptIndex}
+              activePromptId={activePrompt.id}
+              responseText={activeResponse.text}
+              responseError={activeResponse.error}
+              messageActions={activeResponse.MessageActions}
+              loading={activeResponse.loading}
+              hasAnimated={activeResponse.hasAnimated}
+              responseId={activeResponse.id}
+              totalResponsesLength={activePrompt.responses.length}
+              activeResponseIndex={activePrompt.activeResponseIndex}
+              isResponseLiked={activeResponse.isResponseLiked}
+            />
+          );
+        })}
+
+        <div ref={bottomRef} />
+      </div>
       {/* scroll to bottom button */}
-      {showScrollToBottom && (
+      {showScrollToBottom && !sidebarStatus ? (
         <button
           onClick={() => {
-            scrollToBottom();
+            scrollToBottom("smooth");
           }}
-          className=" sticky  left-1/2 right-1/2 -translate-x-1/2 top-98/100 animate-blurFade
-            z-50 cursor-pointer     shadow-[0_8px_25px_rgba(0,0,0,0.25)]
-            hover:shadow-[0_12px_35px_rgba(0,0,0,0.35)]
+          className=" fixed top-1/2  right-3 md:right-5 2xl:right-6 -translate-y-1/2   animate-blurFade
+            z-50 cursor-pointer   shadow-[0_8px_25px_rgba(0,0,0,0.20)]
+            hover:shadow-[0_12px_35px_rgba(0,0,0,0.30)]
             transition-shadow  rounded-full size-8 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className=" size-9 fill-white stroke-gray-800 rounded-full
+            className=" size-9 scale-90 md:scale-100 2xl:scale-105 fill-white stroke-gray-800 rounded-full
             -translate-x-0.5 -translate-y-0.5 "
           >
             <path
@@ -114,36 +134,9 @@ function SingleChat() {
             ></path>
           </svg>
         </button>
+      ) : (
+        ""
       )}
-
-      {selectedChat.messages.map((message) => {
-        const activePrompt = message.prompts[message.activePromptIndex];
-
-        const activeResponse =
-          activePrompt.responses[activePrompt.activeResponseIndex] ||
-          activePrompt.responses[activePrompt.responses.length - 1];
-
-        return (
-          <ChatMessage
-            key={message.id}
-            id={message.id}
-            chatPageId={selectedChat.id}
-            promptsList={message.prompts}
-            activePromptText={activePrompt.prompt}
-            activePromptIndex={message.activePromptIndex}
-            activePromptId={activePrompt.id}
-            responseText={activeResponse.text}
-            responseError={activeResponse.error}
-            messageActions={activeResponse.MessageActions}
-            loading={activeResponse.loading}
-            hasAnimated={activeResponse.hasAnimated}
-            responseId={activeResponse.id}
-            totalResponsesLength={activePrompt.responses.length}
-            activeResponseIndex={activePrompt.activeResponseIndex}
-            isResponseLiked={activeResponse.isResponseLiked}
-          />
-        );
-      })}
     </div>
   );
 }

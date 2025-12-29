@@ -1,5 +1,5 @@
 import { useTypeEffect } from "../../utils/useTypeEffect";
-import Loader from "../../ui/Loader";
+import Loader from "../Common/Loader"
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -11,11 +11,11 @@ import "katex/dist/katex.min.css";
 import { useRef, useEffect, useState, useMemo } from "react";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import toast from "react-hot-toast";
-import CopyResponseBtn from "../CopyResponseBtn";
-import SwitchResponses from "../SwitchResponses";
-import RegenerateResponseBtn from "../RegenerateResponseBtn";
-import SwitchPrompts from "../SwitchPrompts";
-import CopyPromptBtn from "../CopyPromptBtn";
+import CopyResponseBtn from "../Common/CopyResponseBtn";
+import SwitchResponses from "../Common/SwitchResponses";
+import RegenerateResponseBtn from "../Common/RegenerateResponseBtn";
+import SwitchPrompts from "../Common/SwitchPrompts";
+import CopyPromptBtn from "../Common/CopyPromptBtn";
 import { normalizeLLMOutput } from "../../utils/normalizeLLMOutput";
 import { useUserStore } from "../../store/useUserStore";
 
@@ -145,14 +145,14 @@ export default function ChatMessage({
     <div
       ref={messageRef}
       data-chat-message
-      className="flex flex-col mt-4 pt-4 mb-12 text-left max-w-[880px] 
+      className="flex flex-col mt-4 pt-4 mb-16 text-left max-w-[880px] 
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
       <div
         className={`  ${
           ActiveEditPrompt ? "pb-5" : "pb-1"
-        } px-6  flex justify-between items-end gap-x-3 bg-green-500/  `}
+        } px-4 sm:px-6 flex justify-between items-end gap-x-3 bg-green-500/  `}
       >
         <div className="flex items-end space-x-2 w-full bg-amber-200/ basis-full ">
           <img
@@ -160,7 +160,7 @@ export default function ChatMessage({
               localAnimation ? "animate-moveInLeft animate-delay-xs" : ""
             }  ${
               ActiveEditPrompt ? "  " : "-translate-y-11"
-            } -translate-x-0.5  size-8 rounded-2xl  mt-1 object-cover  `}
+            } -translate-x-0.5 min-w-8 min-h-8  size-8 rounded-2xl  mt-1 object-cover  `}
             src={profileImage}
             alt="USER-PROFILE"
           />
@@ -174,15 +174,16 @@ export default function ChatMessage({
               <p
                 className={`${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  font-[400] text-[16px]  text-black px-4 py-2.5 bg-white shadow-sm shadow-gray-200 ring-1 ring-gray-100 rounded-3xl 
-             rounded-bl-[6px]   max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
+                }  font-[400] text-[15.5px] md:text-[16px]  text-black px-3 md:px-4 py-1.5  md:py-2.5 bg-white shadow-sm
+                 shadow-gray-200 ring-1 ring-gray-100 rounded-3xl break-words  whitespace-normal 
+             rounded-bl-[6px] max-w-[230px]  sm:max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
               >
                 {activePromptText}
               </p>
               <div
                 className={`  ${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  opacity-0 group-hover:opacity-100 flex gap-x-1 pl-1 pb-[7px] pt-2 mb-[8px] duration-500  `}
+                }  opacity-100 lg:opacity-0 group-hover:opacity-100 flex gap-x-1 pl-1 pb-[7px] pt-3.5 md:pt-2.5 mb-[2px] duration-500  `}
               >
                 <CopyPromptBtn
                   promptText={activePromptText}
@@ -203,7 +204,7 @@ export default function ChatMessage({
           ) : (
             <div
               className="bg-gray-200 rounded-3xl shadow-sm shadow-gray-100
-              w-full flex flex-col gap-y-6 p-4 animate-fadeIn-fast h-full "
+              w-full flex flex-col gap-y-6 p-2.5 md:p-4 animate-fadeIn-fast h-full "
             >
               <textarea
                 ref={editRef}
@@ -218,7 +219,7 @@ export default function ChatMessage({
                 }}
                 value={editedPromptValue}
                 className={`
-                    px-2 outline-0 resize-none w-full break-words overflow-y-auto
+                    px-2 outline-0 resize-none w-full break-words overflow-y-auto text-[15.5px] md:text-[16px]
                     ${
                       editedPromptValue.split("\n").length >= 3 ||
                       editedPromptValue.length > 80
@@ -230,10 +231,10 @@ export default function ChatMessage({
               />
 
               {/* edit prompt actions */}
-              <div className="flex w-full justify-end gap-x-2 items-center">
+              <div className="flex w-full justify-end gap-x-1 md:gap-x-2 items-center">
                 <button
                   onClick={() => setActiveEditPrompt(false)}
-                  className="text-surface bg-gray-500 px-3 py-1
+                  className="text-surface bg-gray-500 scale-90 md:scale-100 px-3 py-1
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85"
                 >
                   Cancel
@@ -250,7 +251,7 @@ export default function ChatMessage({
                     setActiveEditPrompt(false);
                     onEditPrompt(chatPageId, messageId, editedPromptValue);
                   }}
-                  className="text-surface bg-indigo-600 px-3 py-1
+                  className="text-surface bg-indigo-600 px-3 py-1  scale-90 md:scale-100
                 rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
                 >
                   Send
@@ -267,7 +268,7 @@ export default function ChatMessage({
           }}
           className={` ${localAnimation ? "animate-moveInRight" : ""} 
           ${!ActiveEditPrompt ? " block " : " hidden "}
-          basis-6 bg-amber-500/ -translate-y-14  duration-300 hover:scale-105 cursor-pointer  `}
+          basis-6 bg-amber-500/ -translate-y-13  duration-300 scale-95 md:scale-100 hover:scale-105 cursor-pointer  `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -306,7 +307,7 @@ export default function ChatMessage({
       <div
         className={`  ${
           promptsList.length > 1 ? "" : ""
-        }  flex flex-col  pl-16 pr-10 pb-7 bg-amber-100/   `}
+        }  flex flex-col  pl-16 pr-10 pb-4 bg-amber-100/   `}
       >
         <div
           className={`${
@@ -335,15 +336,16 @@ export default function ChatMessage({
           <div
             className={`${
               responseError ? "text-gray-700 " : "prose text-black/95"
-            } font-outfit max-w-none mt-1 leading-normal font-[500] mb-0 text-[16] 
-          ${responseError?"  flex justify-start items-center": ""} `}
+            } font-outfit max-w-none mt-1 leading-normal font-medium mb-0 
+            text-[15.5px] md:text-[16] break-words whitespace-normal 
+          ${responseError?"  flex justify-start items-start *:first:mt-0.5 ": ""} `}
           >
             {/* error message icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
-              className={`  ${responseError? " size-5 inline text-red-600 mr-1 " : "hidden"}  `}             
+              className={`  ${responseError? "size-4 min-w-4 min-h-4 md:min-w-5 md:min-h-5 md:size-5  inline  text-red-600 mr-1 " : "hidden"}  `}             
             >
               <path
                 d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5"
@@ -376,7 +378,7 @@ export default function ChatMessage({
         className={` 
             ${
               displayResponseActions
-                ? "flex justify-center items-center px-3  w-full  animate-fadeIn-fast bg-green-400/  "
+                ? "  flex justify-center items-center px-3  w-full  animate-fadeIn-fast bg-green-400/  "
                 : "hidden"
             }
           `}
@@ -385,7 +387,7 @@ export default function ChatMessage({
           className="  flex items-center justify-between gap-x-3 bg-green-900/ my-4 w-[92%] translate-x-[2%]
          bg-amber-300/  "
         >
-          <div className="flex justify-center items-center gap-x-5 bg-red-400/ ">
+          <div className=" scale-95 md:scale-100 flex justify-center items-center gap-x-5 bg-red-400/ ">
             {/* message like and copy btns  */}
             <div
               className={`$  flex items-center  gap-x-3  rounded-2xl shadow-sm shadow-gray-100

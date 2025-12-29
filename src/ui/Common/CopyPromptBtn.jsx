@@ -8,7 +8,7 @@ function CopyPromptBtn({
 }) {
   return (
     <button
-      className=" cursor-pointer hover:scale-105 duration-300 translate-y-1 "
+      className=" cursor-pointer hover:scale-105 duration-300 translate-y-0 "
       onClick={() => {
         navigator.clipboard.writeText(promptText).then(() => {
           toast.success("Copied");

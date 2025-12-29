@@ -3,13 +3,16 @@ import { useNavigate } from "react-router";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import { useSidebar } from "../../context/SidebarContext";
 import ReactDOM from "react-dom";
+import toast from "react-hot-toast";
 
-function ChatItem({ title, id }) {
+function ChatItem({ title, id, pinnedAt }) {
   const navigate = useNavigate();
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
   const onDeleteChat = useGeminiStore((state) => state.onDeleteChat);
   const onEditChatTitle = useGeminiStore((state) => state.onEditChatTitle);
   const currentChatId = useGeminiStore((state) => state.currentChatId);
+  const onPinChat = useGeminiStore((state) => state.onPinChat);
+  const onUnpinChat = useGeminiStore((state) => state.onUnpinChat);
   const { setSidebarStatus } = useSidebar();
   const [editMode, setEditMode] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -18,9 +21,8 @@ function ChatItem({ title, id }) {
   const [isChatMenuOpen, setChatMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const buttonRef = useRef(null);
-  const chatMenuDropDownRef = useRef(null)
+  const chatMenuDropDownRef = useRef(null);
   const menuRef = useRef(null);
-
 
   useEffect(() => {
     if (editMode && inputRef.current) {
@@ -46,26 +48,25 @@ function ChatItem({ title, id }) {
   }, [editMode, editTitle, id, onEditChatTitle]);
 
   // close chat action drop down
-useEffect(() => {
-  if (!isChatMenuOpen) return;
+  useEffect(() => {
+    if (!isChatMenuOpen) return;
 
-  function handleClickOutside(e) {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(e.target) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(e.target)
-    ) {
-      setChatMenu(false);
+    function handleClickOutside(e) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
+      ) {
+        setChatMenu(false);
+      }
     }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [isChatMenuOpen]);
-
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isChatMenuOpen]);
 
   // Update menu position when opening
   useEffect(() => {
@@ -89,9 +90,10 @@ useEffect(() => {
 
   return (
     <>
-      <li 
-      ref={chatMenuDropDownRef}
-      className="select-none flex flex-col justify-center items-start py-0.5 px-4 duration-300 w-full group animate-fadeIn-fast">
+      <li
+        ref={chatMenuDropDownRef}
+        className="select-none flex flex-col justify-center items-start py-0.5 px-4 duration-300 w-full group animate-fadeIn-fast"
+      >
         <div
           onClick={() => {
             navigate(`/c/${id}`);
@@ -148,20 +150,42 @@ useEffect(() => {
                 setChatMenu((prev) => !prev);
               }}
               className={`
-                 ${isChatMenuOpen ? " opacity-100" : " lg:opacity-0"}
+                 ${
+                   isChatMenuOpen || pinnedAt ? " opacity-100" : " lg:opacity-0"
+                 }
                 group-hover:opacity-100 opacity-100 duration-500 pr-2 pl-6 h-12
                 rounded-r-2xl cursor-pointer bg-blue-100/ `}
             >
+              {/* chat action icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                className="size-5 text-gray-600 hover:text-gray-800 duration-300 fill-gray-700 -translate-x-3"
+                className={`  ${
+                  pinnedAt ? "hidden" : "block"
+                } size-5 text-gray-600 hover:text-gray-800 duration-300 fill-gray-700 -translate-x-3  `}
               >
                 <path
                   d="M5 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2ZM19 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2ZM12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Z"
                   stroke="currentColor"
                   strokeWidth="2"
                 ></path>
+              </svg>
+
+              {/* filled pin icon - pinned  */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                class={`   ${
+                  pinnedAt ? "block" : "hidden"
+                } stroke-[2] me-2 size-5 fill-black -translate-x-1.5    `}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="square"
+                  strokeWidth="2"
+                  d="m4 20 4.5-4.5M14 20 4 10l1-1 4.066-.678a4 4 0 0 0 2.864-2.049l1.296-2.406A2 2 0 0 1 16.4 3.4l4.198 4.198a2 2 0 0 1-.466 3.175l-2.406 1.296a4 4 0 0 0-2.05 2.864L15 19z"
+                />
               </svg>
             </button>
 
@@ -171,35 +195,57 @@ useEffect(() => {
                 <div
                   ref={menuRef}
                   style={{
-                    position: "absolute",
+                    position: "fixed",
                     top: menuPosition.top,
                     left: menuPosition.left,
                     zIndex: 9999,
                   }}
-                  className="w-44 translate-x-2 -mt-2 rounded-2xl bg-gray-50 shadow-lg ring-1 ring-slate-200 p-2  animate-fadeIn-fast "
+                  className="w-34 md:w-44 translate-x-2 -mt-2 rounded-2xl bg-gray-50 shadow-lg ring-1 ring-slate-200 p-2  animate-fadeIn-fast "
                 >
-                  <ul className=" gap-y-1 select-none ">
+                  <ul className=" select-none  ">
                     {/* pin current chat */}
                     <li
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!pinnedAt) {
+                          onPinChat(id);
+                          toast.success("chat pinned!");
+                        } else {
+                          onUnpinChat(id);
+                          toast.success("chat unpinned!");
+                        }
+                        setChatMenu(false);
+                      }}
                       className=" flex items-center justify-start gap-x-0.5 py-1.5 px-2 duration-300
                      hover:bg-slate-200/75 rounded-lg cursor-pointer  "
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        class="stroke-[2] me-2 size-5 "
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="square"
-                          strokeWidth="2"
-                          d="m4 20 4.5-4.5M14 20 4 10l1-1 4.066-.678a4 4 0 0 0 2.864-2.049l1.296-2.406A2 2 0 0 1 16.4 3.4l4.198 4.198a2 2 0 0 1-.466 3.175l-2.406 1.296a4 4 0 0 0-2.05 2.864L15 19z"
-                        />
-                      </svg>
+                      {!pinnedAt ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          class="stroke-[2] me-2 size-5  "
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="square"
+                            strokeWidth="2"
+                            d="m4 20 4.5-4.5M14 20 4 10l1-1 4.066-.678a4 4 0 0 0 2.864-2.049l1.296-2.406A2 2 0 0 1 16.4 3.4l4.198 4.198a2 2 0 0 1-.466 3.175l-2.406 1.296a4 4 0 0 0-2.05 2.864L15 19z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 -960 960 960"
+                          fill="currentColor"
+                          class="stroke-[2] me-2 size-5 peer hover:hidden "
+                        >
+                          <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
+                        </svg>
+                      )}
 
                       <p className=" font-medium   text-gray-950 text-[14.5px] ">
-                        Pin Chat
+                        {pinnedAt ? "Unpin Chat" : "Pin Chat"}
                       </p>
                     </li>
                     {/* rename chat title */}

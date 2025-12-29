@@ -198,10 +198,12 @@ useEffect(() => {
   return (
     <div
       className={`${pathname === "/" ? "shadow-sm" : "shadow-md"}
-         animate-moveInBottom animate-delay-xs absolute bottom-3 
-      lg:bottom-4 flex flex-col items-center gap-y-1 w-[calc(95.7%-2vw)] max-w-[750px] 
-      py-1.5 pl-1 rounded-[36px] bg-surface  focus-within:shadow-[#d8dce0] 
-       duration-300 z-30 
+         animate-moveInBottom animate-delay-xs absolute bottom-2 
+      lg:bottom-4 flex flex-col items-center gap-y-1 w-[96%] sm:w-[87%] 
+      sm:max-w-[530px] md:w-[95%]  md:max-w-[630px] lg:max-w-[670px] 
+       xl:w-[calc(95.7%-2vw)] 2xl:max-w-[700px] py-1.5  pr-1 pl-1 rounded-[27px]
+        sm:rounded-[30px]  bg-surface  focus-within:shadow-[#d8dce0]
+         duration-300 z-30  
         `}
     >
       <div style={{ position: "absolute", left: "-9999px", visibility: "hidden" }}>
@@ -224,25 +226,19 @@ useEffect(() => {
           ref={textareaRef}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              onSendPrompt(navigate);
-            }
-          }}
           placeholder="What’s on your mind?"
-          className="w-[97%] mx-2
+          className="w-[97%] mx-2 mb-3 
         resize-none overflow-hidden break-words max-h-[200px] overflow-y-auto
         outline-none border-0
         text-[15.5px] leading-relaxed
         placeholder:text-[15.5px] placeholder:font-normal
         focus:placeholder:text-stone-600/80 placeholder:text-sub
-        min-h-[40px] py-2 bg-transparent pr-4 mt-1  "
+        min-h-[40px] py-2 bg-transparent pr-4 pl-3 mt-1  "
         ></textarea>
       )}
 
-      <div className="flex justify-between items-center p-[1px] w-full  ">
-        <div ref={dropDownRef} className="relative">
+      <div className="flex justify-between items-center md:p-[1px] w-full   ">
+        <div ref={dropDownRef} className="relative bg-blue-200/ ">
           {/* change response mode drop down menu */}
           <button
             onClick={() => setDropDownOpen((v) => !v)}
@@ -253,7 +249,7 @@ useEffect(() => {
             rounded-3xl hover:ring-1
             hover:ring-slate-300
             transition cursor-pointer
-            duration-300
+            duration-300 focus:outline-none
             -translate-x-[3.5px]
             `}
           >
@@ -351,8 +347,10 @@ useEffect(() => {
         {!useTextarea && (
           <input
             ref={inputRef}
-            className="flex-1 mx-2 outline-none border-0 placeholder:font-normal placeholder:text-[15.5px] text-[15.5px]
-          placeholder:text-sub focus:placeholder:text-stone-600/80 peer duration-300"
+            className="flex-1 mx-2 outline-none border-0 placeholder:font-normal
+             placeholder:text-[15px] md:placeholder:text-[15.5px] text-[15px] md:text-[15.5px]
+              placeholder:text-sub bg-transparent focus:placeholder:text-stone-600/80
+               peer duration-300 -translate-x-2 w-4/6 "
             type="text"
             name="prompt-input"
             placeholder="What’s on your mind?"
@@ -375,7 +373,8 @@ useEffect(() => {
           }}
           className={` ${
             showResult ? "p-4" : "p-3"
-          } shadow-indigo-200 shadow-md  rounded-full bg-primary hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none mr-2 `}
+          } shadow-indigo-200 shadow-md  rounded-full bg-primary 
+          hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none mr-1 `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
