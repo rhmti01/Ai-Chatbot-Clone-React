@@ -1,4 +1,4 @@
-export function normalizeLLMOutput(text) {
+export function responseFormatter(text) {
   if (typeof text !== "string") return "";
 
   let t = text;
@@ -25,3 +25,4 @@ export function normalizeLLMOutput(text) {
 
   return t.trim();
 }
+

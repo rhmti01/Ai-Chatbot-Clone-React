@@ -1,16 +1,26 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useUserStore = create((set) => ({
-  profileImage: localStorage.getItem("profileImage") 
-    || "/assets/default-user-profile.png",
+const DEFAULT_PROFILE_IMAGE = "/assets/default-user-profile.png";
 
-  setProfileImage: (image) => {
-    localStorage.setItem("profileImage", image);
-    set({ profileImage: image });
-  },
+export const useUserStore = create(
+  persist(
+    (set) => ({
+      profileImage: DEFAULT_PROFILE_IMAGE,
 
-  removeProfileImage: () => {
-    localStorage.removeItem("profileImage");
-    set({ profileImage: "/assets/default-user-profile.png" });
-  },
-}));
+      setProfileImage: (image) => {
+        set({ profileImage: image || DEFAULT_PROFILE_IMAGE });
+      },
+
+      removeProfileImage: () => {
+        set({ profileImage: DEFAULT_PROFILE_IMAGE });
+      },
+    }),
+    {
+      name: "user-storage",
+      partialize: (state) => ({
+        profileImage: state.profileImage,
+      }),
+    }
+  )
+);

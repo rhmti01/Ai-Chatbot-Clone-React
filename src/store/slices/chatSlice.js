@@ -1,6 +1,6 @@
-import runChat from "../../services/gemini";
-import { timeBasedUUID } from "../../utils/timeBasedUUID";
-import { buildLLMPrompt } from "../../utils/prompt";
+import {fetchChatResponse} from "../../services/api/geminiEndpoints";
+import { uuidGenerator } from "../../utils/general/uuidGenerator";
+import { buildLLMPrompt } from "../../utils/general/promptBuilder";
 
 export const createChatSlice = (set, get) => ({
   // initial values
@@ -53,7 +53,7 @@ export const createChatSlice = (set, get) => ({
 
     // CASE 1: if there is no active chat -> create new chat group
     if (!currentChatId) {
-      const chatUUID = timeBasedUUID();
+      const chatUUID = uuidGenerator();
       navigate(`/c/${chatUUID}`);
 
       // define new chat structure
@@ -89,7 +89,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response from AI API
     const finalPrompt = buildLLMPrompt(inputText, get().selectedResponseMode);
-    const apiResponse = await runChat(finalPrompt);
+    const apiResponse = await fetchChatResponse(finalPrompt);
 
     // update response
     set({
@@ -182,7 +182,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response
     const finalPrompt = buildLLMPrompt(newPromptText, get().selectedResponseMode);
-    const apiResponse = await runChat(finalPrompt);
+    const apiResponse = await fetchChatResponse(finalPrompt);
 
     //  update response by ID (safe async)
     set((state) => ({
@@ -263,7 +263,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response from AI API
     const finalPrompt = buildLLMPrompt(promptText, get().selectedResponseMode);
-    const apiResponse = await runChat(finalPrompt);
+    const apiResponse = await fetchChatResponse(finalPrompt);
 
     set((state) => ({
       chatsList: state.chatsList.map((chat) => {

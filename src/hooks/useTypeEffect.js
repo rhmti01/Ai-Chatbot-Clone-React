@@ -86,3 +86,4 @@ export function useTypeEffect(text = "", speed = 65, skipTyping = false) {
 
   return { displayedTypingText, isFinished, stopTyping };
 }
+

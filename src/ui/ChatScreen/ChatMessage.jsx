@@ -1,4 +1,4 @@
-import { useTypeEffect } from "../../utils/useTypeEffect";
+import { useTypeEffect } from "../../hooks/useTypeEffect";
 import Loader from "../Common/Loader"
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -16,7 +16,6 @@ import SwitchResponses from "../Common/SwitchResponses";
 import RegenerateResponseBtn from "../Common/RegenerateResponseBtn";
 import SwitchPrompts from "../Common/SwitchPrompts";
 import CopyPromptBtn from "../Common/CopyPromptBtn";
-import { normalizeLLMOutput } from "../../utils/normalizeLLMOutput";
 import { useUserStore } from "../../store/useUserStore";
 
 // default rehype sanitize schema with math tag support
@@ -367,7 +366,7 @@ export default function ChatMessage({
               remarkPlugins={[remarkGfm, remarkMath]}
               rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeSanitize, schema]]}
             >
-              {normalizeLLMOutput(displayedText)}
+              {displayedText}
             </ReactMarkdown>
           </div>
         )}

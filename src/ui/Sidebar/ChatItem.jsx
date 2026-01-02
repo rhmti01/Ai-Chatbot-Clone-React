@@ -101,8 +101,8 @@ function ChatItem({ title, id, pinnedAt }) {
             setSidebarStatus(false);
           }}
           className={`${
-            id === currentChatId ? "bg-indigo-50/65 hover:bg-indigo-50/65 " : ""
-          } flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/50 has-[button:hover]:bg-transparent cursor-pointer`}
+            id === currentChatId ? "bg-indigo-50/85 hover:bg-none " : ""
+          } flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75 has-[button:hover]:bg-transparent cursor-pointer`}
         >
           {/* header tile */}
           <div className="py-3.5 pl-4 pr-2 flex justify-center items-center gap-x-3 group rounded-l-2xl bg-amber-500/">

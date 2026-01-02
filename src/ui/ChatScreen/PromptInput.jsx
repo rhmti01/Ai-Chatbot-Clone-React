@@ -25,7 +25,6 @@ const MODE_ICONS = {
 export default function PromptInput() {
   const navigate = useNavigate();
   const inputText = useGeminiStore((state) => state.inputText);
-  const currentChatId = useGeminiStore((state) => state.currentChatId);
   const selectedModeId = useGeminiStore((state) => state.selectedResponseMode);
   const selectedMode =
     RESPONSE_MODES.find((m) => m.id === selectedModeId) ?? RESPONSE_MODES[0];
@@ -45,45 +44,25 @@ export default function PromptInput() {
   const textareaRef = useRef(null);
   const measureRef = useRef(null);
   const [singleLineHeight, setSingleLineHeight] = useState(0);
-  const prevChatIdRef = useRef(currentChatId);
-
-  // Reset useTextarea when navigating to a new chat or when inputText is cleared
-  useEffect(() => {
-    if (currentChatId !== prevChatIdRef.current) {
-      setUseTextarea(false);
-      prevChatIdRef.current = currentChatId;
-    }
-  }, [currentChatId]);
-
-  // Force reset useTextarea when inputText is empty
-  useEffect(() => {
-    if (!inputText.trim() && useTextarea) {
-      setUseTextarea(false);
-    }
-  }, [inputText, useTextarea]);
 
   // Real-time check for single-line or multi-line text
   useEffect(() => {
-    // If text is empty, always use input
+    // If text is empty, use input
     if (!inputText.trim()) {
-      if (useTextarea) {
-        setUseTextarea(false);
-      }
+      setUseTextarea((prev) => (prev ? false : prev));
       return;
     }
 
     // If text contains newline, use textarea
     if (inputText.includes("\n")) {
-      if (!useTextarea) {
-        setUseTextarea(true);
-      }
+      setUseTextarea((prev) => (prev ? prev : true));
       return;
     }
 
     // Helper function to measure text width
     const measureTextWidth = (text, referenceElement) => {
       if (!referenceElement) return Infinity;
-      
+
       const tempDiv = document.createElement("div");
       tempDiv.style.position = "absolute";
       tempDiv.style.visibility = "hidden";
@@ -94,10 +73,10 @@ export default function PromptInput() {
       tempDiv.style.padding = computedStyle.padding;
       tempDiv.textContent = text;
       document.body.appendChild(tempDiv);
-      
+
       const textWidth = tempDiv.offsetWidth;
       document.body.removeChild(tempDiv);
-      
+
       return textWidth;
     };
 
@@ -112,14 +91,19 @@ export default function PromptInput() {
     }
 
     // If in textarea mode, check if it can return to input
-    if (useTextarea && textareaRef.current && measureRef.current && singleLineHeight > 0) {
+    if (
+      useTextarea &&
+      textareaRef.current &&
+      measureRef.current &&
+      singleLineHeight > 0
+    ) {
       const measureEl = measureRef.current;
-      
+
       // Check if text is single-line
       measureEl.value = inputText;
       measureEl.style.height = "auto";
       const measuredHeight = measureEl.scrollHeight;
-      
+
       // If measured height is equal to or less than single-line height
       // and text doesn't contain newline, check if it fits in input
       if (measuredHeight <= singleLineHeight && !inputText.includes("\n")) {
@@ -135,37 +119,33 @@ export default function PromptInput() {
     }
   }, [inputText, useTextarea, singleLineHeight]);
 
-useEffect(() => {
-  if (useTextarea && textareaRef.current) {
-    const el = textareaRef.current;
-    el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-  }
-}, [inputText, useTextarea]);
+  useEffect(() => {
+    if (useTextarea && textareaRef.current) {
+      const el = textareaRef.current;
+      el.style.height = "auto";
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [inputText, useTextarea]);
 
   useEffect(() => {
     if (useTextarea) {
       const el = textareaRef.current;
       if (el) {
-        requestAnimationFrame(() => {
-          if (el) {
-            el.focus();
-            const cursorPos = el.value.length;
-            el.setSelectionRange(cursorPos, cursorPos);
-            el.scrollTop = el.scrollHeight;
-          }
-        });
+        setTimeout(() => {
+          el.focus();
+          const cursorPos = el.value.length;
+          el.setSelectionRange(cursorPos, cursorPos);
+          el.scrollTop = el.scrollHeight;
+        }, 0);
       }
     } else {
       const el = inputRef.current;
       if (el) {
-        requestAnimationFrame(() => {
-          if (el) {
-            el.focus();
-            const cursorPos = el.value.length;
-            el.setSelectionRange(cursorPos, cursorPos);
-          }
-        });
+        setTimeout(() => {
+          el.focus();
+          const cursorPos = el.value.length;
+          el.setSelectionRange(cursorPos, cursorPos);
+        }, 0);
       }
     }
   }, [useTextarea]);
@@ -197,16 +177,16 @@ useEffect(() => {
 
   return (
     <div
-      className={`${pathname === "/" ? "shadow-sm" : "shadow-md"}
-         animate-moveInBottom animate-delay-xs absolute bottom-2 
-      lg:bottom-4 flex flex-col items-center gap-y-1 w-[96%] sm:w-[87%] 
-      sm:max-w-[530px] md:w-[95%]  md:max-w-[630px] lg:max-w-[670px] 
-       xl:w-[calc(95.7%-2vw)] 2xl:max-w-[700px] py-1.5  pr-1 pl-1 rounded-[27px]
-        sm:rounded-[30px]  bg-surface  focus-within:shadow-[#d8dce0]
-         duration-300 z-30  
+      className={`${pathname === "/" ? "shadow-xl" : "shadow-sm"}
+         animate-moveInBottom animate-delay-xs absolute bottom-3 
+      lg:bottom-4 flex flex-col items-center gap-y-1 w-[calc(95.7%-2vw)] max-w-[750px] 
+      py-1.5 pr-[1px] pl-1.5  rounded-[32px] bg-surface shadow-gray-200  focus-within:shadow-[#d8dce0] 
+       duration-300 z-30 
         `}
     >
-      <div style={{ position: "absolute", left: "-9999px", visibility: "hidden" }}>
+      <div
+        style={{ position: "absolute", left: "-9999px", visibility: "hidden" }}
+      >
         <textarea
           rows={1}
           ref={measureRef}
@@ -226,19 +206,25 @@ useEffect(() => {
           ref={textareaRef}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              onSendPrompt(navigate);
+            }
+          }}
           placeholder="What’s on your mind?"
-          className="w-[97%] mx-2 mb-3 
+          className="w-[97%] mx-2
         resize-none overflow-hidden break-words max-h-[200px] overflow-y-auto
         outline-none border-0
         text-[15.5px] leading-relaxed
         placeholder:text-[15.5px] placeholder:font-normal
         focus:placeholder:text-stone-600/80 placeholder:text-sub
-        min-h-[40px] py-2 bg-transparent pr-4 pl-3 mt-1  "
+        min-h-[40px] pb-2 bg-transparent pr-4 pl-2 mt-4  "
         ></textarea>
       )}
 
-      <div className="flex justify-between items-center md:p-[1px] w-full   ">
-        <div ref={dropDownRef} className="relative bg-blue-200/ ">
+      <div className="flex justify-between items-center p-[1px] w-full  ">
+        <div ref={dropDownRef} className="relative">
           {/* change response mode drop down menu */}
           <button
             onClick={() => setDropDownOpen((v) => !v)}
@@ -249,7 +235,7 @@ useEffect(() => {
             rounded-3xl hover:ring-1
             hover:ring-slate-300
             transition cursor-pointer
-            duration-300 focus:outline-none
+            duration-300
             -translate-x-[3.5px]
             `}
           >
@@ -302,7 +288,7 @@ useEffect(() => {
                       setDropDownOpen(false);
                     }}
                     className={`
-                      px-3 py-2 rounded-xl cursor-pointer
+                      px-3 py-2 rounded-2xl cursor-pointer
                       hover:bg-indigo-50
                       flex gap-3 items-center
                       ${selectedModeId === mode.id ? "bg-slate-100" : ""}
@@ -347,10 +333,8 @@ useEffect(() => {
         {!useTextarea && (
           <input
             ref={inputRef}
-            className="flex-1 mx-2 outline-none border-0 placeholder:font-normal
-             placeholder:text-[15px] md:placeholder:text-[15.5px] text-[15px] md:text-[15.5px]
-              placeholder:text-sub bg-transparent focus:placeholder:text-stone-600/80
-               peer duration-300 -translate-x-2 w-4/6 "
+            className="flex-1 mx-2 outline-none border-0 placeholder:font-normal placeholder:text-[15.5px] text-[15.5px]
+          placeholder:text-sub focus:placeholder:text-stone-600/80 peer duration-300"
             type="text"
             name="prompt-input"
             placeholder="What’s on your mind?"
@@ -373,8 +357,7 @@ useEffect(() => {
           }}
           className={` ${
             showResult ? "p-4" : "p-3"
-          } shadow-indigo-200 shadow-md  rounded-full bg-primary 
-          hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none mr-1 `}
+          } shadow-indigo-200 shadow-md  rounded-full bg-primary hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none mr-2 `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

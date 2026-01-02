@@ -1,4 +1,4 @@
-export function timeBasedUUID() {
+export function uuidGenerator() {
   const cryptoObj = globalThis.crypto;
 
   const ts = BigInt(Date.now());
@@ -25,3 +25,4 @@ export function timeBasedUUID() {
     hex.slice(20, 32),
   ].join("-");
 }
+
