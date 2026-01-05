@@ -206,12 +206,6 @@ export default function PromptInput() {
           ref={textareaRef}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              onSendPrompt(navigate);
-            }
-          }}
           placeholder="What’s on your mind?"
           className="w-[97%] mx-2
         resize-none overflow-hidden break-words max-h-[200px] overflow-y-auto
@@ -340,11 +334,6 @@ export default function PromptInput() {
             placeholder="What’s on your mind?"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                onSendPrompt(navigate);
-              }
-            }}
           />
         )}
 

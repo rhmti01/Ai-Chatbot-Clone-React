@@ -96,14 +96,14 @@ export function buildLLMPrompt(userPrompt, mode) {
   const modePrompt = PROMPT_MODE_MAP[mode];
 
   if (!modePrompt) {
-    return userPrompt.trim();
+    return userPrompt;
   }
 
   return `
-${modePrompt.trim()}
+${modePrompt}
 
 User message (this text controls language and meaning):
-${userPrompt.trim()}
-`.trim();
+${userPrompt}
+`;
 }
 

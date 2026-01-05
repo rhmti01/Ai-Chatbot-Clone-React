@@ -1,4 +1,4 @@
-import {fetchChatResponse} from "../../services/api/geminiEndpoints";
+import {fetchChatResponse, generateChatTitle} from "../../services/api/geminiEndpoints";
 import { uuidGenerator } from "../../utils/general/uuidGenerator";
 import { buildLLMPrompt } from "../../utils/general/promptBuilder";
 
@@ -53,13 +53,16 @@ export const createChatSlice = (set, get) => ({
 
     // CASE 1: if there is no active chat -> create new chat group
     if (!currentChatId) {
+
       const chatUUID = uuidGenerator();
       navigate(`/c/${chatUUID}`);
-
+      
       // define new chat structure
       const chatData = {
         id: chatUUID,
-        title: ` New Message  `,
+        title: "",
+        hasChatTitleAnimated : false,
+        isTitleLoading : true,
         messages: [newMessage],
         createdAt : Date.now(),
         pinnedAt : null,
@@ -72,6 +75,19 @@ export const createChatSlice = (set, get) => ({
         showResult: true,
         chatUUID,
         currentChatId: chatUUID,
+      });
+
+      // update chat title by ai generated value
+      generateChatTitle(inputText).then((result) => {
+        set((state) => ({
+          chatsList: state.chatsList.map((chat) =>
+            chat.id === chatUUID
+              ? { ...chat,
+                 title: result.title ,
+                 isTitleLoading : false }
+              : chat
+          ),
+        }));
       });
     }
     // CASE 2: existing chat
@@ -436,7 +452,7 @@ export const createChatSlice = (set, get) => ({
     });
   },
 
-  // set animation flag
+  // set message response animation flag
   setMessageAnimated: (chatId, messageId, promptId, responseId) => {
     set((state) => ({
       chatsList: state.chatsList.map((chat) => {
@@ -468,4 +484,18 @@ export const createChatSlice = (set, get) => ({
       }),
     }));
   },
+
+  // set chat title animation flag
+  setChatTitleAnimated : (chatId) =>{
+    set((state)=>({
+      chatsList : state.chatsList.map((chat) =>{
+        if (chat.id !== chatId) return chat 
+
+        return {
+          ...chat ,
+          hasChatTitleAnimated : true,
+        }
+      })
+    }))
+  }
 });

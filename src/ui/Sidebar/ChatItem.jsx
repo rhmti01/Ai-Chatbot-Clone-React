@@ -1,11 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useGeminiStore } from "../../store/useGeminiStore";
 import { useSidebar } from "../../context/SidebarContext";
 import ReactDOM from "react-dom";
 import toast from "react-hot-toast";
+import Loader from "../Common/Loader";
+import { useTypeEffect } from "../../hooks/useTypeEffect";
 
-function ChatItem({ title, id, pinnedAt }) {
+function ChatItem({
+  title,
+  isTitleLoading,
+  id,
+  pinnedAt,
+  hasChatTitleAnimated,
+}) {
   const navigate = useNavigate();
   const setCurrentChatId = useGeminiStore((state) => state.setCurrentChatId);
   const onDeleteChat = useGeminiStore((state) => state.onDeleteChat);
@@ -13,6 +21,7 @@ function ChatItem({ title, id, pinnedAt }) {
   const currentChatId = useGeminiStore((state) => state.currentChatId);
   const onPinChat = useGeminiStore((state) => state.onPinChat);
   const onUnpinChat = useGeminiStore((state) => state.onUnpinChat);
+  const setChatTitleAnimated = useGeminiStore((state) => state.setChatTitleAnimated);
   const { setSidebarStatus } = useSidebar();
   const [editMode, setEditMode] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -24,6 +33,26 @@ function ChatItem({ title, id, pinnedAt }) {
   const chatMenuDropDownRef = useRef(null);
   const menuRef = useRef(null);
 
+  // response text typing effect on ui
+  const { displayedTypingText } = useTypeEffect(
+    title || "",
+    30,
+    hasChatTitleAnimated // Skip if hasAnimated=true
+  );
+
+  // decide which text to show
+  const displayedText = useMemo(() => {
+    return hasChatTitleAnimated ? title : displayedTypingText;
+  }, [displayedTypingText, hasChatTitleAnimated, title]);
+
+  // detect when typing animation ends
+  useEffect(() => {
+    if (!isTitleLoading && displayedText === title && !hasChatTitleAnimated) {
+      setChatTitleAnimated(id);
+    }
+  }, [displayedText, hasChatTitleAnimated, id, isTitleLoading, setChatTitleAnimated, title]);
+
+  // handle input mode focus
   useEffect(() => {
     if (editMode && inputRef.current) {
       inputRef.current.focus();
@@ -104,42 +133,46 @@ function ChatItem({ title, id, pinnedAt }) {
             id === currentChatId ? "bg-indigo-50/85 hover:bg-none " : ""
           } flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75 has-[button:hover]:bg-transparent cursor-pointer`}
         >
-          {/* header tile */}
-          <div className="py-3.5 pl-4 pr-2 flex justify-center items-center gap-x-3 group rounded-l-2xl bg-amber-500/">
-            {/* chat icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="size-[18px] duration-300"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-              />
-            </svg>
+          {isTitleLoading ? (
+            <div className=" pl-4 scale-[80%] ">
+              <Loader />
+            </div>
+          ) : (
+            <div className="py-3.5 pl-4 pr-2 flex justify-center items-center gap-x-3 group rounded-l-2xl bg-amber-500/">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="size-[18px] duration-300"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                />
+              </svg>
 
-            {/* chat title */}
-            {editMode ? (
-              <input
-                ref={inputRef}
-                autoFocus
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => setEditTitle(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className="text-[15px] font-medium outline-0 ring-0 w-[150px]"
-                type="text"
-                value={editTitle}
-              />
-            ) : (
-              <p className="w-[150px] truncate text-[15px] font-medium duration-300">
-                {title}
-              </p>
-            )}
-          </div>
+              {/* chat title */}
+              {editMode ? (
+                <input
+                  ref={inputRef}
+                  autoFocus
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  className="text-[15px] font-medium outline-0 ring-0 w-[150px]"
+                  type="text"
+                  value={editTitle}
+                />
+              ) : (
+                <p className="w-[150px] truncate text-[15px] font-medium duration-300">
+                  {displayedText}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* chat action button */}
           <div className="relative">
@@ -175,7 +208,7 @@ function ChatItem({ title, id, pinnedAt }) {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                class={`   ${
+                className={`   ${
                   pinnedAt ? "block" : "hidden"
                 } stroke-[2] me-2 size-5 fill-black -translate-x-1.5    `}
                 viewBox="0 0 24 24"
@@ -223,7 +256,7 @@ function ChatItem({ title, id, pinnedAt }) {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
-                          class="stroke-[2] me-2 size-5  "
+                          className="stroke-[2] me-2 size-5  "
                           viewBox="0 0 24 24"
                         >
                           <path
@@ -238,7 +271,7 @@ function ChatItem({ title, id, pinnedAt }) {
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 -960 960 960"
                           fill="currentColor"
-                          class="stroke-[2] me-2 size-5 peer hover:hidden "
+                          className="stroke-[2] me-2 size-5 peer hover:hidden "
                         >
                           <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
                         </svg>
@@ -261,7 +294,7 @@ function ChatItem({ title, id, pinnedAt }) {
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
-                        class="stroke-[2] me-2 size-5 "
+                        className="stroke-[2] me-2 size-5 "
                         viewBox="0 0 24 24"
                       >
                         <path
@@ -290,7 +323,7 @@ function ChatItem({ title, id, pinnedAt }) {
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
-                        class="stroke-[2] me-2 size-5 text-red-600 "
+                        className="stroke-[2] me-2 size-5 text-red-600 "
                         viewBox="0 0 24 24"
                       >
                         <path

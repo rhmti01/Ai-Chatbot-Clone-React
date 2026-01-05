@@ -1,5 +1,5 @@
 import { useTypeEffect } from "../../hooks/useTypeEffect";
-import Loader from "../Common/Loader"
+import Loader from "../Common/Loader";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -306,7 +306,7 @@ export default function ChatMessage({
       <div
         className={`  ${
           promptsList.length > 1 ? "" : ""
-        }  flex flex-col  pl-16 pr-10 pb-4 bg-amber-100/   `}
+        }  flex flex-col  pl-16 pr-10 pb-4 bg-amber-100/  `}
       >
         <div
           className={`${
@@ -335,40 +335,53 @@ export default function ChatMessage({
           <div
             className={`${
               responseError ? "text-gray-700 " : "prose text-black/95"
-            } font-outfit max-w-none mt-1 leading-normal font-medium mb-0 
+            } font-outfit  mt-1 leading-normal font-medium mb-0 bg-blue-500/
             text-[15.5px] md:text-[16] break-words whitespace-normal 
-          ${responseError?"  flex justify-start items-start *:first:mt-0.5 ": ""} `}
+          ${
+            responseError
+              ? "  flex justify-start items-start *:first:mt-0.5 "
+              : ""
+          } `}
           >
             {/* error message icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
-              className={`  ${responseError? "size-4 min-w-4 min-h-4 md:min-w-5 md:min-h-5 md:size-5  inline  text-red-600 mr-1 " : "hidden"}  `}             
+              className={`  ${
+                responseError
+                  ? "size-4 min-w-4 min-h-4 md:min-w-5 md:min-h-5 md:size-5  inline  text-red-600 mr-1 "
+                  : "hidden"
+              }  `}
             >
               <path
                 d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5"
                 stroke="currentColor"
-                 strokeWidth="1.5"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               ></path>
               <path
                 d="M11.995 16h.009"
                 stroke="currentColor"
-                 strokeWidth="2"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               ></path>
             </svg>
 
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeSanitize, schema]]}
-            >
-              {displayedText}
-            </ReactMarkdown>
-          </div>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[
+                  rehypeRaw,
+                  rehypeKatex,
+                  [rehypeSanitize, schema],
+                ]}
+              >
+                {displayedText}
+              </ReactMarkdown>
+            </div>
+          
         )}
       </div>
 
