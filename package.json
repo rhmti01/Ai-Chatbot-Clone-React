@@ -26,7 +26,7 @@
     "katex": "^0.16.27",
     "lucide-react": "^0.562.0",
     "mime": "^4.1.0",
-    "openai": "^6.5.0",
+    "openai": "^6.16.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-hot-toast": "^2.6.0",

@@ -1,8 +1,8 @@
-import { SidebarProvider } from "./context/SidebarContext";
+import { SidebarProvider } from "./context/SidebarContext.jsx";
 import "./index.css";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage.jsx";
 import {  Route, Routes } from "react-router";
-import NoteFound from "./pages/NoteFound";
+import NoteFound from "./pages/NoteFound.jsx";
 import SingleChat from "./pages/SingleChat.jsx";
 import MainHeader from "./ui/ChatScreen/MainHeader.jsx";
 import { Toaster } from "react-hot-toast";

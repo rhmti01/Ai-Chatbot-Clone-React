@@ -1,6 +1,7 @@
-import {fetchChatResponse, generateChatTitle} from "../../services/api/geminiEndpoints";
+
 import { uuidGenerator } from "../../utils/general/uuidGenerator";
 import { buildLLMPrompt } from "../../utils/general/promptBuilder";
+import { fetchChatResponse, generateChatTitle } from "../../services/ai/openaiEndpoints";
 
 export const createChatSlice = (set, get) => ({
   // initial values
@@ -11,7 +12,9 @@ export const createChatSlice = (set, get) => ({
   currentChatId: null,
   selectedResponseMode: "default",
   userName : 'New User' ,
-
+  selectedProvider: "gemini",
+  
+  
   // initial methods
   setInputText: (value) => set({ inputText: value }),
   setChatsList: (value) => set({ chatsList: value }),
@@ -19,10 +22,11 @@ export const createChatSlice = (set, get) => ({
   setCurrentChatId: (value) => set({ currentChatId: value }),
   setUserName: (value) => set({ userName: value }),
   setSelectedResponseMode: (modeId) => set({ selectedResponseMode: modeId }),
+  setSelectedProvider: (provider) => set({ selectedProvider: provider }),
 
   // fetch prompt response from API
   onSendPrompt: async (navigate) => {
-    const { inputText, chatsList, currentChatId } = get();
+    const { inputText, chatsList, currentChatId , selectedProvider } = get();
     if (!inputText.trim()) return;
 
     // create new prompt structure
@@ -105,7 +109,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response from AI API
     const finalPrompt = buildLLMPrompt(inputText, get().selectedResponseMode);
-    const apiResponse = await fetchChatResponse(finalPrompt);
+   const apiResponse = await fetchChatResponse(finalPrompt, selectedProvider);
 
     // update response
     set({
@@ -146,7 +150,8 @@ export const createChatSlice = (set, get) => ({
   },
 
   // edit prompt text and generate new prompt
-  onEditPrompt: async (chatPageId, messageId, newPromptText) => {
+  onEditPrompt: async (chatPageId, messageId, newPromptText) => { 
+    const { selectedProvider } = get();
     const newPromptId = Date.now();
     const newResponseId = Date.now() + 1;
 
@@ -198,7 +203,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response
     const finalPrompt = buildLLMPrompt(newPromptText, get().selectedResponseMode);
-    const apiResponse = await fetchChatResponse(finalPrompt);
+    const apiResponse = await fetchChatResponse(finalPrompt, selectedProvider);
 
     //  update response by ID (safe async)
     set((state) => ({
@@ -239,6 +244,7 @@ export const createChatSlice = (set, get) => ({
 
   // regenerate response
   onRegenerateResponse: async (chatPageId, messageId, promptText, promptId) => {
+    const { selectedProvider } = get();
     set((state) => ({
       chatsList: state.chatsList.map((chat) => {
         if (chat.id !== chatPageId) return chat;
@@ -279,7 +285,7 @@ export const createChatSlice = (set, get) => ({
 
     // fetch response from AI API
     const finalPrompt = buildLLMPrompt(promptText, get().selectedResponseMode);
-    const apiResponse = await fetchChatResponse(finalPrompt);
+    const apiResponse = await fetchChatResponse(finalPrompt, selectedProvider);
 
     set((state) => ({
       chatsList: state.chatsList.map((chat) => {

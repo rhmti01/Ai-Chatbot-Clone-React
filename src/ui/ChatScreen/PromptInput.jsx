@@ -334,6 +334,11 @@ export default function PromptInput() {
             placeholder="What’s on your mind?"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onSendPrompt(navigate);
+              }
+            }}
           />
         )}
 
