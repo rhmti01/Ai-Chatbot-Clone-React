@@ -3,7 +3,9 @@ import { ThreeDots } from "react-loader-spinner";
 
 function Loader() {
   return (
-    <div className=" px-1 -mt-1 bg-amber-400/ animate-fadeIn animate-delay-sm  " >
+    <div
+    className=" px-1 -mt-1 bg-amber-400/ animate-fadeIn animate-delay-sm 
+    w-full  flex justify-start items-center  " >
       <ThreeDots
         visible={true}
         height="35"

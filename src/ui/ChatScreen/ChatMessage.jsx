@@ -17,6 +17,7 @@ import RegenerateResponseBtn from "../Common/RegenerateResponseBtn";
 import SwitchPrompts from "../Common/SwitchPrompts";
 import CopyPromptBtn from "../Common/CopyPromptBtn";
 import { useUserStore } from "../../store/useUserStore";
+import { detectMainLanguage } from "../../utils/general/detectMainLanguage";
 
 // default rehype sanitize schema with math tag support
 const schema = {
@@ -140,11 +141,14 @@ export default function ChatMessage({
     }
   }, [ActiveEditPrompt]);
 
+  const direction = detectMainLanguage(responseText)
+  console.log(direction.dir)
+
   return (
     <div
       ref={messageRef}
       data-chat-message
-      className="flex flex-col mt-4 pt-4 mb-16 text-left max-w-[880px] 
+      className="flex flex-col mt-4 pt-4 mb-20 xl:mb-26 text-left max-w-[880px] 
       mx-auto  text-[16.5px] overflow-hidden  bg-amber-500/ "
     >
       {/* User prompt */}
@@ -306,14 +310,15 @@ export default function ChatMessage({
       <div
         className={`  ${
           promptsList.length > 1 ? "" : ""
-        }  flex flex-col  pl-16 pr-10 pb-4 bg-amber-100/  `}
+        }  ${direction.dir ==="ltr" ? "items-start" : "items-end"}  flex justify-center  flex-col  
+        pl-16 pr-10 pb-4 bg-blue-300/  `}
       >
         <div
           className={`${
             localAnimation ? "animate-moveInLeft animate-delay-xx " : ""
-          } flex text-primary/90 gap-x-1.5 items-center`}
+          } flex text-primary/90 gap-x-1.5 items-center justify-start w-full bg-amber-400/   `}
         >
-          <p className="font-medium italic text-[13.5px]">CHAT A.I +</p>
+          <p className="  font-medium italic text-[13.5px]">CHAT A.I +</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -333,15 +338,19 @@ export default function ChatMessage({
           <Loader />
         ) : (
           <div
+          dir={direction.dir}
             className={`${
               responseError ? "text-gray-700 " : "prose text-black/95"
-            } font-outfit  mt-1 leading-normal font-medium mb-0 bg-blue-500/
+            } 
+             font-outfit  leading-normal font-medium mb-0 w-full 
             text-[15.5px] md:text-[16] break-words whitespace-normal 
           ${
             responseError
-              ? "  flex justify-start items-start *:first:mt-0.5 "
+              ? "  flex justify-start items-start *:first:mt-0.5 mt-2 "
               : ""
-          } `}
+          }  
+          ${direction.dir ==="rtl" ? "text-right" : "text-left" }
+          `}
           >
             {/* error message icon */}
             <svg

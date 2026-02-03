@@ -21,7 +21,9 @@ function ChatItem({
   const currentChatId = useGeminiStore((state) => state.currentChatId);
   const onPinChat = useGeminiStore((state) => state.onPinChat);
   const onUnpinChat = useGeminiStore((state) => state.onUnpinChat);
-  const setChatTitleAnimated = useGeminiStore((state) => state.setChatTitleAnimated);
+  const setChatTitleAnimated = useGeminiStore(
+    (state) => state.setChatTitleAnimated,
+  );
   const { setSidebarStatus } = useSidebar();
   const [editMode, setEditMode] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -37,7 +39,7 @@ function ChatItem({
   const { displayedTypingText } = useTypeEffect(
     title || "",
     30,
-    hasChatTitleAnimated // Skip if hasAnimated=true
+    hasChatTitleAnimated, // Skip if hasAnimated=true
   );
 
   // decide which text to show
@@ -50,7 +52,14 @@ function ChatItem({
     if (!isTitleLoading && displayedText === title && !hasChatTitleAnimated) {
       setChatTitleAnimated(id);
     }
-  }, [displayedText, hasChatTitleAnimated, id, isTitleLoading, setChatTitleAnimated, title]);
+  }, [
+    displayedText,
+    hasChatTitleAnimated,
+    id,
+    isTitleLoading,
+    setChatTitleAnimated,
+    title,
+  ]);
 
   // handle input mode focus
   useEffect(() => {
@@ -64,8 +73,12 @@ function ChatItem({
   useEffect(() => {
     function handleClickOutside(e) {
       if (inputRef.current && !inputRef.current.contains(e.target)) {
-        setEditMode(false);
-        onEditChatTitle(id, editTitle);
+        if (editTitle.trim().length === 0) {
+          toast.error("chat title is empty!");
+        } else {
+          setEditMode(false);
+          onEditChatTitle(id, editTitle);
+        }
       }
     }
     if (editMode) {
@@ -117,11 +130,13 @@ function ChatItem({
     }
   };
 
+  console.log(editMode);
+
   return (
     <>
       <li
         ref={chatMenuDropDownRef}
-        className="select-none flex flex-col justify-center items-start py-0.5 px-4 duration-300 w-full group animate-fadeIn-fast"
+        className="select-none flex flex-col justify-center items-start py-0.5 px-4 duration-300 w-full group animate-fadeIn-fast "
       >
         <div
           onClick={() => {
@@ -130,8 +145,11 @@ function ChatItem({
             setSidebarStatus(false);
           }}
           className={`${
-            id === currentChatId ? "bg-indigo-50/85 hover:bg-none " : ""
-          } flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75 has-[button:hover]:bg-transparent cursor-pointer`}
+            id === currentChatId
+              ? " bg-indigo-50/85 hover:bg-none " : ""} 
+              ${editMode ? "ring-primary ring-2 group-hover:bg-white hover:bg-white " : ""}
+              flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75
+           has-[button:hover]:bg-transparent cursor-pointer    `}
         >
           {isTitleLoading ? (
             <div className=" pl-4 scale-[80%] ">
@@ -339,7 +357,7 @@ function ChatItem({
                     </li>
                   </ul>
                 </div>,
-                document.body
+                document.body,
               )}
           </div>
         </div>
