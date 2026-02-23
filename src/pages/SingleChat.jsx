@@ -109,12 +109,12 @@ function SingleChat() {
           className=" fixed top-1/2  right-3 md:right-5 2xl:right-6 -translate-y-1/2   animate-blurFade
             z-50 cursor-pointer   shadow-[0_8px_25px_rgba(0,0,0,0.20)]
             hover:shadow-[0_12px_35px_rgba(0,0,0,0.30)]
-            transition-shadow  rounded-full size-8 "
+            transition-shadow  rounded-full size-8 text-dark "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className=" size-9 scale-90 md:scale-100 2xl:scale-105 fill-white stroke-gray-800 rounded-full
+            className=" size-9 scale-90 md:scale-100 2xl:scale-105 fill-white dark:fill-black stroke-gray-800 dark:stroke-gray-100 text-dark  rounded-full
             -translate-x-0.5 -translate-y-0.5 "
           >
             <path

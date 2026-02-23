@@ -12,7 +12,8 @@ export default function SidebarHeader() {
     <div className="*:px-7 pt-6 flex flex-col items-start">
       <div className=" flex justify-between items-center w-full ">
         {/* App header title */}
-        <h1 className=" cursor-pointer font-medium xx:text-2xl text-xl inline-block  rounded-3xl tracking-wider ">
+        <h1 className=" cursor-pointer font-medium xx:text-2xl text-xl 
+        inline-block  rounded-3xl tracking-wider text-dark ">
           CHAT A.I+
         </h1>
 
@@ -63,12 +64,12 @@ export default function SidebarHeader() {
               strokeLinejoin="round"
             ></path>
           </svg>
-          <span>New Chat</span>
+          <span className=" text-white " >New Chat</span>
         </button>
 
         <button
-          className="bg-black py-3.5 px-3.5 rounded-full inline cursor-pointer shadow-xl
-           shadow-gray-200 hover:shadow-gray-200/70 group"
+          className="bg-black py-3.5 px-3.5 rounded-full inline cursor-pointer shadow-xl dark:hover:shadow-gray-900
+           shadow-gray-200 dark:shadow-md dark:shadow-gray-950 hover:shadow-gray-200/70 group"
           size=""
         >
           <svg

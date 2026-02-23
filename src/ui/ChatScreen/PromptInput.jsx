@@ -179,9 +179,11 @@ export default function PromptInput() {
     <div
       className={`${pathname === "/" ? "shadow-xl" : "shadow-sm"}
          animate-moveInBottom animate-delay-xs absolute bottom-3 
-      lg:bottom-4 flex flex-col items-center gap-y-1 w-[calc(95.7%-2vw)] max-w-[750px] 
-      py-1.5 pr-[1px] pl-1.5  rounded-[32px] bg-surface shadow-gray-200  focus-within:shadow-[#d8dce0] 
-       duration-300 z-30 
+      lg:bottom-4 flex flex-col items-center gap-y-1 w-[calc(95.7%-2vw)]
+       max-w-[750px] py-1.5 pr-[1px] pl-1.5  rounded-[32px] bg-surface
+        shadow-gray-200  focus-within:shadow-[#d8dce0] z-30 
+       duration-300 dark:shadow-gray-900 dark:focus-within:shadow-main/70 
+       dark:bg-gray-900 dark:shadow-sm dark:focus-within:shadow-md
         `}
     >
       <div
@@ -194,9 +196,10 @@ export default function PromptInput() {
         resize-none overflow-hidden break-words max-h-[200px] overflow-y-auto
         outline-none border-0
         text-[15.5px] leading-relaxed
-        placeholder:text-[15.5px] placeholder:font-normal
-        focus:placeholder:text-stone-600/80 placeholder:text-sub
+        placeholder:text-[15.5px] placeholder:font-normal placeholder:text-sub
         min-h-[40px] py-2 bg-transparent
+        focus:placeholder:text-stone-600/80 dark:placeholder:text-gray-400 
+          dark:focus-within:placeholder:text-gray-500 peer duration-300 text-dark 
         "
         ></textarea>
       </div>
@@ -211,9 +214,10 @@ export default function PromptInput() {
         resize-none overflow-hidden break-words max-h-[200px] overflow-y-auto
         outline-none border-0
         text-[15.5px] leading-relaxed
-        placeholder:text-[15.5px] placeholder:font-normal
-        focus:placeholder:text-stone-600/80 placeholder:text-sub
-        min-h-[40px] pb-2 bg-transparent pr-4 pl-2 mt-4  "
+        placeholder:text-[15.5px] placeholder:font-normal placeholder:text-sub
+        min-h-[40px] pb-2 bg-transparent pr-4 pl-2 mt-4 
+        focus:placeholder:text-stone-600/80 dark:placeholder:text-gray-400 
+          dark:focus-within:placeholder:text-gray-500 peer duration-300 text-dark  "
         ></textarea>
       )}
 
@@ -223,20 +227,21 @@ export default function PromptInput() {
           <button
             onClick={() => setDropDownOpen((v) => !v)}
             className={`  
-            ${isDropDownOpen ? "ring-1 ring-slate-300" : ""}
+            ${isDropDownOpen ? "ring-2 ring-slate-300 dark:ring-slate-700 " : ""}
             mx-2 px-3 h-10
             flex items-center gap-2
-            rounded-3xl hover:ring-1
+            rounded-3xl hover:ring-2
             hover:ring-slate-300
+            dark:hover:ring-slate-700
             transition cursor-pointer
             duration-300
             -translate-x-[3.5px]
             `}
           >
-            <Icon className="size-4 text-slate-600" />
+            <Icon className="size-4 text-yellow-400" />
 
             <div className=" hidden sm:flex flex-col leading-tight text-left ">
-              <span className="text-sm font-medium">{selectedMode.label}</span>
+              <span className="text-sm font-medium text-dark ">{selectedMode.label}</span>
             </div>
 
             <svg
@@ -245,7 +250,7 @@ export default function PromptInput() {
               viewBox="0 0 24 24"
               strokeWidth="2.5"
               stroke="currentColor"
-              className={`size-3 transition ${
+              className={`size-3 transition stroke-dark ${
                 isDropDownOpen ? "rotate-180" : ""
               }`}
             >
@@ -266,7 +271,7 @@ export default function PromptInput() {
                 : "opacity-0 scale-100 pointer-events-none animate-blurOut "
             }
             absolute bottom-full z-50 mb-2 w-56
-            rounded-2xl bg-white shadow-lg ring-1 ring-slate-200 p-1
+            rounded-2xl bg-white dark:bg-gray-900 shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 p-1
             transition-all duration-200
           `}
           >
@@ -283,9 +288,9 @@ export default function PromptInput() {
                     }}
                     className={`
                       px-3 py-2 rounded-2xl cursor-pointer
-                      hover:bg-indigo-50
+                      hover:bg-indigo-50 dark:hover:bg-gray-950/25
                       flex gap-3 items-center
-                      ${selectedModeId === mode.id ? "bg-slate-100" : ""}
+                      ${selectedModeId === mode.id ? "bg-slate-100 dark:bg-gray-950/40 " : ""}
                     `}
                   >
                     <ItemIcon
@@ -301,7 +306,7 @@ export default function PromptInput() {
                         className={`text-sm font-medium ${
                           selectedModeId === mode.id
                             ? "text-indigo-600"
-                            : "text-slate-800"
+                            : "text-slate-800 dark:text-slate-200 "
                         }`}
                       >
                         {mode.label}
@@ -310,7 +315,7 @@ export default function PromptInput() {
                         className={`text-xs  ${
                           selectedModeId === mode.id
                             ? "text-indigo-600"
-                            : "text-slate-500"
+                            : "text-slate-500 dark:text-slate-400"
                         }`}
                       >
                         {mode.description}
@@ -328,7 +333,8 @@ export default function PromptInput() {
           <input
             ref={inputRef}
             className="flex-1 mx-2 outline-none border-0 placeholder:font-normal placeholder:text-[15.5px] text-[15.5px]
-          placeholder:text-sub focus:placeholder:text-stone-600/80 peer duration-300"
+          placeholder:text-sub focus:placeholder:text-stone-600/80 dark:placeholder:text-gray-400 
+          dark:focus-within:placeholder:text-gray-500 peer duration-300 text-dark "
             type="text"
             name="prompt-input"
             placeholder="What’s on your mind?"
@@ -351,7 +357,9 @@ export default function PromptInput() {
           }}
           className={` ${
             showResult ? "p-4" : "p-3"
-          } shadow-indigo-200 shadow-md  rounded-full bg-primary hover:bg-indigo-600/90  cursor-pointer ring-0 border-0 outline-none mr-2 `}
+          } shadow-indigo-200 dark:shadow-indigo-800 shadow-sm 
+           rounded-full bg-primary hover:bg-primary/90   cursor-pointer
+            ring-0 border-0 outline-none mr-2 `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

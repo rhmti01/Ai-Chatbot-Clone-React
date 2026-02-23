@@ -12,8 +12,8 @@ function RegenerateResponseBtn({
       onClick={() => {
         onRegenerateResponse(chatPageId, messageId, promptText, promptId);
       }}
-      className={`  scale-95 md:scale-100  hover:scale-105  px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100
-               cursor-pointer rounded-full flex gap-x-1 items-center text-gray-700 text-[14.5px] font-medium
+      className={`  scale-95 md:scale-100  hover:scale-105  px-2 py-[5px]  hover:shadow-sm duration-300 bg-surface shadow-gray-100 dark:shadow-gray-900
+               cursor-pointer rounded-full flex gap-x-1 items-center text-gray-700 dark:text-gray-400 text-[14.5px] font-medium
                 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:shadow-none `}
     >
       <svg

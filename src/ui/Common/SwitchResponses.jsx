@@ -10,8 +10,8 @@ function SwitchResponses({
 }) {
   return (
     <div
-      className={`   flex items-center space-x-1 rounded-2xl shadow-sm shadow-gray-100
-               text-gray-600 bg-surface px-1.5 py-[6px]  `}
+      className={`   flex items-center space-x-1 rounded-2xl shadow-sm shadow-gray-100 dark:shadow-gray-900
+               text-gray-600 dark:text-gray-300 bg-surface px-1.5 py-[6px]  `}
     >
       {/* LEFT - back to last response */}
       <button
@@ -21,7 +21,7 @@ function SwitchResponses({
         }}
         className={`  ${
           activeResponseIndex === 0
-            ? " text-gray-300 cursor-auto "
+            ? " text-gray-300 dark:text-gray-600 cursor-auto "
             : "cursor-pointer"
         }   `}
       >
@@ -55,7 +55,7 @@ function SwitchResponses({
         }}
         className={`  ${
           activeResponseIndex === totalResponsesLength - 1
-            ? " text-gray-300 cursor-auto "
+            ? " text-gray-300 dark:text-gray-600 cursor-auto "
             : "cursor-pointer"
         }   `}
       >

@@ -10,7 +10,7 @@ function SwitchPrompts({
   return (
     <div
       className={`  flex items-center space-x-[3px] rounded-2xl 
-               text-gray-600 bg-transparent px-2     `}
+               text-gray-600 dark:text-gray-300 bg-transparent px-2     `}
     >
       {/* LEFT - back to last response */}
       <button
@@ -20,7 +20,7 @@ function SwitchPrompts({
         }}
         className={`  ${
           activePromptIndex === 0
-            ? " text-gray-300 cursor-auto "
+            ? " text-gray-300 dark:text-gray-600 cursor-auto "
             : "cursor-pointer"
         }   `}
       >
@@ -54,7 +54,7 @@ function SwitchPrompts({
         }}
         className={`  ${
           activePromptIndex === prompsLength - 1
-            ? " text-gray-300 cursor-auto "
+            ? " text-gray-300 dark:text-gray-600 cursor-auto "
             : "cursor-pointer"
         }   `}
       >

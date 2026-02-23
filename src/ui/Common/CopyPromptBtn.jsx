@@ -37,7 +37,7 @@ function CopyPromptBtn({
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className=" size-[18px] cursor-pointer text-gray-500 hover:text-indigo-500 animate-fadeIn-fast  "
+          className=" size-[18px] cursor-pointer text-gray-500 dark:text-gray-400 hover:text-indigo-500 animate-fadeIn-fast  "
           viewBox="0 0 24 24"
           fill="none"
         >

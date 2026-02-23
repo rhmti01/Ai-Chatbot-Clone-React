@@ -1,18 +1,48 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light */
+  --color-main: #f4f5f6;
+  --color-surface: #ffffff;
+  --color-primary: #5661f6;
+  --color-dark: #111111;
+  --color-sub: #a1a0a0;
+}
+
+.dark {
+  --color-main: #0a0c18;
+  --color-surface: #0e1225;
+  --color-primary: #4318d1;
+  --color-dark: #eceeff;
+  --color-sub: #c2cae4;
+  --color-dark-900: rgb(10, 12, 24);
+  --color-dark-800: rgb(14, 18, 37);
+  --color-dark-700: rgb(24, 30, 54);
+  --color-dark-600: rgb(32, 38, 70);
+  --color-dark-500: rgb(51, 60, 95);
+  --color-dark-400: rgb(73, 85, 123);
+  --color-dark-300: rgb(113, 126, 172);
+  --color-dark-200: rgb(155, 167, 205);
+  --color-dark-100: rgb(194, 202, 228);
+  --color-dark-50: rgb(223, 228, 247);
+  --color-dark-0: rgb(255, 255, 255);
+}
+
+@theme {
+  --color-main: var(--color-main);
+  --color-surface: var(--color-surface);
+  --color-primary: var(--color-primary);
+  --color-dark: var(--color-dark);
+  --color-sub: var(--color-sub);
+}
 
 @theme {
   /* Fonts & Breakpoints */
   --font-outfit: "Outfit", "Vazirmatn";
   --breakpoint-xx: 350px;
   --breakpoint-lg: 1230px;
-
-  /* Colors */
-  --color-main: #f4f5f6;
-  --color-surface: #fff;
-  --color-primary: #5661f6;
-  --color-text: #111;
-  --color-sub: #a1a0a0;
 
   /* Animations */
   --animate-moveInLeft: moveInLeft 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
@@ -27,12 +57,11 @@
   --animate-rotateIn: rotateIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 
   /* blur + bounce combo */
-  --animate-blurBounce: blurBounce 1.8s ease-out both,
-    blurBounceLoop 1s ease-in-out 1.8s infinite;
+  --animate-blurBounce:
+    blurBounce 1.8s ease-out both, blurBounceLoop 1s ease-in-out 1.8s infinite;
   --animate-blurIn: blurIn 0.8s ease-out both;
   --animate-blurIn-fast: blurIn 0.4s ease-out both;
   --animate-blurOut: blurOut 0.4s ease-in both;
-
 
   --animate-blurFade: blurIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
 
@@ -331,5 +360,5 @@
 
 /* user text selection */
 ::selection {
-  @apply bg-indigo-500 text-white;
+  @apply bg-indigo-600 text-white;
 }

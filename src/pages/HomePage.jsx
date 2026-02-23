@@ -16,7 +16,7 @@ function HomePage() {
   }, [navigate, pathName, setCurrentChatId]);
 
   return (
-    <div className="  font-outfit relative min-w-full h-dvh lg:grid 
+    <div className="  font-outfit relative min-w-full h-dvh lg:grid bg-main
     lg:grid-cols-[clamp(300px,25vw,330px)_1fr] grid-rows-1 overflow-hidden ">
       <Sidebar />
       <ChatScreen />

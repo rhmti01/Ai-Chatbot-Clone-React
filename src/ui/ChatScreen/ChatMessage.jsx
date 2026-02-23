@@ -177,8 +177,8 @@ export default function ChatMessage({
               <p
                 className={`${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  font-[400] text-[15.5px] md:text-[16px]  text-black px-3 md:px-4 py-1.5  md:py-2.5 bg-white shadow-sm
-                 shadow-gray-200 ring-1 ring-gray-100 rounded-3xl break-words  whitespace-normal 
+                }  font-[400] text-[15.5px] md:text-[16px]  text-dark px-3 md:px-4 py-1.5  md:py-2.5 bg-surface shadow-sm
+                 shadow-gray-200 dark:shadow-gray-900 ring-1 ring-gray-100 dark:ring-gray-800 rounded-3xl break-words  whitespace-normal 
              rounded-bl-[6px] max-w-[230px]  sm:max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
               >
                 {activePromptText}
@@ -206,8 +206,8 @@ export default function ChatMessage({
             </div>
           ) : (
             <div
-              className="bg-gray-200 rounded-3xl shadow-sm shadow-gray-100
-              w-full flex flex-col gap-y-6 p-2.5 md:p-4 animate-fadeIn-fast h-full "
+              className="bg-gray-200 dark:bg-surface rounded-3xl shadow-sm shadow-gray-100
+              w-full flex flex-col gap-y-6 p-2.5 md:p-4 animate-fadeIn-fast h-full dark:shadow-gray-900 "
             >
               <textarea
                 ref={editRef}
@@ -222,7 +222,7 @@ export default function ChatMessage({
                 }}
                 value={editedPromptValue}
                 className={`
-                    px-2 outline-0 resize-none w-full break-words overflow-y-auto text-[15.5px] md:text-[16px]
+                    px-2 outline-0 resize-none w-full break-words overflow-y-auto text-[15.5px] md:text-[16px] text-dark
                     ${
                       editedPromptValue.split("\n").length >= 3 ||
                       editedPromptValue.length > 80
@@ -237,8 +237,8 @@ export default function ChatMessage({
               <div className="flex w-full justify-end gap-x-1 md:gap-x-2 items-center">
                 <button
                   onClick={() => setActiveEditPrompt(false)}
-                  className="text-surface bg-gray-500 scale-90 md:scale-100 px-3 py-1
-                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85"
+                  className="text-dark bg-gray-500 dark:bg-gray-700 scale-90 md:scale-100 px-3 py-1
+                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-gray-600/85 dark:hover:bg-gray-700/70  "
                 >
                   Cancel
                 </button>
@@ -254,8 +254,8 @@ export default function ChatMessage({
                     setActiveEditPrompt(false);
                     onEditPrompt(chatPageId, messageId, editedPromptValue);
                   }}
-                  className="text-surface bg-indigo-600 px-3 py-1  scale-90 md:scale-100
-                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85"
+                  className="text-dark bg-indigo-600 dark:bg-indigo-700 px-3 py-1  scale-90 md:scale-100
+                rounded-3xl cursor-pointer duration-300 text-[14px] hover:bg-indigo-600/85 dark:hover:bg-indigo-800 "
                 >
                   Send
                 </button>
@@ -275,7 +275,7 @@ export default function ChatMessage({
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-[21px]  text-gray-700 hover:text-gray-900 duration-500 "
+            className="size-[21px]  text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 duration-500 "
             viewBox="0 0 24 24"
             fill="none"
           >
@@ -316,7 +316,7 @@ export default function ChatMessage({
         <div
           className={`${
             localAnimation ? "animate-moveInLeft animate-delay-xx " : ""
-          } flex text-primary/90 gap-x-1.5 items-center justify-start w-full bg-amber-400/   `}
+          } flex text-primary/90 dark:text-indigo-500 gap-x-1.5 items-center justify-start w-full bg-amber-400/   `}
         >
           <p className="  font-medium italic text-[13.5px]">CHAT A.I +</p>
           <svg
@@ -340,7 +340,7 @@ export default function ChatMessage({
           <div
           dir={direction.dir}
             className={`${
-              responseError ? "text-gray-700 " : "prose text-black/95"
+              responseError ? "text-gray-700  " : "prose text-black/95 dark:text-gray-200"
             } 
              font-outfit  leading-normal font-medium mb-0 w-full 
             text-[15.5px] md:text-[16] break-words whitespace-normal 
@@ -411,8 +411,8 @@ export default function ChatMessage({
           <div className=" scale-95 md:scale-100 flex justify-center items-center gap-x-5 bg-red-400/ ">
             {/* message like and copy btns  */}
             <div
-              className={`$  flex items-center  gap-x-3  rounded-2xl shadow-sm shadow-gray-100
-               text-gray-600 bg-surface px-3 py-[7.5px] `}
+              className={`$  flex items-center  gap-x-3  rounded-2xl shadow-sm shadow-gray-100 dark:shadow-gray-900
+               text-gray-600 dark:text-gray-500 bg-surface px-3 py-[7.5px] `}
             >
               {/* like response */}
               <button
@@ -432,7 +432,7 @@ export default function ChatMessage({
                   className={`  ${
                     isResponseLiked === true
                       ? " text-indigo-600   "
-                      : "text-gray-500 hover:text-indigo-400  "
+                      : "text-gray-500 dark:text-gray-400 hover:text-indigo-400  "
                   } 
                  duration-300 size-[18px] cursor-pointer  `}
                   viewBox="0 0 24 24"
@@ -453,7 +453,7 @@ export default function ChatMessage({
                   ></path>
                 </svg>
               </button>
-              <span className=" h-4 w-[2px] bg-gray-400/85 rounded-full "></span>
+              <span className=" h-4 w-[2px] bg-gray-400/85 dark:bg-gray-300 rounded-full "></span>
               {/* dislike response */}
               <button
                 className=" cursor-pointer hover:scale-105 duration-300 "
@@ -472,7 +472,7 @@ export default function ChatMessage({
                   className={`  ${
                     isResponseLiked === false
                       ? " text-indigo-600   "
-                      : "text-gray-500 hover:text-indigo-400  "
+                      : "text-gray-500 dark:text-gray-400 hover:text-indigo-400  "
                   } 
                  duration-300 size-[18px] cursor-pointer  `}
                   viewBox="0 0 24 24"
@@ -493,7 +493,7 @@ export default function ChatMessage({
                   ></path>
                 </svg>
               </button>
-              <span className=" h-4 w-[2px] bg-gray-400/85 rounded-full "></span>
+              <span className=" h-4 w-[2px] bg-gray-400/85 dark:bg-gray-300 rounded-full "></span>
 
               {/* copy response text */}
               <CopyResponseBtn

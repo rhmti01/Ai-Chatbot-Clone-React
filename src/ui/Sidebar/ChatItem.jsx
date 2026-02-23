@@ -146,9 +146,9 @@ function ChatItem({
           }}
           className={`${
             id === currentChatId
-              ? " bg-indigo-50/85 hover:bg-none " : ""} 
-              ${editMode ? "ring-primary ring-2 group-hover:bg-white hover:bg-white " : ""}
-              flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75
+              ? " bg-indigo-50/85 dark:bg-gray-900 hover:bg-none " : ""} 
+              ${editMode ? "ring-primary ring-2 group-hover:bg-white dark:group-hover:bg-gray-900 hover:bg-white dark:hover:bg-gray-900  " : ""}
+              flex justify-between items-center gap-x-2 relative duration-300 w-full rounded-2xl group-hover:bg-indigo-50/75 dark:group-hover:bg-gray-900
            has-[button:hover]:bg-transparent cursor-pointer    `}
         >
           {isTitleLoading ? (
@@ -163,7 +163,7 @@ function ChatItem({
                 viewBox="0 0 24 24"
                 strokeWidth={2}
                 stroke="currentColor"
-                className="size-[18px] duration-300"
+                className="size-[18px] duration-300 text-dark "
               >
                 <path
                   strokeLinecap="round"
@@ -180,12 +180,12 @@ function ChatItem({
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => setEditTitle(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  className="text-[15px] font-medium outline-0 ring-0 w-[150px]"
+                  className="text-[15px] font-medium outline-0 ring-0 w-[150px] text-dark "
                   type="text"
                   value={editTitle}
                 />
               ) : (
-                <p className="w-[150px] truncate text-[15px] font-medium duration-300">
+                <p className="w-[150px] truncate text-[15px] font-medium duration-300 text-dark ">
                   {displayedText}
                 </p>
               )}
@@ -213,7 +213,7 @@ function ChatItem({
                 viewBox="0 0 24 24"
                 className={`  ${
                   pinnedAt ? "hidden" : "block"
-                } size-5 text-gray-600 hover:text-gray-800 duration-300 fill-gray-700 -translate-x-3  `}
+                } size-5 text-gray-600  hover:text-gray-800 duration-300 fill-gray-700 dark:fill-gray-300 -translate-x-3  `}
               >
                 <path
                   d="M5 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2ZM19 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2ZM12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Z"
@@ -228,7 +228,7 @@ function ChatItem({
                 fill="none"
                 className={`   ${
                   pinnedAt ? "block" : "hidden"
-                } stroke-[2] me-2 size-5 fill-black -translate-x-1.5    `}
+                } stroke-[2] me-2 size-5 fill-black text-black dark:fill-gray-200 dark:text-gray-200 -translate-x-1.5    `}
                 viewBox="0 0 24 24"
               >
                 <path
@@ -251,7 +251,7 @@ function ChatItem({
                     left: menuPosition.left,
                     zIndex: 9999,
                   }}
-                  className="w-34 md:w-44 translate-x-2 -mt-2 rounded-2xl bg-gray-50 shadow-lg ring-1 ring-slate-200 p-2  animate-fadeIn-fast "
+                  className="w-34 md:w-44 translate-x-2 -mt-2 rounded-2xl bg-gray-50 dark:bg-surface shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 p-2  animate-fadeIn-fast "
                 >
                   <ul className=" select-none  ">
                     {/* pin current chat */}
@@ -268,13 +268,13 @@ function ChatItem({
                         setChatMenu(false);
                       }}
                       className=" flex items-center justify-start gap-x-0.5 py-1.5 px-2 duration-300
-                     hover:bg-slate-200/75 rounded-lg cursor-pointer  "
+                     hover:bg-slate-200/75 dark:hover:bg-slate-800 rounded-lg cursor-pointer  "
                     >
                       {!pinnedAt ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
-                          className="stroke-[2] me-2 size-5  "
+                          className="stroke-[2] me-2 size-5 text-gray-900 dark:text-gray-100 "
                           viewBox="0 0 24 24"
                         >
                           <path
@@ -289,13 +289,13 @@ function ChatItem({
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 -960 960 960"
                           fill="currentColor"
-                          className="stroke-[2] me-2 size-5 peer hover:hidden "
+                          className="stroke-[2] me-2 size-5 peer hover:hidden text-gray-900 dark:text-gray-100 "
                         >
                           <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
                         </svg>
                       )}
 
-                      <p className=" font-medium   text-gray-950 text-[14.5px] ">
+                      <p className=" font-medium text-dark text-[14.5px] ">
                         {pinnedAt ? "Unpin Chat" : "Pin Chat"}
                       </p>
                     </li>
@@ -307,12 +307,12 @@ function ChatItem({
                         setEditMode(true);
                       }}
                       className=" flex items-center justify-start gap-x-0.5 py-1.5 px-2 duration-300
-                     hover:bg-slate-200/75 rounded-lg cursor-pointer  "
+                     hover:bg-slate-200/75 dark:hover:bg-slate-800 rounded-lg cursor-pointer  "
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
-                        className="stroke-[2] me-2 size-5 "
+                        className="stroke-[2] me-2 size-5 text-gray-900 dark:text-gray-100 "
                         viewBox="0 0 24 24"
                       >
                         <path
@@ -321,7 +321,7 @@ function ChatItem({
                           d="M18.25 5.75a3.536 3.536 0 0 0-5 0l-3.125 3.125-4.601 4.601a4 4 0 0 0-1.155 2.466L4 20l4.058-.369a4 4 0 0 0 2.466-1.155l7.726-7.726a3.536 3.536 0 0 0 0-5ZM12.5 7.5l4 4"
                         />
                       </svg>
-                      <p className=" font-medium  text-gray-950 text-[14.5px] ">
+                      <p className=" font-medium  text-dark text-[14.5px] ">
                         Rename
                       </p>
                     </li>
@@ -336,7 +336,7 @@ function ChatItem({
                         }
                       }}
                       className=" flex items-center justify-start gap-x-0.5 py-1.5 px-2 duration-300
-                     hover:bg-red-100 rounded-lg cursor-pointer group "
+                     hover:bg-red-100 dark:hover:bg-red-950 rounded-lg cursor-pointer group "
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
