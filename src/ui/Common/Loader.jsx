@@ -18,7 +18,7 @@ function Loader() {
       </div>
       <div
         className=" px-1 -mt-1 bg-amber-400/ animate-fadeIn animate-delay-sm 
-    w-full  flex justify-start items-center  "
+    w-full   justify-start items-center hidden dark:flex"
       >
         <ThreeDots
           visible={true}

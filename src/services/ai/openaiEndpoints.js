@@ -46,7 +46,7 @@ export async function generateChatTitle(prompt) {
         messages: [
           {
             role: "user",
-            content: `Generate a short chat title (max 4 words): ${prompt}`,
+            content: `Generate a short chat title (max 4 words (18 letter character) ): ${prompt}`,
           },
         ],
       }),

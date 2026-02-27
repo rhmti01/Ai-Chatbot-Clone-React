@@ -18,7 +18,7 @@ function HeaderActions() {
         : "shadow-[0_2px_12px_-6px_rgba(0,0,0,0.2)] dark:shadow-[0_2px_10px_-6px_#333c5f]"
     }
     bg-main lg:shadow-none  dark:lg:shadow-none
-     p-2.5 lg:py-4 lg:px-8 flex justify-between lg:justify-end 
+     p-2.5 lg:pt-4 lg:pb-0 lg:px-8 flex justify-between lg:justify-end 
      items-center gap-x-1 w-full lg:w-[98%] absolute z-20 
     `}
     >
@@ -64,7 +64,7 @@ function HeaderActions() {
       <div className="flex justify-between items-center w-24 ">
         <div className=" cursor-pointer lg:mt-0.5  animate-moveInRight ">
           <img
-            className="size-9 rounded-2xl  shadow-xl dark:shadow-md shadow-gray-200 dark:shadow-gray-800 object-cover"
+            className="size-9 rounded-2xl  shadow-xl dark:shadow-md shadow-gray-200 dark:shadow-gray-900 object-cover"
             src={profileImage}
             alt="profile image"
           />

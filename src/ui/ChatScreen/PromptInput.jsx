@@ -183,7 +183,7 @@ export default function PromptInput() {
        max-w-[750px] py-1.5 pr-[1px] pl-1.5  rounded-[32px] bg-surface
         shadow-gray-200  focus-within:shadow-[#d8dce0] z-30 
        duration-300 dark:shadow-gray-900 dark:focus-within:shadow-main/70 
-       dark:bg-gray-900 dark:shadow-sm dark:focus-within:shadow-md
+       dark:bg-surface dark:shadow-sm dark:focus-within:shadow-md
         `}
     >
       <div
@@ -238,7 +238,7 @@ export default function PromptInput() {
             -translate-x-[3.5px]
             `}
           >
-            <Icon className="size-4 text-yellow-400" />
+            <Icon className="size-4 text-yellow-500 dark:text-yellow-300 " />
 
             <div className=" hidden sm:flex flex-col leading-tight text-left ">
               <span className="text-sm font-medium text-dark ">{selectedMode.label}</span>
@@ -250,7 +250,7 @@ export default function PromptInput() {
               viewBox="0 0 24 24"
               strokeWidth="2.5"
               stroke="currentColor"
-              className={`size-3 transition stroke-dark ${
+              className={`size-3 transition stroke-dark hidden sm:block ${
                 isDropDownOpen ? "rotate-180" : ""
               }`}
             >
@@ -357,7 +357,9 @@ export default function PromptInput() {
           }}
           className={` ${
             showResult ? "p-4" : "p-3"
-          } shadow-indigo-200 dark:shadow-indigo-800 shadow-sm 
+          }  
+          ${!inputText.trim() ? "cursor-not-allowed opacity-70 dark:opacity-55 " : ""}
+          shadow-indigo-200 dark:shadow-indigo-800 shadow-sm 
            rounded-full bg-primary hover:bg-primary/90   cursor-pointer
             ring-0 border-0 outline-none mr-2 `}
         >
