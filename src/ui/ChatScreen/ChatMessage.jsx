@@ -177,9 +177,9 @@ export default function ChatMessage({
               <p
                 className={`${
                   localAnimation ? "animate-moveInLeft  " : ""
-                }  font-[400] text-[15.5px] md:text-[16px]  text-dark px-3 md:px-4 py-1.5  md:py-2.5 bg-surface shadow-sm
+                }  font-[400] text-[15.5px] md:text-[16px] leading-relaxed text-dark px-3 md:px-4 py-1.5  md:py-2.5 bg-surface shadow-sm
                  shadow-gray-200 dark:shadow-gray-900 ring-1 ring-gray-100 dark:ring-gray-800 rounded-3xl break-words  whitespace-normal 
-             rounded-bl-[6px] max-w-[230px]  sm:max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
+             rounded-bl-[6px] max-w-[270px]  sm:max-w-[360px] md:max-w-[480px] xl:max-w-[560px]   `}
               >
                 {activePromptText}
               </p>
@@ -340,10 +340,10 @@ export default function ChatMessage({
           <div
           dir={direction.dir}
             className={`${
-              responseError ? "text-gray-700  " : "prose text-black/95 dark:text-gray-200"
+              responseError ? "text-gray-700  " : "prose max-w-none sm:max-w-[85%] xl:max-w-[83%] text-black/95 dark:text-gray-200"
             } 
-             font-outfit  leading-normal font-medium mb-0 w-full 
-            text-[15.5px] md:text-[16] break-words whitespace-normal 
+             font-outfit  leading-relaxed font-medium mb-0 w-full 
+            text-[15.5px] md:text-[16px] break-words whitespace-normal 
           ${
             responseError
               ? "  flex justify-start items-start *:first:mt-0.5 mt-2 "

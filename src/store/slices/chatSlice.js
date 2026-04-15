@@ -1,7 +1,7 @@
 
 import { uuidGenerator } from "../../utils/general/uuidGenerator";
 import { buildLLMPrompt } from "../../utils/general/promptBuilder";
-import { fetchChatResponse, generateChatTitle } from "../../services/ai/openaiEndpoints";
+import { fetchChatResponse, generateChatTitle } from "../../services/ai/localAiLMStudio";
 
 export const createChatSlice = (set, get) => ({
   // initial values
